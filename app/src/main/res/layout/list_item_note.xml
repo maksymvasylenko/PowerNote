@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="8dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="fitXY"
+            android:id="@+id/iv_icon"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/tv_title"
+            android:layout_toEndOf="@id/iv_icon"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/tv_author"
+            android:layout_toEndOf="@id/iv_icon"
+            android:layout_below="@id/tv_title"/>
+    </RelativeLayout>
+
+    <nl.saxion.ap.bookcollection.view.RatingBar
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:id="@+id/cv_ratingbar"
+        android:layout_marginTop="8dp"/>
+
+</LinearLayout>

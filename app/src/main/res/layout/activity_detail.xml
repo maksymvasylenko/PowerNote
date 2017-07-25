@@ -3,14 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.powernote.project.powernote.MainActivity">
+    android:orientation="vertical">
 
     <fragment
+        android:id="@+id/fragment_detail"
+        android:name="com.powernote.project.powernote.NoteDetailFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/fragment_list"
-        android:name="com.powernote.project.powernote.NoteListFragment"
-        tools:layout="@layout/fragment_list"/>
-</FrameLayout>
+        tools:layout="@layout/fragment_detail" />
 
-<!--context="com.powernote.project.powernote.MainActivity"-->
+</FrameLayout>
