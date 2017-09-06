@@ -1,4 +1,4 @@
-package com.powernote.project.powernote;
+package com.powernote.project.powernote.model;
 
 /**
  * Created by Cage on 9/4/17.
@@ -37,43 +37,43 @@ public class Task {
         return id;
     }
 
-    public double getTaskDuration() {
+    public double getDuration() {
         return taskDuration;
     }
 
-    public int getTaskRank() {
+    public int getRank() {
         return taskRank;
     }
 
-    public String getTaskDeadline() {
+    public String getDeadline() {
         return taskDeadline;
     }
 
-    public String getTaskDescription() {
+    public String getDescription() {
         return taskDescription;
     }
 
-    public String getTaskName() {
+    public String getName() {
         return taskName;
     }
 
-    public void setTaskDeadline(String taskDeadline) {
+    public void setDeadline(String taskDeadline) {
         this.taskDeadline = taskDeadline;
     }
 
-    public void setTaskDescription(String taskDescription) {
+    public void setDescription(String taskDescription) {
         this.taskDescription = taskDescription;
     }
 
-    public void setTaskDuration(double taskDuration) {
+    public void setDuration(double taskDuration) {
         this.taskDuration = taskDuration;
     }
 
-    public void setTaskName(String taskName) {
+    public void setName(String taskName) {
         this.taskName = taskName;
     }
 
-    public void setTaskRank(int taskRank) {
+    public void setRank(int taskRank) {
         this.taskRank = taskRank;
     }
 
