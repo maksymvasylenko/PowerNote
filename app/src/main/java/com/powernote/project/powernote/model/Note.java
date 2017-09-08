@@ -5,23 +5,29 @@ package com.powernote.project.powernote.model;
  */
 
 public class Note {
-    private int id;
+    private long id;
     private String text, name, createdAt;
 
-    public Note(int id, String text, String createdAt, String name){
+    public Note(long id, String text, String createdAt, String name){
         this.id = id;
         this.text = text;
         this.createdAt = createdAt;
         this.name = name;
     }
 
-    public Note(int id, String noteText, String createdAt){
-        this.id = id;
-        this.text = noteText;
+    public Note(String text, String createdAt, String name){
+        this.text = text;
         this.createdAt = createdAt;
+        this.name = name;
     }
 
-    public int getId() {
+    public Note(String text, String createdAt){
+        this.text = text;
+        this.createdAt = createdAt;
+        this.name = null;
+    }
+
+    public long getId() {
         return id;
     }
 
@@ -43,5 +49,9 @@ public class Note {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

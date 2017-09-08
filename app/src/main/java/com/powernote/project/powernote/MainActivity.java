@@ -18,24 +18,87 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.powernote.project.powernote.model.Note;
+import com.powernote.project.powernote.model.Tag;
+import com.powernote.project.powernote.model.Task;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends AppCompatActivity{
 
     private static final int EDITOR_REQUEST_CODE = 1001;
-    private android.widget.CursorAdapter cursorAdapter;
+    private ListAdapter listAdapter;
+
+    // Database Helper
+    DBOpenHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        cursorAdapter = new NotesCursorAdapter(this, null, 0);
+        db = new DBOpenHelper(getApplicationContext());
+
+        /*Note note1 = new Note("note text", getDateTime());
+        Note note2 = new Note("note with name", getDateTime(), "note name");
+        Note note3 = new Note("huuuuuuuuuge text ssss", getDateTime());
+        Note note4 = new Note("note last", getDateTime());*/
+
+
+        /*List<Note> notes = db.getAllNotes();
+        for (int i = 0; i < notes.size(); i++) {
+            Log.e(DBOpenHelper.LOG, "note " + i + ":" + notes.get(i).getName());
+        }*/
+
+
+
+        listAdapter = new ListAdapter(this);
+
+        List<Task> tasks = db.getAllTasks();
+        if(tasks != null) {
+            for (int i = 0; i < tasks.size(); i++) {
+                Log.e(DBOpenHelper.LOG, "task " + i + ":" + tasks.get(i).getName());
+                listAdapter.addTaskItem(tasks.get(i));
+            }
+        }
+
+        List<Note> notes = db.getAllNotes();
+        if(notes != null) {
+            for (int i = 1; i < notes.size(); i++) {
+                Log.e(DBOpenHelper.LOG, "note " + i + ":" + notes.get(i).getName());
+                listAdapter.addNoteItem(notes.get(i));
+            }
+        }
+
+
 
         ListView list = (ListView) findViewById(android.R.id.list);
-        list.setAdapter(cursorAdapter);
+        list.setAdapter(listAdapter);
+
+
+        // Creating tasks
+        /*Task task1 = new Task(5,"iPhone 5S", "10.04.2005", "10.03.2005", 0);*/
+
+
+        db.closeDB();
+
+    }
+
+    private String getDateTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        Date date = new Date();
+        return dateFormat.format(date);
+    }
+
+   /* @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -47,17 +110,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
 
-        getLoaderManager().initLoader(0, null, this);
+    }*/
 
-    }
-
-    private void insertNote(String noteText) {
+    /*private void insertNote(String noteText) {
         ContentValues values = new ContentValues();
         values.put(DBOpenHelper.NOTE_TEXT, noteText);
         Uri noteUri = getContentResolver().insert(NotesProvider.CONTENT_URI,
                 values);
         Log.d("MainActivity", "Inserted note " + noteUri.getLastPathSegment());
-    }
+    }*/
 
 
     @Override
@@ -66,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
+/*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -81,9 +142,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
-    private void deleteAllNotes() {
+    /*private void deleteAllNotes() {
 
         DialogInterface.OnClickListener dialogClickListener =
                 new DialogInterface.OnClickListener() {
@@ -108,16 +169,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 .setPositiveButton(getString(android.R.string.yes), dialogClickListener)
                 .setNegativeButton(getString(android.R.string.no), dialogClickListener)
                 .show();
-    }
+    }*/
 
-    private void insertSampleData() {
+    /*private void insertSampleData() {
         insertNote("Simple note");
         insertNote("Multi-line\nnote");
         insertNote("Very long note with a lot of text that exceeds the width of the screen");
         restartLoader();
-    }
+    }*/
 
-    private void restartLoader() {
+    /*private void restartLoader() {
         getLoaderManager().restartLoader(0, null, this);
     }
 
@@ -135,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(android.content.Loader<Cursor> loader) {
         cursorAdapter.swapCursor(null);
-    }
+    }*/
 
     public void openEditorForNewNote(View view) {
         Intent intent = new Intent(this, DetailActivity.class);
@@ -143,10 +204,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EDITOR_REQUEST_CODE && resultCode == RESULT_OK) {
             restartLoader();
         }
-    }
+    }*/
 }

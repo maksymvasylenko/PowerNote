@@ -6,77 +6,90 @@ package com.powernote.project.powernote.model;
 
 public class Task {
 
-    private int id, taskRank;
-    private String taskName, taskDescription, taskDeadline, createdAt;
-    private double taskDuration;
+    private int rank;
+    private long id;
+    private String name, description, deadline, createdAt;
+    private double duration;
 
-    public Task(int id, int taskRank, String taskName, String taskDescription, String taskDeadline, String createdAt, double taskDuration){
+    public Task(long id, int rank, String name, String description, String deadline, String createdAt, double taskDuration){
         this.id = id;
-        this.taskRank = taskRank;
-        this.taskName = taskName;
-        this.taskDescription = taskDescription;
-        this.taskDeadline = taskDeadline;
+        this.rank = rank;
+        this.name = name;
+        this.description = description;
+        this.deadline = deadline;
         this.createdAt = createdAt;
-        this.taskDuration = taskDuration;
+        this.duration = duration;
     }
 
-    public Task(int id, int taskRank, String taskDescription, String taskDeadline, String createdAt, double taskDuration){
-        this.id = id;
-        this.taskRank = taskRank;
-        this.taskDescription = taskDescription;
-        this.taskDeadline = taskDeadline;
+    public Task(int rank, String name, String description, String deadline, String createdAt, double duration){
+        this.rank = rank;
+        this.name = name;
+        this.description = description;
+        this.deadline = deadline;
         this.createdAt = createdAt;
-        this.taskDuration = taskDuration;
+        this.duration = duration;
+    }
+
+    public Task(int rank, String description, String deadline, String createdAt, double duration){
+        this.rank = rank;
+        this.description = description;
+        this.deadline = deadline;
+        this.createdAt = createdAt;
+        this.duration = duration;
+        this.name = null;
     }
 
     public String getCreatedAt() {
         return createdAt;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
     public double getDuration() {
-        return taskDuration;
+        return duration;
     }
 
     public int getRank() {
-        return taskRank;
+        return rank;
     }
 
     public String getDeadline() {
-        return taskDeadline;
+        return deadline;
     }
 
     public String getDescription() {
-        return taskDescription;
+        return description;
     }
 
     public String getName() {
-        return taskName;
+        return name;
     }
 
     public void setDeadline(String taskDeadline) {
-        this.taskDeadline = taskDeadline;
+        this.deadline = taskDeadline;
     }
 
     public void setDescription(String taskDescription) {
-        this.taskDescription = taskDescription;
+        this.description = taskDescription;
     }
 
     public void setDuration(double taskDuration) {
-        this.taskDuration = taskDuration;
+        this.duration = taskDuration;
     }
 
     public void setName(String taskName) {
-        this.taskName = taskName;
+        this.name = taskName;
     }
 
     public void setRank(int taskRank) {
-        this.taskRank = taskRank;
+        this.rank = taskRank;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
 }
 
 

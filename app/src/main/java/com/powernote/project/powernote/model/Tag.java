@@ -6,17 +6,21 @@ package com.powernote.project.powernote.model;
 
 public class Tag {
 
-    private int id;
+    private long id;
     private String name, createdAt;
 
-    public Tag(int id, String name, String createdAt){
+    public Tag(long id, String name, String createdAt){
         this.id = id;
         this.createdAt = createdAt;
         this.name = name;
-
     }
 
-    public int getId() {
+    public Tag(String name, String createdAt){
+        this.createdAt = createdAt;
+        this.name = name;
+    }
+
+    public long getId() {
         return id;
     }
 
@@ -32,5 +36,7 @@ public class Tag {
         this.name = tagName;
     }
 
-
+    public void setId(long id) {
+        this.id = id;
+    }
 }

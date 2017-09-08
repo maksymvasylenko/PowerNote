@@ -18,7 +18,7 @@ import android.widget.Toast;
 public class DetailActivity extends AppCompatActivity {
 
 
-    private String action;
+    /*private String action;
     private EditText editor;
     private String noteFilter;
     private String oldText;
@@ -126,5 +126,5 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         finishEditing();
-    }
+    }*/
 }

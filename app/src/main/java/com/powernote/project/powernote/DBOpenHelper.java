@@ -23,7 +23,7 @@ import java.util.Locale;
 public class DBOpenHelper extends SQLiteOpenHelper {
 
     //logcat tag
-    private static final String LOG = "DatabaseHelper";
+    public static final String LOG = "DatabaseHelper";
 
     //Constants for db name and version
     private static final String DATABASE_NAME = "powerNote.db";
@@ -42,10 +42,10 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     //tasks table column names
     private static final String KEY_TASK_NAME = "task_name";
-    private static final String KEY_TASK_DESCRIPTION = "task_name";
-    private static final String KEY_TASK_DEADLINE = "task_name";
-    private static final String KEY_TASK_RANK = "task_name";
-    private static final String KEY_TASK_DURATION = "task_name";
+    private static final String KEY_TASK_DESCRIPTION = "task_description";
+    private static final String KEY_TASK_DEADLINE = "task_deadline";
+    private static final String KEY_TASK_RANK = "task_rank";
+    private static final String KEY_TASK_DURATION = "task_duration";
 
     //notes table column names
     private static final String KEY_NOTE_TEXT = "note_text";
@@ -87,34 +87,14 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     //Tasks_tags table
     private static final String CREATE_TABLE_TASKS_TAGS = "CREATE TABLE "
             + TABLE_TASKS_TAGS + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
-            + KEY_TASKSTAGS_TASK_ID + " INTEGER," + KEY_TASKSTAGS_TAG_ID + " INTEGER,"
+            + KEY_TASKSTAGS_TASK_ID + " INTEGER," + KEY_TASKSTAGS_TAG_ID + " INTEGER"
             + ")";
 
     //Notes_tags table
     private static final String CREATE_TABLE_NOTES_TAGS = "CREATE TABLE "
             + TABLE_NOTES_TAGS + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
-            + KEY_NOTESTAGS_NOTE_ID + " INTEGER," + KEY_NOTESTAGS_TAG_ID + " INTEGER,"
+            + KEY_NOTESTAGS_NOTE_ID + " INTEGER," + KEY_NOTESTAGS_TAG_ID + " INTEGER"
             + ")";
-
-
-    //Constants for identifying table and columns
-    /*public static final String TABLE_NOTES = "notes";
-    public static final String NOTE_ID = "_id";
-    public static final String NOTE_TEXT = "noteText";
-    public static final String NOTE_CREATED = "noteCreated";
-
-    public static final String[] ALL_COLUMNS =
-            {NOTE_ID, NOTE_TEXT, NOTE_CREATED};
-
-    //SQL to create table
-    private static final String TABLE_CREATE =
-            "CREATE TABLE " + TABLE_NOTES + " (" +
-                    NOTE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                    NOTE_TEXT + " TEXT, " +
-                    NOTE_CREATED + " TEXT default CURRENT_TIMESTAMP" +
-                    ")";
-
-*/
 
     public DBOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -157,6 +137,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
         long taskId = db.insert(TABLE_TASKS, null, values);//add id to the task object
 
+        newTask.setId(taskId);
         return taskId;
     }
 
@@ -391,7 +372,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_NOTE_NAME, newTag.getName());
+        values.put(KEY_TAG_NAME, newTag.getName());
         values.put(KEY_CREATED_AT, getDateTime());
 
         //fix adding tag(s)
@@ -463,6 +444,13 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_TAGS, KEY_ID + " = ?",
                 new String[] { String.valueOf(tagId) });
+    }
+
+    // closing database
+    public void closeDB() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db != null && db.isOpen())
+            db.close();
     }
 
 
