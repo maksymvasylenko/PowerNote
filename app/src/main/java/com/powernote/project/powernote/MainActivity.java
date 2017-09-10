@@ -1,59 +1,214 @@
 package com.powernote.project.powernote;
 
-import android.app.AlertDialog;
-import android.app.LoaderManager;
-import android.content.ContentValues;
-import android.content.CursorLoader;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import android.support.design.widget.TabLayout;
 
 import com.powernote.project.powernote.model.Note;
-import com.powernote.project.powernote.model.Tag;
 import com.powernote.project.powernote.model.Task;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity{
 
     private static final int EDITOR_REQUEST_CODE = 1001;
     private ListAdapter listAdapter;
 
-    // Database Helper
-    DBOpenHelper db;
+
+    /**
+     * The {@link android.support.v4.view.PagerAdapter} that will provide
+     * fragments for each of the sections. We use a
+     * {@link FragmentPagerAdapter} derivative, which will keep every
+     * loaded fragment in memory. If this becomes too memory intensive, it
+     * may be best to switch to a
+     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     */
+    private SectionsPagerAdapter mSectionsPagerAdapter;
+
+    /**
+     * The {@link ViewPager} that will host the section contents.
+     */
+    private ViewPager mViewPager;
+
+    private PowerNotes pwn = PowerNotes.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        db = new DBOpenHelper(getApplicationContext());
+        pwn.initializeDB(getApplicationContext());
 
-        /*Note note1 = new Note("note text", getDateTime());
-        Note note2 = new Note("note with name", getDateTime(), "note name");
-        Note note3 = new Note("huuuuuuuuuge text ssss", getDateTime());
-        Note note4 = new Note("note last", getDateTime());*/
+        //test for data. already done this.
+        /*Task task = new Task(10, "task Name", "task descriptiooooon", "02.05.08", "01.04.07", 10.4);
+        Task task2 = new Task(10, "task descriptiooooon2", "04.07.10", "03.06.09", 10.4);
+        Note note = new Note("body of the note", "10.04.1996", "note Name");
+        Note note2 = new Note("body of the note2", "10.01.1885");
 
+        pwn.getDB().createTask(task);
+        pwn.getDB().createTask(task2);
+        pwn.getDB().createNote(note);
+        pwn.getDB().createNote(note2);*/
 
-        /*List<Note> notes = db.getAllNotes();
-        for (int i = 0; i < notes.size(); i++) {
-            Log.e(DBOpenHelper.LOG, "note " + i + ":" + notes.get(i).getName());
+        /*for (int i = 0; i < 10; i++) {
+            Task task = new Task(10, "task Name" + i, "task descriptiooooon" + i, "02.05.08", "01.04.07", 10.4);
+            pwn.getDB().createTask(task);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            Note note = new Note("body of the note" + i, "10.04.1996_" + i, "note Name" + i);
+            pwn.getDB().createNote(note);
         }*/
 
+        Log.e("db", "notes:" + pwn.getDB().getAllNotes().size());
+        Log.e("db", "tasks:" + pwn.getDB().getAllTasks().size());
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        // Create the adapter that will return a fragment for each of the three
+        // primary sections of the activity.
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        // Set up the ViewPager with the sections adapter.
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setCurrentItem(1);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.setupWithViewPager(mViewPager);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_overview, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * A placeholder fragment containing a simple view.
+     */
+    public static class PlaceholderFragment extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "section_number";
+
+        public PlaceholderFragment() {
+        }
+
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static PlaceholderFragment newInstance(int sectionNumber) {
+            PlaceholderFragment fragment = new PlaceholderFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_placeholder, container, false);
+            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            return rootView;
+        }
+    }
+
+    /**
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * one of the sections/tabs/pages.
+     */
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
+
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            // getItem is called to instantiate the fragment for the given page.
+            // Return a PlaceholderFragment (defined as a static inner class below).
+            switch(position){
+                case 1:
+                    return new OverviewFragment();
+            }
+
+            return PlaceholderFragment.newInstance(position + 1);
+        }
+
+        @Override
+        public int getCount() {
+            // Show 3 total pages.
+            return 3;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            switch (position) {
+                case 0:
+                    return "Tasks";
+                case 1:
+                    return "Overview";
+                case 2:
+                    return "Notes";
+            }
+            return null;
+        }
+
+
+    }
+
+    /*@Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        db = new DBOpenHelper(getApplicationContext());
 
         listAdapter = new ListAdapter(this);
 
@@ -78,11 +233,6 @@ public class MainActivity extends AppCompatActivity{
         ListView list = (ListView) findViewById(android.R.id.list);
         list.setAdapter(listAdapter);
 
-
-        // Creating tasks
-        /*Task task1 = new Task(5,"iPhone 5S", "10.04.2005", "10.03.2005", 0);*/
-
-
         db.closeDB();
 
     }
@@ -92,122 +242,5 @@ public class MainActivity extends AppCompatActivity{
                 "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         Date date = new Date();
         return dateFormat.format(date);
-    }
-
-   /* @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-                Uri uri = Uri.parse(NotesProvider.CONTENT_URI + "/" + id);
-                intent.putExtra(NotesProvider.CONTENT_ITEM_TYPE, uri);
-                startActivityForResult(intent, EDITOR_REQUEST_CODE);
-            }
-        });
-
-    }*/
-
-    /*private void insertNote(String noteText) {
-        ContentValues values = new ContentValues();
-        values.put(DBOpenHelper.NOTE_TEXT, noteText);
-        Uri noteUri = getContentResolver().insert(NotesProvider.CONTENT_URI,
-                values);
-        Log.d("MainActivity", "Inserted note " + noteUri.getLastPathSegment());
-    }*/
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-/*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        switch (id) {
-            case R.id.action_create_sample:
-                insertSampleData();
-                break;
-            case R.id.action_delete_all:
-                deleteAllNotes();
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }*/
-
-    /*private void deleteAllNotes() {
-
-        DialogInterface.OnClickListener dialogClickListener =
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int button) {
-                        if (button == DialogInterface.BUTTON_POSITIVE) {
-                            //Insert Data management code here
-                            getContentResolver().delete(
-                                    NotesProvider.CONTENT_URI, null, null
-                            );
-                            restartLoader();
-
-                            Toast.makeText(MainActivity.this,
-                                    getString(R.string.all_deleted),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                };
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(getString(R.string.are_you_sure))
-                .setPositiveButton(getString(android.R.string.yes), dialogClickListener)
-                .setNegativeButton(getString(android.R.string.no), dialogClickListener)
-                .show();
-    }*/
-
-    /*private void insertSampleData() {
-        insertNote("Simple note");
-        insertNote("Multi-line\nnote");
-        insertNote("Very long note with a lot of text that exceeds the width of the screen");
-        restartLoader();
-    }*/
-
-    /*private void restartLoader() {
-        getLoaderManager().restartLoader(0, null, this);
-    }
-
-    @Override
-    public android.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, NotesProvider.CONTENT_URI,
-                null, null, null, null);
-    }
-
-    @Override
-    public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor data) {
-        cursorAdapter.swapCursor(data);
-    }
-
-    @Override
-    public void onLoaderReset(android.content.Loader<Cursor> loader) {
-        cursorAdapter.swapCursor(null);
-    }*/
-
-    public void openEditorForNewNote(View view) {
-        Intent intent = new Intent(this, DetailActivity.class);
-        startActivityForResult(intent, EDITOR_REQUEST_CODE);
-
-    }
-
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == EDITOR_REQUEST_CODE && resultCode == RESULT_OK) {
-            restartLoader();
-        }
     }*/
 }

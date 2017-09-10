@@ -1,7 +1,6 @@
 package com.powernote.project.powernote;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +27,7 @@ import java.util.TreeSet;
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         return LayoutInflater.from(context).inflate(
-                R.layout.list_item, parent, false
+                R.layout.list_note_item, parent, false
         );
     }
 
@@ -108,13 +107,13 @@ class ListAdapter extends BaseAdapter {
         if (convertView == null) {
             switch (type) {
                 case TYPE_TASK:
-                    convertView = LayoutInflater.from(this.context).inflate(R.layout.list_item, null);
-                    ImageView imageView = (ImageView) convertView.findViewById(R.id.imageDocIcon);
-                    imageView.setImageResource(R.drawable.ic_document_red);
+                    convertView = LayoutInflater.from(this.context).inflate(R.layout.list_task_item, null);
 
-                    TextView text = (TextView) convertView.findViewById(R.id.listItemText);
+                    TextView text = (TextView) convertView.findViewById(R.id.tv_task_item_title);
+                    TextView duration = (TextView) convertView.findViewById(R.id.tv_task_item_duration);
                     Task currentTaskItem = (Task) getItem(position);
 
+                    duration.setText("" + currentTaskItem.getDuration());
                     if(currentTaskItem.getName() != null) {
                         text.setText(currentTaskItem.getName());
                     }else{
@@ -123,7 +122,7 @@ class ListAdapter extends BaseAdapter {
 
                     break;
                 case TYPE_NOTE:
-                    convertView = LayoutInflater.from(this.context).inflate(R.layout.list_item, null);
+                    convertView = LayoutInflater.from(this.context).inflate(R.layout.list_note_item, null);
                     TextView text2 = (TextView) convertView.findViewById(R.id.listItemText);
                     Note currentNoteItem = (Note) getItem(position);
 
@@ -132,6 +131,7 @@ class ListAdapter extends BaseAdapter {
                     }else{
                         text2.setText(currentNoteItem.getText());
                     }
+
                     break;
             }
         }
