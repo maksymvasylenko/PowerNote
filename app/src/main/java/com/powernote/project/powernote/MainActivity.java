@@ -83,19 +83,9 @@ public class MainActivity extends AppCompatActivity{
         Log.e("db", "note " + 112 + " id: " + note.getId());
         Log.e("db", "note " + 112 + " name: " + note.getName());
         Log.e("db", "note " + 112 + " text: " + note.getText());
-        Log.e("db", "note " + 112 + " createdAt: " + note.getCreatedAt());
+        Log.e("db", "note " + 112 + " createdAt: " + note.getCreatedAt());*/
 
-
-        List<Note> notes = pwn.getDB().getAllNotes();
-        Log.e("db", "notes size:" + notes.size());
-        for (int i = 0; i < notes.size(); i++) {
-            Log.e("db", "note " + i + " id: " + notes.get(i).getId());
-            Log.e("db", "note " + i + " name: " + notes.get(i).getName());
-            Log.e("db", "note " + i + " text: " + notes.get(i).getText());
-            Log.e("db", "note " + i + " createdAt: " + notes.get(i).getCreatedAt());
-        }*/
-
-        /*Task task = new Task(10,"task 1010", "task descriptiooooon2", "04.07.10", "03.06.09", 10.4);
+        /*Task task = new Task(10,"task 1010", "task descriptiooooon2", "04.07.10", "03.06.09", 10.4, 8);
         Log.e("db", "task " + 1010 + " id: " + task.getId());
         Log.e("db", "task " + 1010 + " name: " + task.getName());
         Log.e("db", "task " + 1010 + " description: " + task.getDescription());
@@ -103,29 +93,37 @@ public class MainActivity extends AppCompatActivity{
         Log.e("db", "task " + 1010 + " deadline: " + task.getDeadline());
         Log.e("db", "task " + 1010 + " duration: " + task.getDuration());
         Log.e("db", "task " + 1010 + " rank: " + task.getRank());
+        Log.e("db", "task " + 1010 + " effort: " + task.getEffort());
 
-        pwn.getDB().createTask(task);
+        pwn.getDB().createTask(task);*/
 
-        Log.e("db", "task " + 1010 + " id: " + task.getId());
-        Log.e("db", "task " + 1010 + " name: " + task.getName());
-        Log.e("db", "task " + 1010 + " description: " + task.getDescription());
-        Log.e("db", "task " + 1010 + " createdAt: " + task.getCreatedAt());
-        Log.e("db", "task " + 1010 + " deadline: " + task.getDeadline());
-        Log.e("db", "task " + 1010 + " duration: " + task.getDuration());
-        Log.e("db", "task " + 1010 + " rank: " + task.getRank());*/
+        List<Note> notes = pwn.getDB().getAllNotes();
+
+        if(notes != null) {
+            Log.e("db", "notes size:" + notes.size());
+            for (int i = 0; i < notes.size(); i++) {
+                Log.e("db", "note " + i + " id: " + notes.get(i).getId());
+                Log.e("db", "note " + i + " name: " + notes.get(i).getName());
+                Log.e("db", "note " + i + " text: " + notes.get(i).getText());
+                Log.e("db", "note " + i + " createdAt: " + notes.get(i).getCreatedAt());
+            }
+        }
 
 
 
         List<Task> tasks = pwn.getDB().getAllTasks();
-        Log.e("db", "tasks:" + pwn.getDB().getAllTasks().size());
-        for (int i = 0; i < tasks.size(); i++) {
-            Log.e("db", "task " + i + " id: " + tasks.get(i).getId());
-            Log.e("db", "task " + i + " name: " + tasks.get(i).getName());
-            Log.e("db", "task " + i + " description: " + tasks.get(i).getDescription());
-            Log.e("db", "task " + i + " createdAt: " + tasks.get(i).getCreatedAt());
-            Log.e("db", "task " + i + " deadline: " + tasks.get(i).getDeadline());
-            Log.e("db", "task " + i + " duration: " + tasks.get(i).getDuration());
-            Log.e("db", "task " + i + " rank: " + tasks.get(i).getRank());
+
+        if(tasks != null) {
+            Log.e("db", "tasks:" + pwn.getDB().getAllTasks().size());
+            for (int i = 0; i < tasks.size(); i++) {
+                Log.e("db", "task " + i + " id: " + tasks.get(i).getId());
+                Log.e("db", "task " + i + " name: " + tasks.get(i).getName());
+                Log.e("db", "task " + i + " description: " + tasks.get(i).getDescription());
+                Log.e("db", "task " + i + " createdAt: " + tasks.get(i).getCreatedAt());
+                Log.e("db", "task " + i + " deadline: " + tasks.get(i).getDeadline());
+                Log.e("db", "task " + i + " duration: " + tasks.get(i).getDuration());
+                Log.e("db", "task " + i + " rank: " + tasks.get(i).getRank());
+            }
         }
 
 

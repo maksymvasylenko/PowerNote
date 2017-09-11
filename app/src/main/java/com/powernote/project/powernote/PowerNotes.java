@@ -3,6 +3,7 @@ package com.powernote.project.powernote;
 import android.content.Context;
 
 import com.powernote.project.powernote.model.Note;
+import com.powernote.project.powernote.model.Tag;
 import com.powernote.project.powernote.model.Task;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class PowerNotes {
     private DBOpenHelper db;
     private List<Note> notes;
     private List<Task> tasks;
+    private List<Tag> tags;
 
     private static final PowerNotes ourInstance = new PowerNotes();
 
@@ -25,10 +27,6 @@ public class PowerNotes {
 
     private PowerNotes() {
 
-    }
-
-    public List<Task> getTasks() {
-        return tasks;
     }
 
     public void initializeDB(Context applicationContext){
@@ -42,4 +40,25 @@ public class PowerNotes {
     public void closeDB(){
         db.closeDB();
     }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public List<Tag> getTag() {
+        return tags;
+    }
+
+    public void addTask(Task task){
+        tasks.add(task);
+    }
+
+    public void addNote(Note note){
+        notes.add(note);
+    }
+
 }

@@ -6,12 +6,12 @@ package com.powernote.project.powernote.model;
 
 public class Task {
 
-    private int rank;
+    private int rank, effort;
     private long id;
     private String name, description, deadline, createdAt;
     private double duration;
 
-    public Task(long id, int rank, String name, String description, String deadline, String createdAt, double duration){
+    public Task(long id, int rank, String name, String description, String deadline, String createdAt, double duration, int effort){
         this.id = id;
         this.rank = rank;
         this.name = name;
@@ -19,24 +19,27 @@ public class Task {
         this.deadline = deadline;
         this.createdAt = createdAt;
         this.duration = duration;
+        this.effort = effort;
     }
 
-    public Task(int rank, String name, String description, String deadline, String createdAt, double duration){
+    public Task(int rank, String name, String description, String deadline, String createdAt, double duration, int effort){
         this.rank = rank;
         this.name = name;
         this.description = description;
         this.deadline = deadline;
         this.createdAt = createdAt;
         this.duration = duration;
+        this.effort = effort;
     }
 
-    public Task(int rank, String description, String deadline, String createdAt, double duration){
+    public Task(int rank, String description, String deadline, String createdAt, double duration, int effort){
         this.rank = rank;
         this.description = description;
         this.deadline = deadline;
         this.createdAt = createdAt;
         this.duration = duration;
         this.name = null;
+        this.effort = effort;
     }
 
     public String getCreatedAt() {
@@ -67,6 +70,10 @@ public class Task {
         return name;
     }
 
+    public int getEffort() {
+        return effort;
+    }
+
     public void setDeadline(String taskDeadline) {
         this.deadline = taskDeadline;
     }
@@ -89,6 +96,10 @@ public class Task {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public void setEffort(int effort) {
+        this.effort = effort;
     }
 }
 

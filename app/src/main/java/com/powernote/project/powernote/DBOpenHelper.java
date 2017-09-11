@@ -46,6 +46,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     private static final String KEY_TASK_DEADLINE = "task_deadline";
     private static final String KEY_TASK_RANK = "task_rank";
     private static final String KEY_TASK_DURATION = "task_duration";
+    private static final String KEY_TASK_EFFORT = "task_effort";
 
     //notes table column names
     private static final String KEY_NOTE_TEXT = "note_text";
@@ -70,7 +71,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             + KEY_TASK_NAME + " TEXT," + KEY_TASK_DESCRIPTION + " TEXT,"
             + KEY_TASK_DEADLINE + " DATETIME," + KEY_TASK_RANK + " INTEGER,"
             + KEY_TASK_DURATION + " REAL," + KEY_CREATED_AT
-            + " DATETIME" + ")";
+            + " DATETIME," + KEY_TASK_EFFORT + " INTEGER" + ")";
 
     //Notes table
     private static final String CREATE_TABLE_NOTES = "CREATE TABLE "
@@ -132,6 +133,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         values.put(KEY_TASK_RANK, newTask.getRank());
         values.put(KEY_TASK_DURATION, newTask.getDuration());
         values.put(KEY_CREATED_AT, getDateTime());
+        values.put(KEY_TASK_EFFORT, newTask.getEffort());
 
         //fix adding tag(s)
 
@@ -157,7 +159,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     c.getString(c.getColumnIndex(KEY_TASK_DESCRIPTION)),
                     c.getString(c.getColumnIndex(KEY_TASK_DEADLINE)),
                     c.getString(c.getColumnIndex(KEY_CREATED_AT)),
-                    c.getDouble(c.getColumnIndex(KEY_TASK_DURATION))
+                    c.getDouble(c.getColumnIndex(KEY_TASK_DURATION)),
+                    c.getInt(c.getColumnIndex(KEY_TASK_EFFORT))
             );
 
             return task;
@@ -183,7 +186,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                         c.getString(c.getColumnIndex(KEY_TASK_DESCRIPTION)),
                         c.getString(c.getColumnIndex(KEY_TASK_DEADLINE)),
                         c.getString(c.getColumnIndex(KEY_CREATED_AT)),
-                        c.getDouble(c.getColumnIndex(KEY_TASK_DURATION))
+                        c.getDouble(c.getColumnIndex(KEY_TASK_DURATION)),
+                        c.getInt(c.getColumnIndex(KEY_TASK_EFFORT))
                 );
 
                 tasks.add(task);
@@ -217,7 +221,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                         c.getString(c.getColumnIndex(KEY_TASK_DESCRIPTION)),
                         c.getString(c.getColumnIndex(KEY_TASK_DEADLINE)),
                         c.getString(c.getColumnIndex(KEY_CREATED_AT)),
-                        c.getDouble(c.getColumnIndex(KEY_TASK_DURATION))
+                        c.getDouble(c.getColumnIndex(KEY_TASK_DURATION)),
+                        c.getInt(c.getColumnIndex(KEY_TASK_EFFORT))
                 );
 
                 // adding to todo list
@@ -241,6 +246,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         values.put(KEY_TASK_RANK, updatedTask.getRank());
         values.put(KEY_TASK_DURATION, updatedTask.getDuration());
         values.put(KEY_CREATED_AT, getDateTime());
+        values.put(KEY_TASK_EFFORT, updatedTask.getEffort());
 
         // updating row
         return db.update(TABLE_TASKS, values, KEY_ID + " = ?",
@@ -359,8 +365,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         values.put(KEY_CREATED_AT, getDateTime());
 
         // updating row
-        return db.update(TABLE_NOTES, values, KEY_ID + " = ?",
-                new String[] { String.valueOf(updatedNote.getId()) });
+        return db.update(TABLE_NOTES, values, KEY_ID + " = " + String.valueOf(updatedNote.getId()),
+                null);
     }
 
     public void deleteNote(long noteId){

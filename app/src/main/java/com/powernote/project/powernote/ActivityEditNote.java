@@ -31,17 +31,37 @@ public class ActivityEditNote extends AppCompatActivity{
 
 
         Intent intent = getIntent();
-        Long value = intent.getLongExtra("noteDatabaseID", 0);
+        final Long value = intent.getLongExtra("noteDatabaseID", -1);
         Log.e("noteDatabaseID", "note" + value);
 
-        Note note = PowerNotes.getInstance().getDB().getNote(value);
-        title.setText(note.getName());
-        text.setText(note.getText());
+        //todo : fix TimeStamp and add this note to array of notes in PowerNotes
+        if(value != -1) {
+            //onUpdate
+            final Note note = PowerNotes.getInstance().getDB().getNote(value);
+            title.setText(note.getName());
+            text.setText(note.getText());
+            saveButton.setText("Update");
 
-        saveButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                //todo : fix TimeStamp and add this note to array of notes in PowerNotes
+            saveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                note.setName(title.getText().toString());
+                note.setText(text.getText().toString());
+
+
+
+                PowerNotes.getInstance().getDB().updateNote(note);
+                Snackbar.make(v, "Note Updated", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+
+                }
+            });
+        }else{
+            saveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
                 Note newNote = new Note(text.getText().toString(),
                         "timeStamp",
                         title.getText().toString());
@@ -50,8 +70,9 @@ public class ActivityEditNote extends AppCompatActivity{
                 PowerNotes.getInstance().getDB().createNote(newNote);
                 Snackbar.make(v, "Note Created", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-            }
-        });
+                }
+            });
+        }
 
 
     }

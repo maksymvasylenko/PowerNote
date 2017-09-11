@@ -53,10 +53,10 @@ public class ActivityEditTask  extends AppCompatActivity{
                         text.getText().toString(),
                         "deadline",
                         "timeStamp",
-                        8.0
+                        8.0,
+                        effort.getProgress()
                 );
 
-                //effort.getProgress();
                 PowerNotes.getInstance().getDB().createTask(newTask);
                 Snackbar.make(v, "Task Created", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
