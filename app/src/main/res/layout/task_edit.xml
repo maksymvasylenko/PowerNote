@@ -6,7 +6,7 @@
     android:padding="16dp">
 
     <SeekBar
-        android:id="@+id/seekBar4"
+        android:id="@+id/sb_task_edit_priority"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,7 +16,7 @@
         android:progress="1" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/et_task_edit_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -26,12 +26,13 @@
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/et_task_edit_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/editText"
+        android:layout_below="@+id/et_task_edit_title"
         android:ems="10"
+        android:hint="Description"
         android:inputType="textPersonName" />
 
     <LinearLayout
@@ -39,18 +40,18 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:id="@+id/linearLayout"
-        android:layout_below="@+id/editText2"
+        android:layout_below="@+id/et_task_edit_description"
         android:layout_alignParentStart="true">
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/bt_task_edit_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Date" />
 
         <Button
-            android:id="@+id/button4"
+            android:id="@+id/bt_task_edit_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -66,7 +67,7 @@
         android:layout_marginRight="16dp"
         android:text="Proirity"
         android:layout_marginTop="22dp"
-        android:layout_below="@+id/seekBar"
+        android:layout_below="@+id/sb_task_edit_effort"
         android:layout_alignParentStart="true" />
 
     <TextView
@@ -80,7 +81,7 @@
         android:text="Effort" />
 
     <SeekBar
-        android:id="@+id/seekBar"
+        android:id="@+id/sb_task_edit_effort"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -90,11 +91,11 @@
         android:layout_alignParentStart="true" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/bt_task_edit_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Save"
-        android:layout_below="@+id/seekBar4"
+        android:layout_below="@+id/sb_task_edit_priority"
         android:layout_alignParentStart="true"
         android:layout_marginTop="19dp" />
 

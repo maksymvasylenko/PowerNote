@@ -130,7 +130,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         values.put(KEY_TASK_DESCRIPTION, newTask.getDescription());
         values.put(KEY_TASK_DEADLINE, newTask.getDeadline());
         values.put(KEY_TASK_RANK, newTask.getRank());
-        values.put(KEY_TASK_DURATION, newTask.getName());
+        values.put(KEY_TASK_DURATION, newTask.getDuration());
         values.put(KEY_CREATED_AT, getDateTime());
 
         //fix adding tag(s)
@@ -144,10 +144,11 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public Task getTask(long taskId){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = "SLELECT  * FROM " + TABLE_TASKS + " WHERE"
+        String selectQuery = "SELECT  * FROM " + TABLE_TASKS + " WHERE"
                 + KEY_ID + " = " + taskId;
 
         Cursor c = db.rawQuery(selectQuery, null);
+        c.moveToFirst();
 
         if(c != null){
             Task task = new Task(c.getInt(c.getColumnIndex(KEY_ID)),
@@ -271,16 +272,17 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public Note getNote(long noteId){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = "SLELECT  * FROM " + TABLE_NOTES + " WHERE"
+        String selectQuery = "SELECT  * FROM " + TABLE_NOTES + " WHERE "
                 + KEY_ID + " = " + noteId;
 
         Cursor c = db.rawQuery(selectQuery, null);
+        c.moveToFirst();
 
         if(c != null){
             Note note = new Note(c.getInt(c.getColumnIndex(KEY_ID)),
-                    c.getString(c.getColumnIndex(KEY_NOTE_NAME)),
                     c.getString(c.getColumnIndex(KEY_NOTE_TEXT)),
-                    c.getString(c.getColumnIndex(KEY_CREATED_AT))
+                    c.getString(c.getColumnIndex(KEY_CREATED_AT)),
+                    c.getString(c.getColumnIndex(KEY_NOTE_NAME))
             );
 
             return note;
@@ -301,9 +303,9 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 Note note = new Note(c.getInt(c.getColumnIndex(KEY_ID)),
-                        c.getString(c.getColumnIndex(KEY_NOTE_NAME)),
                         c.getString(c.getColumnIndex(KEY_NOTE_TEXT)),
-                        c.getString(c.getColumnIndex(KEY_CREATED_AT))
+                        c.getString(c.getColumnIndex(KEY_CREATED_AT)),
+                        c.getString(c.getColumnIndex(KEY_NOTE_NAME))
                 );
 
                 notes.add(note);
@@ -332,9 +334,9 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 Note note = new Note(c.getInt(c.getColumnIndex(KEY_ID)),
-                        c.getString(c.getColumnIndex(KEY_NOTE_NAME)),
                         c.getString(c.getColumnIndex(KEY_NOTE_TEXT)),
-                        c.getString(c.getColumnIndex(KEY_CREATED_AT))
+                        c.getString(c.getColumnIndex(KEY_CREATED_AT)),
+                        c.getString(c.getColumnIndex(KEY_NOTE_NAME))
                 );
 
                 // adding to todo list
@@ -385,7 +387,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public Tag getTag(long tagId){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = "SLELECT  * FROM " + TABLE_TAGS + " WHERE"
+        String selectQuery = "SELECT  * FROM " + TABLE_TAGS + " WHERE"
                 + KEY_ID + " = " + tagId;
 
         Cursor c = db.rawQuery(selectQuery, null);

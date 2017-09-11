@@ -11,7 +11,7 @@ public class Task {
     private String name, description, deadline, createdAt;
     private double duration;
 
-    public Task(long id, int rank, String name, String description, String deadline, String createdAt, double taskDuration){
+    public Task(long id, int rank, String name, String description, String deadline, String createdAt, double duration){
         this.id = id;
         this.rank = rank;
         this.name = name;

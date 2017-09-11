@@ -1,13 +1,16 @@
 package com.powernote.project.powernote;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.powernote.project.powernote.model.Note;
@@ -64,6 +67,28 @@ public class OverviewFragment extends Fragment {
 
         list = (ListView) view.findViewById(R.id.listOverview);
         list.setAdapter(listAdapter);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if(listAdapter.getItemViewType(position) == 1){
+                    Intent myIntent = new Intent(getActivity(), ActivityEditNote.class);
+                    Note note = (Note) listAdapter.getItem(position);
+                    myIntent.putExtra("noteDatabaseID", note.getId());
+                    startActivity(myIntent);
+
+                }else{
+                    Intent myIntent = new Intent(getActivity(), ActivityEditTask.class);
+                    startActivity(myIntent);
+                }
+
+
+
+
+            }
+        });
+
 
         pwn.closeDB();
 
