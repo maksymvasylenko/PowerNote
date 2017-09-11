@@ -1,5 +1,6 @@
 package com.powernote.project.powernote;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -7,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -19,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import android.support.design.widget.TabLayout;
+import android.widget.Toast;
 
 import com.powernote.project.powernote.model.Note;
 import com.powernote.project.powernote.model.Task;
@@ -96,8 +99,36 @@ public class MainActivity extends AppCompatActivity{
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myIntent = new Intent(MainActivity.this, ActivityEditTask.class);
-                startActivity(myIntent);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(
+                        MainActivity.this);
+                builder.setTitle("Create");
+                builder.setMessage("What do you want to create?");
+                builder.setNegativeButton("Note",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                Intent myIntent = new Intent(MainActivity.this, ActivityEditNote.class);
+                                startActivity(myIntent);
+                            }
+                        });
+                builder.setPositiveButton("Task",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                Intent myIntent = new Intent(MainActivity.this, ActivityEditTask.class);
+                                startActivity(myIntent);
+                            }
+                        });
+                builder.setNeutralButton("CANCEL",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                Toast.makeText(getApplicationContext(),"Cancel is clicked",Toast.LENGTH_LONG).show();
+                            }
+                        });
+
+                builder.show();
 
 
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)

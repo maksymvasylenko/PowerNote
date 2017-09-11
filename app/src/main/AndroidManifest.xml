@@ -23,6 +23,10 @@
             android:name=".ActivityEditTask">
         </activity>
 
+        <activity
+            android:name=".ActivityEditNote">
+        </activity>
+
     </application>
 
 </manifest>
