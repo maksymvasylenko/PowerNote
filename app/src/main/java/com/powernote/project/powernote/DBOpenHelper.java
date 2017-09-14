@@ -13,6 +13,7 @@ import com.powernote.project.powernote.model.Task;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -69,7 +70,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_TASKS = "CREATE TABLE "
             + TABLE_TASKS + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
             + KEY_TASK_NAME + " TEXT," + KEY_TASK_DESCRIPTION + " TEXT,"
-            + KEY_TASK_DEADLINE + " DATETIME," + KEY_TASK_RANK + " INTEGER,"
+            + KEY_TASK_DEADLINE + " INTEGER," + KEY_TASK_RANK + " INTEGER,"
             + KEY_TASK_DURATION + " REAL," + KEY_CREATED_AT
             + " DATETIME," + KEY_TASK_EFFORT + " INTEGER" + ")";
 
@@ -146,7 +147,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public Task getTask(long taskId){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = "SELECT  * FROM " + TABLE_TASKS + " WHERE"
+        String selectQuery = "SELECT  * FROM " + TABLE_TASKS + " WHERE "
                 + KEY_ID + " = " + taskId;
 
         Cursor c = db.rawQuery(selectQuery, null);
@@ -157,7 +158,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     c.getInt(c.getColumnIndex(KEY_TASK_RANK)),
                     c.getString(c.getColumnIndex(KEY_TASK_NAME)),
                     c.getString(c.getColumnIndex(KEY_TASK_DESCRIPTION)),
-                    c.getString(c.getColumnIndex(KEY_TASK_DEADLINE)),
+                    c.getLong(c.getColumnIndex(KEY_TASK_DEADLINE)),
                     c.getString(c.getColumnIndex(KEY_CREATED_AT)),
                     c.getDouble(c.getColumnIndex(KEY_TASK_DURATION)),
                     c.getInt(c.getColumnIndex(KEY_TASK_EFFORT))
@@ -169,8 +170,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<Task> getAllTasks(){
-        List<Task> tasks = new ArrayList<Task>();
+    public HashMap<Long, Task>  getAllTasks(){
+        HashMap<Long, Task>  tasks = new HashMap<>();
         String selectQuery = "SELECT  * FROM " + TABLE_TASKS;
 
 
@@ -184,13 +185,13 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                         c.getInt(c.getColumnIndex(KEY_TASK_RANK)),
                         c.getString(c.getColumnIndex(KEY_TASK_NAME)),
                         c.getString(c.getColumnIndex(KEY_TASK_DESCRIPTION)),
-                        c.getString(c.getColumnIndex(KEY_TASK_DEADLINE)),
+                        c.getLong(c.getColumnIndex(KEY_TASK_DEADLINE)),
                         c.getString(c.getColumnIndex(KEY_CREATED_AT)),
                         c.getDouble(c.getColumnIndex(KEY_TASK_DURATION)),
                         c.getInt(c.getColumnIndex(KEY_TASK_EFFORT))
                 );
 
-                tasks.add(task);
+                tasks.put(task.getId(), task);
             } while (c.moveToNext());
 
             return tasks;
@@ -199,8 +200,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<Task> getAllTasksByTag(String tagName){
-        List<Task> tasks = new ArrayList<Task>();
+    public HashMap<Long, Task> getAllTasksByTag(String tagName){
+        HashMap<Long, Task> tasks = new HashMap<>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_TASKS + " td, "
                 + TABLE_TAGS + " tg, " + TABLE_TASKS_TAGS + " tt WHERE tg."
@@ -219,14 +220,14 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                         c.getInt(c.getColumnIndex(KEY_TASK_RANK)),
                         c.getString(c.getColumnIndex(KEY_TASK_NAME)),
                         c.getString(c.getColumnIndex(KEY_TASK_DESCRIPTION)),
-                        c.getString(c.getColumnIndex(KEY_TASK_DEADLINE)),
+                        c.getLong(c.getColumnIndex(KEY_TASK_DEADLINE)),
                         c.getString(c.getColumnIndex(KEY_CREATED_AT)),
                         c.getDouble(c.getColumnIndex(KEY_TASK_DURATION)),
                         c.getInt(c.getColumnIndex(KEY_TASK_EFFORT))
                 );
 
                 // adding to todo list
-                tasks.add(task);
+                tasks.put(task.getId(), task);
             } while (c.moveToNext());
 
             return tasks;
@@ -297,8 +298,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<Note> getAllNotes(){
-        List<Note> notes = new ArrayList<Note>();
+    public HashMap<Long, Note> getAllNotes(){
+        HashMap<Long, Note> notes = new HashMap<>();
         String selectQuery = "SELECT  * FROM " + TABLE_NOTES;
 
 
@@ -314,7 +315,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                         c.getString(c.getColumnIndex(KEY_NOTE_NAME))
                 );
 
-                notes.add(note);
+                notes.put(note.getId(), note);
             } while (c.moveToNext());
 
             return notes;
@@ -323,8 +324,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<Note> getAllNotesByTag(String tagName){
-        List<Note> notes = new ArrayList<Note>();
+    public HashMap<Long, Note> getAllNotesByTag(String tagName){
+        HashMap<Long, Note> notes = new HashMap<>();
 
         String selectQuery = "SELECT  * FROM " + TABLE_NOTES + " td, "
                 + TABLE_TAGS + " tg, " + TABLE_NOTES_TAGS + " tt WHERE tg."
@@ -346,7 +347,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 );
 
                 // adding to todo list
-                notes.add(note);
+                notes.put(note.getId(), note);
             } while (c.moveToNext());
 
             return notes;
@@ -393,7 +394,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public Tag getTag(long tagId){
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = "SELECT  * FROM " + TABLE_TAGS + " WHERE"
+        String selectQuery = "SELECT  * FROM " + TABLE_TAGS + " WHERE "
                 + KEY_ID + " = " + tagId;
 
         Cursor c = db.rawQuery(selectQuery, null);
@@ -410,8 +411,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<Tag> getAllTags(){
-        List<Tag> tags = new ArrayList<Tag>();
+    public HashMap<Long, Tag> getAllTags(){
+        HashMap<Long, Tag> tags = new HashMap<>();
         String selectQuery = "SELECT  * FROM " + TABLE_TAGS;
 
 
@@ -426,7 +427,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                         c.getString(c.getColumnIndex(KEY_CREATED_AT))
                 );
 
-                tags.add(tag);
+                tags.put(tag.getId(), tag);
             } while (c.moveToNext());
 
             return tags;

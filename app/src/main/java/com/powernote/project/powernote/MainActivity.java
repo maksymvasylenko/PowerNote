@@ -3,7 +3,6 @@ package com.powernote.project.powernote;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -12,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,10 +21,7 @@ import android.widget.TextView;
 import android.support.design.widget.TabLayout;
 import android.widget.Toast;
 
-import com.powernote.project.powernote.model.Note;
 import com.powernote.project.powernote.model.Task;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -57,74 +52,6 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         pwn.initializeDB(getApplicationContext());
-
-        //test for data. already done this.
-        /*Task task = new Task(10, "task Name", "task descriptiooooon", "02.05.08", "01.04.07", 10.4);
-        Task task2 = new Task(10, "task descriptiooooon2", "04.07.10", "03.06.09", 10.4);
-        Note note = new Note("body of the note", "10.04.1996", "note Name");
-        Note note2 = new Note("body of the note2", "10.01.1885");
-
-        pwn.getDB().createTask(task);
-        pwn.getDB().createTask(task2);
-        pwn.getDB().createNote(note);
-        pwn.getDB().createNote(note2);*/
-
-        /*for (int i = 0; i < 10; i++) {
-            Task task = new Task(10, "task Name" + i, "task descriptiooooon" + i, "02.05.08", "01.04.07", 10.4);
-            pwn.getDB().createTask(task);
-        }
-
-        for (int i = 0; i < 10; i++) {
-            Note note = new Note("body of the note" + i, "10.04.1996_" + i, "note Name" + i);
-            pwn.getDB().createNote(note);
-        }*/
-
-        /*Note note = pwn.getDB().getNote(8);
-        Log.e("db", "note " + 112 + " id: " + note.getId());
-        Log.e("db", "note " + 112 + " name: " + note.getName());
-        Log.e("db", "note " + 112 + " text: " + note.getText());
-        Log.e("db", "note " + 112 + " createdAt: " + note.getCreatedAt());*/
-
-        /*Task task = new Task(10,"task 1010", "task descriptiooooon2", "04.07.10", "03.06.09", 10.4, 8);
-        Log.e("db", "task " + 1010 + " id: " + task.getId());
-        Log.e("db", "task " + 1010 + " name: " + task.getName());
-        Log.e("db", "task " + 1010 + " description: " + task.getDescription());
-        Log.e("db", "task " + 1010 + " createdAt: " + task.getCreatedAt());
-        Log.e("db", "task " + 1010 + " deadline: " + task.getDeadline());
-        Log.e("db", "task " + 1010 + " duration: " + task.getDuration());
-        Log.e("db", "task " + 1010 + " rank: " + task.getRank());
-        Log.e("db", "task " + 1010 + " effort: " + task.getEffort());
-
-        pwn.getDB().createTask(task);*/
-
-        List<Note> notes = pwn.getDB().getAllNotes();
-
-        if(notes != null) {
-            Log.e("db", "notes size:" + notes.size());
-            for (int i = 0; i < notes.size(); i++) {
-                Log.e("db", "note " + i + " id: " + notes.get(i).getId());
-                Log.e("db", "note " + i + " name: " + notes.get(i).getName());
-                Log.e("db", "note " + i + " text: " + notes.get(i).getText());
-                Log.e("db", "note " + i + " createdAt: " + notes.get(i).getCreatedAt());
-            }
-        }
-
-
-
-        List<Task> tasks = pwn.getDB().getAllTasks();
-
-        if(tasks != null) {
-            Log.e("db", "tasks:" + pwn.getDB().getAllTasks().size());
-            for (int i = 0; i < tasks.size(); i++) {
-                Log.e("db", "task " + i + " id: " + tasks.get(i).getId());
-                Log.e("db", "task " + i + " name: " + tasks.get(i).getName());
-                Log.e("db", "task " + i + " description: " + tasks.get(i).getDescription());
-                Log.e("db", "task " + i + " createdAt: " + tasks.get(i).getCreatedAt());
-                Log.e("db", "task " + i + " deadline: " + tasks.get(i).getDeadline());
-                Log.e("db", "task " + i + " duration: " + tasks.get(i).getDuration());
-                Log.e("db", "task " + i + " rank: " + tasks.get(i).getRank());
-            }
-        }
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -259,6 +186,8 @@ public class MainActivity extends AppCompatActivity{
             switch(position){
                 case 1:
                     return new OverviewFragment();
+                case 2:
+                    return new OverviewFragment();
             }
 
             return PlaceholderFragment.newInstance(position + 1);
@@ -286,41 +215,14 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    /*@Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        db = new DBOpenHelper(getApplicationContext());
-
-        listAdapter = new ListAdapter(this);
-
-        List<Task> tasks = db.getAllTasks();
-        if(tasks != null) {
-            for (int i = 0; i < tasks.size(); i++) {
-                Log.e(DBOpenHelper.LOG, "task " + i + ":" + tasks.get(i).getName());
-                listAdapter.addTaskItem(tasks.get(i));
-            }
-        }
-
-        List<Note> notes = db.getAllNotes();
-        if(notes != null) {
-            for (int i = 1; i < notes.size(); i++) {
-                Log.e(DBOpenHelper.LOG, "note " + i + ":" + notes.get(i).getName());
-                listAdapter.addNoteItem(notes.get(i));
-            }
-        }
-
-
-
-        ListView list = (ListView) findViewById(android.R.id.list);
-        list.setAdapter(listAdapter);
-
-        db.closeDB();
+    @Override
+    protected void onDestroy() {
+        pwn.closeDB();
+        super.onDestroy();
 
     }
 
-    private String getDateTime() {
+    /*private String getDateTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(
                 "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         Date date = new Date();
