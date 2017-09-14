@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/tv_task_view_title"
         android:max="3"
         android:progress="1" />
 
@@ -89,7 +89,7 @@
 
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_task_view_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -100,7 +100,7 @@
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/tv_task_view_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -116,7 +116,7 @@
         android:layout_height="wrap_content"
         android:max="10"
         android:progress="1"
-        android:layout_below="@+id/textView2"
+        android:layout_below="@+id/tv_task_view_description"
         android:layout_alignParentStart="true" />
 
     <Button
