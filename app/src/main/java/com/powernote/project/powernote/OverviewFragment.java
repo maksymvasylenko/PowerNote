@@ -16,6 +16,7 @@ import android.widget.ListView;
 import com.powernote.project.powernote.model.Note;
 import com.powernote.project.powernote.model.Task;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -47,23 +48,23 @@ public class OverviewFragment extends Fragment {
 
         listAdapter = new ListAdapter(getContext());
 
-        List<Task> tasks = pwn.getDB().getAllTasks();
-        if(tasks != null) {
-            for (int i = 0; i < tasks.size(); i++) {
-                Log.e(DBOpenHelper.LOG, "task " + i + ":" + tasks.get(i).getName());
-                listAdapter.addTaskItem(tasks.get(i));
-            }
-        }
 
-        List<Note>notes = pwn.getDB().getAllNotes();
-        if(notes != null) {
-            for (int i = 1; i < notes.size(); i++) {
-                Log.e(DBOpenHelper.LOG, "note " + i + ":" + notes.get(i).getName());
-                listAdapter.addNoteItem(notes.get(i));
+        if(pwn.getTasks() != null) {
+
+            for (HashMap.Entry<Long, Task> entry : pwn.getTasks().entrySet())
+            {
+                listAdapter.addTaskItem(entry.getValue());
             }
         }
 
 
+        if(pwn.getNotes() != null) {
+
+            for (HashMap.Entry<Long, Note> entry : pwn.getNotes().entrySet())
+            {
+                listAdapter.addNoteItem(entry.getValue());
+            }
+        }
 
         list = (ListView) view.findViewById(R.id.listOverview);
         list.setAdapter(listAdapter);
@@ -80,17 +81,13 @@ public class OverviewFragment extends Fragment {
 
                 }else{
                     Intent myIntent = new Intent(getActivity(), ActivityEditTask.class);
+                    Task task = (Task) listAdapter.getItem(position);
+                    myIntent.putExtra("taskDatabaseID", task.getId());
                     startActivity(myIntent);
                 }
 
-
-
-
             }
         });
-
-
-        pwn.closeDB();
 
         return view;
 

@@ -59,6 +59,13 @@ class ListAdapter extends BaseAdapter {
 
     private TreeSet mNotesSet = new TreeSet();
 
+
+    public void dropData(){
+        mData = new ArrayList();
+        mNotesSet = new TreeSet();
+        notifyDataSetChanged();
+    }
+
     public ListAdapter(Context context) {
         this.context = context;
     }

@@ -7,8 +7,8 @@ import java.util.List;
 public class Task {
 
     private int rank, effort;
-    private long id;
-    private String name, description, deadline, createdAt;
+    private long id, deadline;
+    private String name, description, createdAt, imagePath = null;
     private double duration;
     private boolean complete;
     private int priority;
@@ -22,7 +22,7 @@ public class Task {
     //    private Effort effort;
     //    private Duration duration;
 
-    public Task(long id, int rank, String name, String description, String deadline, String createdAt, double duration, int effort){
+    public Task(long id, int rank, String name, String description, long deadline, String createdAt, double duration, int effort){
         this.id = id;
         this.rank = rank;
         this.name = name;
@@ -33,7 +33,14 @@ public class Task {
         this.effort = effort;
     }
 
-    public Task(int rank, String name, String description, String deadline, String createdAt, double duration, int effort){
+    public Task(){
+        this.name = null;
+        this.description = null;
+        this.createdAt = null;
+    }
+
+
+    public Task(int rank, String name, String description, long deadline, String createdAt, double duration, int effort){
         this.rank = rank;
         this.name = name;
         this.description = description;
@@ -43,7 +50,7 @@ public class Task {
         this.effort = effort;
     }
 
-    public Task(int rank, String description, String deadline, String createdAt, double duration, int effort){
+    public Task(int rank, String description, long deadline, String createdAt, double duration, int effort){
         this.rank = rank;
         this.description = description;
         this.deadline = deadline;
@@ -69,7 +76,7 @@ public class Task {
         return rank;
     }
 
-    public String getDeadline() {
+    public long getDeadline() {
         return deadline;
     }
 
@@ -85,7 +92,7 @@ public class Task {
         return effort;
     }
 
-    public void setDeadline(String taskDeadline) {
+    public void setDeadline(long taskDeadline) {
         this.deadline = taskDeadline;
     }
 
@@ -111,6 +118,14 @@ public class Task {
 
     public void setEffort(int effort) {
         this.effort = effort;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getImagePath() {
+        return imagePath;
     }
 }
 
