@@ -1,8 +1,8 @@
 package com.powernote.project.powernote.model;
 
-/**
- * Created by Cage on 9/4/17.
- */
+import com.powernote.project.powernote.ListItem;
+
+import java.util.List;
 
 public class Task {
 
@@ -10,6 +10,17 @@ public class Task {
     private long id;
     private String name, description, deadline, createdAt;
     private double duration;
+    private boolean complete;
+    private int priority;
+    private List<ListItem> checkList;
+    private List<Task> dependencies;
+
+    //    private float rank;
+    //    private Calendar deadline;
+    //    private Repetition repetition;
+    //    private List<Reminder> reminders;
+    //    private Effort effort;
+    //    private Duration duration;
 
     public Task(long id, int rank, String name, String description, String deadline, String createdAt, double duration, int effort){
         this.id = id;

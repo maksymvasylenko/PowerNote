@@ -1,23 +1,14 @@
 package com.powernote.project.powernote;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 
-import com.powernote.project.powernote.model.Note;
 import com.powernote.project.powernote.model.Task;
-
-/**
- * Created by Maks on 11.09.2017.
- */
 
 public class ActivityEditTask  extends AppCompatActivity{
 
@@ -26,7 +17,6 @@ public class ActivityEditTask  extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.task_edit);
 
-
         final EditText title = (EditText) findViewById(R.id.et_task_edit_title);
         final EditText text = (EditText) findViewById(R.id.et_task_edit_description);
         final SeekBar effort = (SeekBar) findViewById(R.id.sb_task_edit_effort);
@@ -34,7 +24,6 @@ public class ActivityEditTask  extends AppCompatActivity{
         Button date = (Button) findViewById(R.id.bt_task_edit_date);
         Button time = (Button) findViewById(R.id.bt_task_edit_time);
         Button saveButton = (Button) findViewById(R.id.bt_task_edit_save);
-
 
         /*Intent intent = getIntent();
         Long value = intent.getLongExtra("noteDatabaseID", 0);
@@ -62,9 +51,6 @@ public class ActivityEditTask  extends AppCompatActivity{
                         .setAction("Action", null).show();
             }
         });
-
-
-
 
     }
 }

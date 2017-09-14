@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:isScrollContainer="true"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:isScrollContainer="true"
+        android:scrollbars="none">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="70dp">
+
+            <EditText
+                android:id="@+id/et_task_edit_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@android:color/darker_gray"
+                android:ems="10"
+                android:hint="Title"
+                android:inputType="textCapSentences"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/et_task_edit_description"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/et_task_edit_title"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:backgroundTint="@color/colorAccent"
+                android:ems="10"
+                android:gravity="top"
+                android:hint="Description"
+                android:inputType="textCapSentences|textMultiLine"
+                android:isScrollContainer="false"
+                android:nestedScrollingEnabled="true"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:textAlignment="viewStart" />
+
+            <LinearLayout
+                android:id="@+id/layout_switches"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/et_task_edit_description"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="horizontal"
+                android:paddingTop="8dp">
+
+                <Switch
+                    android:id="@+id/sw_effort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/et_task_edit_description"
+                    android:layout_toEndOf="@+id/sw_deadline"
+                    android:layout_weight="1"
+                    android:text="Prioirity"
+                    android:textAlignment="center"
+                    android:textStyle="italic" />
+
+                <Switch
+                    android:id="@+id/sw_deadline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/et_task_edit_description"
+                    android:layout_toEndOf="@+id/toggleButton2"
+                    android:layout_weight="1"
+                    android:paddingRight="10dp"
+                    android:splitTrack="false"
+                    android:text="Deadline"
+                    android:textAlignment="center"
+                    android:textStyle="italic" />
+
+                <Switch
+                    android:id="@+id/sw_checklist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/et_task_edit_description"
+                    android:layout_toEndOf="@+id/toggleButton2"
+                    android:layout_weight="1"
+                    android:splitTrack="false"
+                    android:text="Checklist"
+                    android:textAlignment="center"
+                    android:textIsSelectable="false"
+                    android:textStyle="italic" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_checklist_effort"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/layout_switches"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/layout_checklist"
+                    android:layout_width="match_parent"
+                    android:layout_height="210dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@color/Note"
+                    android:elevation="3dp"
+                    android:nestedScrollingEnabled="true"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:weightSum="1">
+
+                    <EditText
+                        android:id="@+id/et_checklist_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:ems="10"
+                        android:hint="Enter checklist item"
+                        android:inputType="textCapSentences" />
+
+                    <ListView
+                        android:id="@+id/lv_checklist_edit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/layout_deadline"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:divider="@null"
+                        android:fastScrollEnabled="false"
+                        android:footerDividersEnabled="false"
+                        android:headerDividersEnabled="false"
+                        android:isScrollContainer="false"
+                        android:keepScreenOn="false"
+                        android:minHeight="179dp"
+                        android:nestedScrollingEnabled="true"
+                        android:overScrollMode="ifContentScrolls"
+                        android:scrollIndicators="top|bottom"
+                        android:scrollbars="none"
+                        android:smoothScrollbar="false" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_effort"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_priority"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/sb_effort"
+                        android:text="Proirity"
+                        android:textAlignment="center"
+                        android:visibility="visible" />
+
+                    <SeekBar
+                        android:id="@+id/sb_priority"
+                        style="@style/Widget.AppCompat.SeekBar.Discrete"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/tv_priority"
+                        android:max="3"
+                        android:progress="1"
+                        android:visibility="visible" />
+
+                    <TextView
+                        android:id="@+id/tv_effort"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/sw_deadline"
+                        android:text="Effort"
+                        android:textAlignment="center"
+                        android:visibility="visible" />
+
+                    <SeekBar
+                        android:id="@+id/sb_effort"
+                        style="@style/Widget.AppCompat.SeekBar.Discrete"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/tv_effort"
+                        android:max="10"
+                        android:progress="1"
+                        android:visibility="visible" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_deadline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/layout_checklist_effort"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:weightSum="3">
+
+                <Button
+                    android:id="@+id/button2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/ic_today_white_24px"
+                    android:backgroundTint="@color/colorAccent" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.87"
+                    android:text="Tue, Sep 12"
+                    android:textAlignment="textStart"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/button4"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/ic_schedule_white_24px"
+                    android:backgroundTint="@color/colorAccent" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.02"
+                    android:text="18:00"
+                    android:textAlignment="textStart"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>
