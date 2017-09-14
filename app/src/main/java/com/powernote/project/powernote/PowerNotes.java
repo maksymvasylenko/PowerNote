@@ -19,6 +19,7 @@ public class PowerNotes {
     private HashMap<Long, Tag> tags;
     private HashMap<Long, Task> tasks;
     private HashMap<Long, Note> notes;
+    private long currentSelectedItem = -1;
 
     private static final PowerNotes ourInstance = new PowerNotes();
 
@@ -60,18 +61,18 @@ public class PowerNotes {
     }
 
     public void addTask(Task task){
-        tasks.put(task.getId(),task);
         db.createTask(task);
+        tasks.put(db.createTask(task),task);
     }
 
     public void addNote(Note note){
-        notes.put(note.getId(),note);
         db.createNote(note);
+        notes.put(note.getId(),note);
     }
 
     public void addTag(Tag tag){
-        tags.put(tag.getId(),tag);
         db.createTag(tag);
+        tags.put(tag.getId(),tag);
     }
 
     public void deleteNote(long key){
@@ -99,6 +100,14 @@ public class PowerNotes {
 
     public Tag getTag(long key) {
         return this.tags.get(key);
+    }
+
+    public long getCurrentSelectedItem() {
+        return currentSelectedItem;
+    }
+
+    public void setCurrentSelectedItem(long currentSelectedItem) {
+        this.currentSelectedItem = currentSelectedItem;
     }
 
     public void setNotes(HashMap<Long, Note> notes) {

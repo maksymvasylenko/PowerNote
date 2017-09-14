@@ -22,7 +22,7 @@ public class Task {
     //    private Effort effort;
     //    private Duration duration;
 
-    public Task(long id, int rank, String name, String description, long deadline, String createdAt, double duration, int effort){
+    public Task(long id, int rank, String name, String description, long deadline, String createdAt, double duration, int effort, String imagePath){
         this.id = id;
         this.rank = rank;
         this.name = name;
@@ -31,6 +31,7 @@ public class Task {
         this.createdAt = createdAt;
         this.duration = duration;
         this.effort = effort;
+        this.imagePath = imagePath;
     }
 
     public Task(){

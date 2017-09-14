@@ -48,6 +48,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     private static final String KEY_TASK_RANK = "task_rank";
     private static final String KEY_TASK_DURATION = "task_duration";
     private static final String KEY_TASK_EFFORT = "task_effort";
+    private static final String KEY_TASK_IMAGE_PATH = "task_image_path";
 
     //notes table column names
     private static final String KEY_NOTE_TEXT = "note_text";
@@ -72,7 +73,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             + KEY_TASK_NAME + " TEXT," + KEY_TASK_DESCRIPTION + " TEXT,"
             + KEY_TASK_DEADLINE + " INTEGER," + KEY_TASK_RANK + " INTEGER,"
             + KEY_TASK_DURATION + " REAL," + KEY_CREATED_AT
-            + " DATETIME," + KEY_TASK_EFFORT + " INTEGER" + ")";
+            + " DATETIME," + KEY_TASK_EFFORT + " INTEGER," + KEY_TASK_IMAGE_PATH + " TEXT" + ")";
 
     //Notes table
     private static final String CREATE_TABLE_NOTES = "CREATE TABLE "
@@ -135,6 +136,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         values.put(KEY_TASK_DURATION, newTask.getDuration());
         values.put(KEY_CREATED_AT, getDateTime());
         values.put(KEY_TASK_EFFORT, newTask.getEffort());
+        values.put(KEY_TASK_IMAGE_PATH, newTask.getImagePath());
 
         //fix adding tag(s)
 
@@ -161,7 +163,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                     c.getLong(c.getColumnIndex(KEY_TASK_DEADLINE)),
                     c.getString(c.getColumnIndex(KEY_CREATED_AT)),
                     c.getDouble(c.getColumnIndex(KEY_TASK_DURATION)),
-                    c.getInt(c.getColumnIndex(KEY_TASK_EFFORT))
+                    c.getInt(c.getColumnIndex(KEY_TASK_EFFORT)),
+                    c.getString(c.getColumnIndex(KEY_TASK_IMAGE_PATH))
             );
 
             return task;
@@ -188,7 +191,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                         c.getLong(c.getColumnIndex(KEY_TASK_DEADLINE)),
                         c.getString(c.getColumnIndex(KEY_CREATED_AT)),
                         c.getDouble(c.getColumnIndex(KEY_TASK_DURATION)),
-                        c.getInt(c.getColumnIndex(KEY_TASK_EFFORT))
+                        c.getInt(c.getColumnIndex(KEY_TASK_EFFORT)),
+                        c.getString(c.getColumnIndex(KEY_TASK_IMAGE_PATH))
                 );
 
                 tasks.put(task.getId(), task);
@@ -223,7 +227,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                         c.getLong(c.getColumnIndex(KEY_TASK_DEADLINE)),
                         c.getString(c.getColumnIndex(KEY_CREATED_AT)),
                         c.getDouble(c.getColumnIndex(KEY_TASK_DURATION)),
-                        c.getInt(c.getColumnIndex(KEY_TASK_EFFORT))
+                        c.getInt(c.getColumnIndex(KEY_TASK_EFFORT)),
+                        c.getString(c.getColumnIndex(KEY_TASK_IMAGE_PATH))
                 );
 
                 // adding to todo list
@@ -248,6 +253,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         values.put(KEY_TASK_DURATION, updatedTask.getDuration());
         values.put(KEY_CREATED_AT, getDateTime());
         values.put(KEY_TASK_EFFORT, updatedTask.getEffort());
+        values.put(KEY_TASK_IMAGE_PATH, updatedTask.getImagePath());
 
         // updating row
         return db.update(TABLE_TASKS, values, KEY_ID + " = ?",
