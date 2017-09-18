@@ -1,13 +1,13 @@
-package com.powernote.project.powernote;
+package com.powernote.project.powernote.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.powernote.project.powernote.R;
 import com.powernote.project.powernote.model.Note;
 
 import java.util.ArrayList;

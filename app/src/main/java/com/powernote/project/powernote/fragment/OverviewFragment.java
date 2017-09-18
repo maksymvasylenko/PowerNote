@@ -1,34 +1,35 @@
-package com.powernote.project.powernote;
+package com.powernote.project.powernote.fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.powernote.project.powernote.adapter.ListAdapter;
+import com.powernote.project.powernote.model.PowerNote;
+import com.powernote.project.powernote.R;
 import com.powernote.project.powernote.model.Note;
 import com.powernote.project.powernote.model.Task;
+import com.powernote.project.powernote.activity.ActivityEditNote;
+import com.powernote.project.powernote.activity.ActivityEditTask;
 
 import java.util.HashMap;
-import java.util.List;
 
 
 public class OverviewFragment extends Fragment {
 
     ListView list;
     ListAdapter listAdapter;
-    PowerNotes pwn;
+    PowerNote pwn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        pwn = PowerNotes.getInstance();
+        pwn = PowerNote.getInstance();
         super.onCreate(savedInstanceState);
     }
 

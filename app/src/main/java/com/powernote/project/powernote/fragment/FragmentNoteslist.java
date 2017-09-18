@@ -1,4 +1,4 @@
-package com.powernote.project.powernote;
+package com.powernote.project.powernote.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,12 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
+import com.powernote.project.powernote.adapter.ListAdapterNotes;
+import com.powernote.project.powernote.model.PowerNote;
+import com.powernote.project.powernote.R;
 import com.powernote.project.powernote.model.Note;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Maks on 13.09.2017.
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class FragmentNoteslist extends Fragment {
 
-    private PowerNotes pwn = PowerNotes.getInstance();
+    private PowerNote pwn = PowerNote.getInstance();
 
 
     public FragmentNoteslist() {

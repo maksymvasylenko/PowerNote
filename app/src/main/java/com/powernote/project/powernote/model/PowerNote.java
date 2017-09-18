@@ -1,20 +1,15 @@
-package com.powernote.project.powernote;
+package com.powernote.project.powernote.model;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.powernote.project.powernote.model.Note;
-import com.powernote.project.powernote.model.Tag;
-import com.powernote.project.powernote.model.Task;
-
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Maks on 09.09.2017.
  */
 
-public class PowerNotes {
+public class PowerNote {
 
     private DBOpenHelper db;
     private HashMap<Long, Tag> tags;
@@ -22,13 +17,13 @@ public class PowerNotes {
     private HashMap<Long, Note> notes;
     private long currentSelectedItem = -1;
 
-    private static final PowerNotes ourInstance = new PowerNotes();
+    private static final PowerNote ourInstance = new PowerNote();
 
-    public static PowerNotes getInstance() {
+    public static PowerNote getInstance() {
         return ourInstance;
     }
 
-    private PowerNotes() {
+    private PowerNote() {
         tags = null;
         tasks = null;
         notes = null;

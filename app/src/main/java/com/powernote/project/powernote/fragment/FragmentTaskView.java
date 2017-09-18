@@ -1,4 +1,4 @@
-package com.powernote.project.powernote;
+package com.powernote.project.powernote.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,6 +21,10 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.powernote.project.powernote.model.Task;
+
+import com.powernote.project.powernote.adapter.ChecklistViewAdapter;
+import com.powernote.project.powernote.model.ListItem;
+import com.powernote.project.powernote.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;

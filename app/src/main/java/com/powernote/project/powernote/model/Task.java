@@ -1,7 +1,5 @@
 package com.powernote.project.powernote.model;
 
-import com.powernote.project.powernote.ListItem;
-
 import java.util.List;
 
 public class Task {

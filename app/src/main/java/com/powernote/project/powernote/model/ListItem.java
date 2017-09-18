@@ -1,4 +1,4 @@
-package com.powernote.project.powernote;
+package com.powernote.project.powernote.model;
 
 public class ListItem {
     private String text = "";

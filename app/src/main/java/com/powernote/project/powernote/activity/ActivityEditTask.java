@@ -1,4 +1,4 @@
-package com.powernote.project.powernote;
+package com.powernote.project.powernote.activity;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
@@ -6,14 +6,10 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.PersistableBundle;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -34,11 +30,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.powernote.project.powernote.model.PowerNote;
+import com.powernote.project.powernote.R;
 import com.powernote.project.powernote.model.Task;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -50,7 +47,7 @@ import java.util.Date;
 public class ActivityEditTask  extends AppCompatActivity{
 
     private boolean zoomOut =  false;
-    private PowerNotes pwn = PowerNotes.getInstance();
+    private PowerNote pwn = PowerNote.getInstance();
     private Button date, time;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private TextView tvDate, tvTime;
@@ -268,7 +265,7 @@ public class ActivityEditTask  extends AppCompatActivity{
         switch(item.getItemId()){
             case R.id.action_delete:
                 pwn.getTasks().remove(value);
-                PowerNotes.getInstance().getDB().deleteTask(value);
+                PowerNote.getInstance().getDB().deleteTask(value);
                 break;
             case R.id.action_take_photo:
                 dispatchTakePictureIntent();
