@@ -6,20 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.powernote.project.powernote.model.Note;
-import com.powernote.project.powernote.model.Tag;
-import com.powernote.project.powernote.model.Task;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
-
-/**
- * Created by Maks on 25.07.2017.
- */
 
 public class DBOpenHelper extends SQLiteOpenHelper {
 
@@ -65,15 +55,14 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     private static final String KEY_TASKSTAGS_TASK_ID = "task_id";
     private static final String KEY_TASKSTAGS_TAG_ID = "tag_id";
 
-
-    //create table statments
+    //create table statements
     //Tasks table
     private static final String CREATE_TABLE_TASKS = "CREATE TABLE "
             + TABLE_TASKS + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
             + KEY_TASK_NAME + " TEXT," + KEY_TASK_DESCRIPTION + " TEXT,"
             + KEY_TASK_DEADLINE + " INTEGER," + KEY_TASK_RANK + " INTEGER,"
-            + KEY_TASK_DURATION + " REAL," + KEY_CREATED_AT
-            + " DATETIME," + KEY_TASK_EFFORT + " INTEGER," + KEY_TASK_IMAGE_PATH + " TEXT" + ")";
+            + KEY_TASK_DURATION + " INTEGER," + KEY_CREATED_AT
+            + " INTEGER," + KEY_TASK_EFFORT + " INTEGER," + KEY_TASK_IMAGE_PATH + " TEXT" + ")";
 
     //Notes table
     private static final String CREATE_TABLE_NOTES = "CREATE TABLE "
@@ -156,21 +145,14 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         c.moveToFirst();
 
         if(c != null){
-            Task task = new Task(c.getInt(c.getColumnIndex(KEY_ID)),
-                    c.getInt(c.getColumnIndex(KEY_TASK_RANK)),
-                    c.getString(c.getColumnIndex(KEY_TASK_NAME)),
-                    c.getString(c.getColumnIndex(KEY_TASK_DESCRIPTION)),
-                    c.getLong(c.getColumnIndex(KEY_TASK_DEADLINE)),
-                    c.getString(c.getColumnIndex(KEY_CREATED_AT)),
-                    c.getDouble(c.getColumnIndex(KEY_TASK_DURATION)),
-                    c.getInt(c.getColumnIndex(KEY_TASK_EFFORT)),
-                    c.getString(c.getColumnIndex(KEY_TASK_IMAGE_PATH))
-            );
-
-            return task;
+            return getNewTask(c);
         }else{
             return null;
         }
+    }
+
+    public Task getNewTask(Cursor c){
+        return getNewTask(c);
     }
 
     public HashMap<Long, Task>  getAllTasks(){
@@ -184,17 +166,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
-                Task task = new Task(c.getInt(c.getColumnIndex(KEY_ID)),
-                        c.getInt(c.getColumnIndex(KEY_TASK_RANK)),
-                        c.getString(c.getColumnIndex(KEY_TASK_NAME)),
-                        c.getString(c.getColumnIndex(KEY_TASK_DESCRIPTION)),
-                        c.getLong(c.getColumnIndex(KEY_TASK_DEADLINE)),
-                        c.getString(c.getColumnIndex(KEY_CREATED_AT)),
-                        c.getDouble(c.getColumnIndex(KEY_TASK_DURATION)),
-                        c.getInt(c.getColumnIndex(KEY_TASK_EFFORT)),
-                        c.getString(c.getColumnIndex(KEY_TASK_IMAGE_PATH))
-                );
-
+                Task task = getNewTask(c);
                 tasks.put(task.getId(), task);
             } while (c.moveToNext());
 
@@ -220,21 +192,9 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
-                Task task = new Task(c.getInt(c.getColumnIndex(KEY_ID)),
-                        c.getInt(c.getColumnIndex(KEY_TASK_RANK)),
-                        c.getString(c.getColumnIndex(KEY_TASK_NAME)),
-                        c.getString(c.getColumnIndex(KEY_TASK_DESCRIPTION)),
-                        c.getLong(c.getColumnIndex(KEY_TASK_DEADLINE)),
-                        c.getString(c.getColumnIndex(KEY_CREATED_AT)),
-                        c.getDouble(c.getColumnIndex(KEY_TASK_DURATION)),
-                        c.getInt(c.getColumnIndex(KEY_TASK_EFFORT)),
-                        c.getString(c.getColumnIndex(KEY_TASK_IMAGE_PATH))
-                );
-
-                // adding to todo list
+                Task task = getNewTask(c);
                 tasks.put(task.getId(), task);
             } while (c.moveToNext());
-
             return tasks;
         }else{
             return null;
@@ -282,6 +242,15 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         return taskId;
     }
 
+    private Note getNewNote(Cursor c){
+        Note note = new Note(c.getInt(c.getColumnIndex(KEY_ID)),
+                c.getString(c.getColumnIndex(KEY_NOTE_TEXT)),
+                c.getString(c.getColumnIndex(KEY_CREATED_AT)),
+                c.getString(c.getColumnIndex(KEY_NOTE_NAME))
+        );
+        return note;
+    }
+
     public Note getNote(long noteId){
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -292,13 +261,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         c.moveToFirst();
 
         if(c != null){
-            Note note = new Note(c.getInt(c.getColumnIndex(KEY_ID)),
-                    c.getString(c.getColumnIndex(KEY_NOTE_TEXT)),
-                    c.getString(c.getColumnIndex(KEY_CREATED_AT)),
-                    c.getString(c.getColumnIndex(KEY_NOTE_NAME))
-            );
-
-            return note;
+            return getNewNote(c);
         }else{
             return null;
         }
@@ -315,12 +278,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
-                Note note = new Note(c.getInt(c.getColumnIndex(KEY_ID)),
-                        c.getString(c.getColumnIndex(KEY_NOTE_TEXT)),
-                        c.getString(c.getColumnIndex(KEY_CREATED_AT)),
-                        c.getString(c.getColumnIndex(KEY_NOTE_NAME))
-                );
-
+                Note note = getNewNote(c);
                 notes.put(note.getId(), note);
             } while (c.moveToNext());
 
@@ -346,13 +304,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
-                Note note = new Note(c.getInt(c.getColumnIndex(KEY_ID)),
-                        c.getString(c.getColumnIndex(KEY_NOTE_TEXT)),
-                        c.getString(c.getColumnIndex(KEY_CREATED_AT)),
-                        c.getString(c.getColumnIndex(KEY_NOTE_NAME))
-                );
-
-                // adding to todo list
+                Note note = getNewNote(c);
                 notes.put(note.getId(), note);
             } while (c.moveToNext());
 

@@ -27,7 +27,7 @@ import com.powernote.project.powernote.R;
 
 public class MainActivity extends AppCompatActivity{
 
-    private static final int EDITOR_REQUEST_CODE = 1001;
+//    private static final int EDITOR_REQUEST_CODE = 1001;
 
     private PowerNote powerNote = PowerNote.getInstance();
     private SectionsPagerAdapter mSectionsPagerAdapter;

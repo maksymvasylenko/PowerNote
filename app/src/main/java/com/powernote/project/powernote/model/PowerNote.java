@@ -5,10 +5,6 @@ import android.util.Log;
 
 import java.util.HashMap;
 
-/**
- * Created by Maks on 09.09.2017.
- */
-
 public class PowerNote {
 
     private DBOpenHelper db;
@@ -35,7 +31,6 @@ public class PowerNote {
         tasks = db.getAllTasks();
         tags = db.getAllTags();
 
-
         if(notes == null){
             notes = new HashMap<>();
         }
@@ -45,8 +40,6 @@ public class PowerNote {
         if(tags == null){
             tags = new HashMap<>();
         }
-
-
     }
 
     public DBOpenHelper getDB(){

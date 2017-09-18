@@ -1,26 +1,24 @@
 package com.powernote.project.powernote.model;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class Task {
 
     private int rank, effort;
-    private long id, deadline;
-    private String name, description, createdAt, imagePath = null;
-    private double duration;
+    private long id;
+    private long deadline;
+    private String name;
+    private String description;
+    private long createdAt;
+    private String imagePath = null;
+    private long duration;
     private boolean complete;
     private int priority;
     private List<ListItem> checkList;
     private List<Task> dependencies;
 
-    //    private float rank;
-    //    private Calendar deadline;
-    //    private Repetition repetition;
-    //    private List<Reminder> reminders;
-    //    private Effort effort;
-    //    private Duration duration;
-
-    public Task(long id, int rank, String name, String description, long deadline, String createdAt, double duration, int effort, String imagePath){
+    public Task(long id, int rank, String name, String description, long deadline, long createdAt, long duration, int effort, String imagePath){
         this.id = id;
         this.rank = rank;
         this.name = name;
@@ -32,34 +30,9 @@ public class Task {
         this.imagePath = imagePath;
     }
 
-    public Task(){
-        this.name = null;
-        this.description = null;
-        this.createdAt = null;
-    }
+    public Task(){}
 
-
-    public Task(int rank, String name, String description, long deadline, String createdAt, double duration, int effort){
-        this.rank = rank;
-        this.name = name;
-        this.description = description;
-        this.deadline = deadline;
-        this.createdAt = createdAt;
-        this.duration = duration;
-        this.effort = effort;
-    }
-
-    public Task(int rank, String description, long deadline, String createdAt, double duration, int effort){
-        this.rank = rank;
-        this.description = description;
-        this.deadline = deadline;
-        this.createdAt = createdAt;
-        this.duration = duration;
-        this.name = null;
-        this.effort = effort;
-    }
-
-    public String getCreatedAt() {
+    public long getCreatedAt() {
         return createdAt;
     }
 
@@ -99,7 +72,7 @@ public class Task {
         this.description = taskDescription;
     }
 
-    public void setDuration(double taskDuration) {
+    public void setDuration(long taskDuration) {
         this.duration = taskDuration;
     }
 

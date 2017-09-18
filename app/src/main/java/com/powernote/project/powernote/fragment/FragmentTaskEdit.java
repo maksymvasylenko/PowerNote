@@ -77,6 +77,8 @@ public class FragmentTaskEdit extends Fragment {
 
     private SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d", Locale.US);
 
+    private Calendar calendar;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -184,12 +186,12 @@ public class FragmentTaskEdit extends Fragment {
                         etCheckListInput.setText("");
                         adapter.notifyDataSetChanged();
                     } else {
-                        return true;   // We consume the event when the key is released.
+                        return true;
                     }
                 } else {
                     return false;
                 }
-                return true;   // Consume the event
+                return true;
             }
         };
 
@@ -213,11 +215,13 @@ public class FragmentTaskEdit extends Fragment {
                 public void onClick(View v) {
 
                     if (swChecklist.isChecked()) {
-
+                        // TODO: 9/18/17 save checklist
                     }
 
                     if (swDeadline.isChecked()) {
-                        currentTask.setDeadline(getDeadlineTimeInMillisends());
+                        // TODO: 9/18/17 set deadline as current selected deadline
+//                        currentTask.setDeadline(getDeadlineTimeInMillisends());
+
                     }else{
                         currentTask.setDeadline(-1);
                     }
@@ -233,7 +237,6 @@ public class FragmentTaskEdit extends Fragment {
                     currentTask.setName(title.getText().toString());
                     currentTask.setDescription(description.getText().toString());
 
-
                     pwn.addTask(currentTask);
                     Snackbar.make(v, "Task created", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
@@ -242,63 +245,28 @@ public class FragmentTaskEdit extends Fragment {
         }else{
             currentTask = pwn.getTask(pwn.getCurrentSelectedItem());
 
-            //obligatory
+            // Default items
             title.setText(currentTask.getName());
             description.setText(currentTask.getDescription());
             saveButton.setText("Update");
 
-            //effort
+            // Effort
             if(currentTask.getEffort() != -1) {
                 layoutEffort.setVisibility(View.VISIBLE);
                 effort.setProgress(currentTask.getEffort());
                 priority.setProgress(currentTask.getRank());
             }
 
-            //deadline
+            // Deadline
             if(currentTask.getDeadline() != -1) {
                 layoutDeadline.setVisibility(View.VISIBLE);
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(currentTask.getDeadline());
 
-                int mYear = calendar.get(Calendar.YEAR);
-                int mMonth = calendar.get(Calendar.MONTH);
-                int mDay = calendar.get(Calendar.DAY_OF_MONTH);
-
-                // TODO: 9/18/17 use simple date format to format date
-                tvDate.setText(mDay + "-" + (mMonth + 1) + "-" + mYear);
-
-                int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                int min = calendar.get(Calendar.MINUTE);
-
-                // TODO: 9/18/17 use simple date format to format time
-                tvTime.setText(hour + ":" + min);
+                updateDeadlineDateText(calendar);
+                updateDeadlineTimeText(calendar);
             }
-
-            saveButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (swChecklist.isChecked()) {
-                        // TODO: 9/18/17 save the checklist
-                    }
-
-                    if (swDeadline.isChecked()) {
-                        currentTask.setDeadline(getDeadlineTimeInMillisends());
-                    }
-
-                    if (swEffort.isChecked()) {
-                        currentTask.setEffort(effort.getProgress());
-                        currentTask.setRank(priority.getProgress());
-                    }
-
-                    currentTask.setName(title.getText().toString());
-                    currentTask.setDescription(description.getText().toString());
-
-                    pwn.addTask(currentTask);
-                    Snackbar.make(v, "Task created", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-            });
         }
 
         Button date = (Button) view.findViewById(R.id.bt_edit_task_date);
@@ -306,30 +274,24 @@ public class FragmentTaskEdit extends Fragment {
         tvDate = (TextView) view.findViewById(R.id.tv_edit_task_date);
         tvTime = (TextView) view.findViewById(R.id.tv_edit_task_time);
 
-        setCurrentDate();
-
         date.setOnClickListener(new View.OnClickListener(){
-
             @Override
             public void onClick(View v) {
-                // Get Current Date
-                final Calendar c = Calendar.getInstance();
-                int mYear = c.get(Calendar.YEAR);
-                int mMonth = c.get(Calendar.MONTH);
-                int mDay = c.get(Calendar.DAY_OF_MONTH);
+                final Calendar calendar = Calendar.getInstance();
+                int mYear = calendar.get(Calendar.YEAR);
+                int mMonth = calendar.get(Calendar.MONTH);
+                int mDay = calendar.get(Calendar.DAY_OF_MONTH);
 
                 DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
                         new DatePickerDialog.OnDateSetListener() {
-
                             @Override
-                            public void onDateSet(DatePicker view, int year,
-                                                  int monthOfYear, int dayOfMonth) {
-
-                                tvDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                updateDeadlineDateText(calendar);
                             }
                         }, mYear, mMonth, mDay);
                 datePickerDialog.show();
 
+                // TODO: 9/18/17 update new deadline as variable
             }
         });
 
@@ -337,77 +299,41 @@ public class FragmentTaskEdit extends Fragment {
 
             @Override
             public void onClick(View v) {
-                // Get Current Time
                 final Calendar c = Calendar.getInstance();
                 int mHour = c.get(Calendar.HOUR_OF_DAY);
                 int mMinute = c.get(Calendar.MINUTE);
 
-                // Launch Time Picker Dialog
                 TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(),
                         new TimePickerDialog.OnTimeSetListener() {
-
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay,
                                                   int minute) {
-
-                                tvTime.setText(hourOfDay + ":" + minute);
+                                updateDeadlineTimeText(c);
                             }
                         }, mHour, mMinute, false);
                 timePickerDialog.show();
             }
         });
 
-
-
-
         return view;
     }
 
-
-    private void setCurrentDate() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(currentTask.getDeadline());
-
-        int mYear = calendar.get(Calendar.YEAR);
-        int mMonth = calendar.get(Calendar.MONTH);
-        int mDay = calendar.get(Calendar.DAY_OF_MONTH);
-        tvDate.setText(mDay + "-" + (mMonth + 1) + "-" + mYear);
-
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int min = calendar.get(Calendar.MINUTE);
-        tvTime.setText(hour + ":" + min);
+    private void updateDeadlineDateText(Calendar calendar){
+        String dateText = sdf.format(calendar.getTime().getTime());
+        tvDate.setText(dateText);
     }
 
-    private long getDeadlineTimeInMillisends(){
-
-        String date = tvDate.getText().toString();
-        String[] dt = date.split("-");
-
-
-        String time = tvTime.getText().toString();
-        String[] tm = time.split(":");
-
-        Calendar c = Calendar.getInstance();
-        c.set(Integer.parseInt(dt[2]),Integer.parseInt(dt[1]),
-                Integer.parseInt(dt[0]), Integer.parseInt(tm[0]),
-                Integer.parseInt(tm[1]));
-        return c.getTimeInMillis();
+    private void updateDeadlineTimeText(Calendar calendar){
+        String timeText = sdf.format(calendar.getTime().getTime());
+        tvTime.setText(timeText);
     }
-
-
-
-
-
-
 
     static final int REQUEST_TAKE_PHOTO = 1;
     Uri photoURI;
 
     private void dispatchTakePictureIntent() {
 
-
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-
             ActivityCompat.requestPermissions(getActivity(), new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
         }
 
@@ -439,7 +365,6 @@ public class FragmentTaskEdit extends Fragment {
             layoutImages.setVisibility(View.VISIBLE);
         }
     }
-
 
     private File createImageFile() throws IOException {
         // Create an image file name
