@@ -205,6 +205,11 @@ public class FragmentTaskEdit extends Fragment {
         imageView = (ImageView) view.findViewById(R.id.image);
         layoutImages = (LinearLayout) view.findViewById(R.id.layout_images);
 
+        Button date = (Button) view.findViewById(R.id.bt_edit_task_date);
+        Button time = (Button) view.findViewById(R.id.bt_edit_task_time);
+        tvDate = (TextView) view.findViewById(R.id.tv_edit_task_date);
+        tvTime = (TextView) view.findViewById(R.id.tv_edit_task_time);
+
         if(pwn.getCurrentSelectedItem() == -1) {
             currentTask = new Task();
 
@@ -294,17 +299,18 @@ public class FragmentTaskEdit extends Fragment {
                     currentTask.setName(title.getText().toString());
                     currentTask.setDescription(description.getText().toString());
 
-                    pwn.addTask(currentTask);
-                    Snackbar.make(v, "Task created", Snackbar.LENGTH_LONG)
+                    pwn.updateTask(currentTask);
+                    Snackbar.make(v, "Task updated", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
+
+
+                    getActivity().getSupportFragmentManager().popBackStack();
+
                 }
             });
         }
 
-        Button date = (Button) view.findViewById(R.id.bt_edit_task_date);
-        Button time = (Button) view.findViewById(R.id.bt_edit_task_time);
-        tvDate = (TextView) view.findViewById(R.id.tv_edit_task_date);
-        tvTime = (TextView) view.findViewById(R.id.tv_edit_task_time);
+
 
         setCurrentDate();
 

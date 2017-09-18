@@ -37,7 +37,14 @@ public class ActivityDetailsTask extends AppCompatActivity {
 
 
 
+
+
+
         if(value != -1) {
+            Bundle bundle = new Bundle();
+            bundle.putLong("taskID", value);
+            fragmentTaskView.setArguments(bundle);
+
             pwn.setCurrentSelectedItem(value);
             fragmentManager.beginTransaction()
                     .replace(R.id.fl_activity_task_details_fragment_container, fragmentTaskView)

@@ -72,9 +72,19 @@ public class FragmentTaskView extends Fragment {
         switch(item.getItemId()){
             case R.id.action_delete:
                 pwn.deleteTask(pwn.getCurrentSelectedItem());
+                getActivity().onBackPressed();
                 break;
             case R.id.action_edit:
 
+                Fragment fragmentTaskEdit = new FragmentTaskEdit();
+
+                Bundle bundle = getArguments();
+                fragmentTaskEdit.setArguments(bundle);
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fl_activity_task_details_fragment_container, fragmentTaskEdit)
+                        .addToBackStack(null)
+                        .commit();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -110,7 +120,14 @@ public class FragmentTaskView extends Fragment {
         layoutEffort = (LinearLayout) view.findViewById(R.id.ll_task_view_effort_priority);
         layoutDeadline = (LinearLayout) view.findViewById(R.id.ll_task_view_deadline);
 
-        currentTask = pwn.getTask(pwn.getCurrentSelectedItem());
+
+
+        if(getArguments() != null) {
+            long taskID = getArguments().getLong("taskID");
+            currentTask = pwn.getTask(getArguments().getLong("taskID"));
+        } else{
+            currentTask = null;
+        }
 
         if(currentTask != null) {
 
@@ -150,5 +167,6 @@ public class FragmentTaskView extends Fragment {
 
         return view;
     }
+
 
 }

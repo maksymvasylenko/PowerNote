@@ -2,7 +2,7 @@ package com.powernote.project.powernote.model;
 
 import java.util.List;
 
-public class Task {
+public class Task extends Note{
 
     private int rank, effort;
     private long id, deadline;
