@@ -10,14 +10,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-/**
- * Created by Maks on 14.09.2017.
- */
+import com.powernote.project.powernote.fragment.FragmentTaskEdit;
+import com.powernote.project.powernote.fragment.FragmentTaskView;
+import com.powernote.project.powernote.model.PowerNote;
 
 public class ActivityDetailsTask extends AppCompatActivity {
 
-    private PowerNotes pwn = PowerNotes.getInstance();
     private long value;
+    private PowerNote pwn = PowerNote.getInstance();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -20,6 +20,7 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.powernote.project.powernote.model.PowerNote;
 import com.powernote.project.powernote.model.Task;
 
 import com.powernote.project.powernote.adapter.ChecklistViewAdapter;
@@ -51,7 +52,7 @@ public class FragmentTaskView extends Fragment {
     TextView tvTime;
     TextView tvDate;
 
-    private PowerNotes pwn = PowerNotes.getInstance();
+    private PowerNote pwn = PowerNote.getInstance();
     private Task currentTask;
 
     @Override

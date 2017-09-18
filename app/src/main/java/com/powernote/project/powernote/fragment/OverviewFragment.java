@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.powernote.project.powernote.ActivityDetailsTask;
 import com.powernote.project.powernote.adapter.ListAdapter;
 import com.powernote.project.powernote.model.PowerNote;
 import com.powernote.project.powernote.R;
@@ -43,9 +44,7 @@ public class OverviewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
-
 
         listAdapter = new ListAdapter(getContext());
 
@@ -57,7 +56,6 @@ public class OverviewFragment extends Fragment {
                 listAdapter.addTaskItem(entry.getValue());
             }
         }
-
 
         if(pwn.getNotes() != null) {
 
@@ -92,6 +90,5 @@ public class OverviewFragment extends Fragment {
         });
 
         return view;
-
     }
 }

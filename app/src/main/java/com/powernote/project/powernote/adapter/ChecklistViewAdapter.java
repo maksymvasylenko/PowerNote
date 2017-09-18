@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.powernote.project.powernote.model.ListItem;
 import com.powernote.project.powernote.R;
@@ -38,20 +39,10 @@ public class ChecklistViewAdapter extends ArrayAdapter<ListItem> {
         checkItem.setText(item.getText());
         checkItem.setChecked(item.isChecked());
 
-        checkItem.setOnClickListener(new View.OnClickListener() {
+        checkItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                item.setChecked(true);
-                notifyDataSetChanged();
-            }
-        });
-
-        checkItem.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                item.setChecked(false);
-                notifyDataSetChanged();
-                return true;
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                item.setChecked(!item.isChecked());
             }
         });
 

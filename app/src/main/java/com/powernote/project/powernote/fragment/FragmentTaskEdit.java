@@ -36,6 +36,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.powernote.project.powernote.model.PowerNote;
 import com.powernote.project.powernote.model.Task;
 
 import java.io.File;
@@ -49,30 +50,32 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 
 public class FragmentTaskEdit extends Fragment {
-    // views
-    ListView lvCheckist;
-    ChecklistEditAdapter adapter;
-    Switch swDeadline;
-    Switch swChecklist;
-    Switch swEffort;
-    LinearLayout layoutChecklist;
-    LinearLayout layoutDeadline;
-    LinearLayout layoutEffort;
 
+    private ListView lvChecklist;
+    private ChecklistEditAdapter adapter;
 
+    private Switch swDeadline;
+    private Switch swChecklist;
+    private Switch swEffort;
 
-    LinearLayout layoutImages;
-    ImageView imageView;
-    TextView tvTime;
-    TextView tvDate;
+    private LinearLayout layoutChecklist;
+    private LinearLayout layoutDeadline;
+    private LinearLayout layoutEffort;
+    private LinearLayout layoutImages;
 
-    private PowerNotes pwn = PowerNotes.getInstance();
+    private ImageView imageView;
+    private TextView tvTime;
+    private TextView tvDate;
+
+    private PowerNote pwn = PowerNote.getInstance();
     private Task currentTask;
 
+    private SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d", Locale.US);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,16 +99,12 @@ public class FragmentTaskEdit extends Fragment {
                 dispatchTakePictureIntent();
                 break;
             case R.id.action_add_image:
-
                 break;
             case R.id.action_record:
-
                 break;
             case R.id.action_add_checklist:
-
                 break;
             case R.id.action_add_deadline:
-
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -118,7 +117,7 @@ public class FragmentTaskEdit extends Fragment {
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.edit_task, container, false);
 
-        lvCheckist = (ListView) view.findViewById(R.id.lv_checklist_edit);
+        lvChecklist = (ListView) view.findViewById(R.id.lv_checklist_edit);
 
         // Switches (for switching items on and off)
         swChecklist = (Switch) view.findViewById(R.id.sw_checklist);
@@ -168,7 +167,7 @@ public class FragmentTaskEdit extends Fragment {
         final List items = new ArrayList();
 
         adapter = new ChecklistEditAdapter(getContext(), R.layout.checklist_item_alt, items);
-        lvCheckist.setAdapter(adapter);
+        lvChecklist.setAdapter(adapter);
 
         final EditText etCheckListInput = (EditText) view.findViewById(R.id.et_checklist_input);
 
@@ -197,17 +196,11 @@ public class FragmentTaskEdit extends Fragment {
         // Set keyEvent listener on editText
         etCheckListInput.setOnEditorActionListener(listener);
 
-
-
-
-
         final EditText title = (EditText) view.findViewById(R.id.et_task_edit_title);
         final EditText description = (EditText) view.findViewById(R.id.et_task_edit_description);
         final SeekBar effort = (SeekBar) view.findViewById(R.id.sb_task_edit_effort);
         final SeekBar priority = (SeekBar) view.findViewById(R.id.sb_task_edit_priority);
         Button saveButton = (Button) view.findViewById(R.id.bt_task_edit_save);
-
-
 
         imageView = (ImageView) view.findViewById(R.id.image);
         layoutImages = (LinearLayout) view.findViewById(R.id.layout_images);
@@ -271,21 +264,22 @@ public class FragmentTaskEdit extends Fragment {
                 int mYear = calendar.get(Calendar.YEAR);
                 int mMonth = calendar.get(Calendar.MONTH);
                 int mDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+                // TODO: 9/18/17 use simple date format to format date
                 tvDate.setText(mDay + "-" + (mMonth + 1) + "-" + mYear);
 
                 int hour = calendar.get(Calendar.HOUR_OF_DAY);
                 int min = calendar.get(Calendar.MINUTE);
+
+                // TODO: 9/18/17 use simple date format to format time
                 tvTime.setText(hour + ":" + min);
             }
-
-
 
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     if (swChecklist.isChecked()) {
-
+                        // TODO: 9/18/17 save the checklist
                     }
 
                     if (swDeadline.isChecked()) {
@@ -300,7 +294,6 @@ public class FragmentTaskEdit extends Fragment {
                     currentTask.setName(title.getText().toString());
                     currentTask.setDescription(description.getText().toString());
 
-
                     pwn.addTask(currentTask);
                     Snackbar.make(v, "Task created", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
@@ -308,12 +301,6 @@ public class FragmentTaskEdit extends Fragment {
             });
         }
 
-
-
-
-
-
-        //seting time buttons listeners and textviews
         Button date = (Button) view.findViewById(R.id.bt_edit_task_date);
         Button time = (Button) view.findViewById(R.id.bt_edit_task_time);
         tvDate = (TextView) view.findViewById(R.id.tv_edit_task_date);
