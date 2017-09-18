@@ -18,6 +18,7 @@ import android.view.View;
 import android.support.design.widget.TabLayout;
 import android.widget.Toast;
 
+import com.powernote.project.powernote.ActivityDetailsTask;
 import com.powernote.project.powernote.fragment.FragmentTaskEdit;
 import com.powernote.project.powernote.fragment.FragmentTaskView;
 import com.powernote.project.powernote.fragment.OverviewFragment;
