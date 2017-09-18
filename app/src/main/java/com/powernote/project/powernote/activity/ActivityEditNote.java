@@ -1,4 +1,4 @@
-package com.powernote.project.powernote;
+package com.powernote.project.powernote.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.powernote.project.powernote.model.PowerNote;
+import com.powernote.project.powernote.R;
 import com.powernote.project.powernote.model.Note;
 
 /**
@@ -20,7 +22,7 @@ import com.powernote.project.powernote.model.Note;
 
 public class ActivityEditNote extends AppCompatActivity{
 
-    private PowerNotes pwn = PowerNotes.getInstance();
+    private PowerNote pwn = PowerNote.getInstance();
     private long value;
 
     @Override
@@ -96,7 +98,7 @@ public class ActivityEditNote extends AppCompatActivity{
         switch(item.getItemId()){
             case R.id.action_delete:
                 pwn.getNotes().remove(value);
-                PowerNotes.getInstance().getDB().deleteNote(value);
+                PowerNote.getInstance().getDB().deleteNote(value);
                 break;
             case R.id.action_take_photo:
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);

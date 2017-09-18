@@ -1,4 +1,4 @@
-package com.powernote.project.powernote;
+package com.powernote.project.powernote.fragment;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
@@ -41,6 +41,10 @@ import com.powernote.project.powernote.model.Task;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import com.powernote.project.powernote.adapter.ChecklistEditAdapter;
+import com.powernote.project.powernote.model.ListItem;
+import com.powernote.project.powernote.R;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;

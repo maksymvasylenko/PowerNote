@@ -1,4 +1,4 @@
-package com.powernote.project.powernote;
+package com.powernote.project.powernote.adapter;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.powernote.project.powernote.model.ListItem;
+import com.powernote.project.powernote.R;
 
 import java.util.List;
 

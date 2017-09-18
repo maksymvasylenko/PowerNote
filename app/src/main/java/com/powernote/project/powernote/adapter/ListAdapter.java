@@ -1,13 +1,13 @@
-package com.powernote.project.powernote;
+package com.powernote.project.powernote.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.powernote.project.powernote.R;
 import com.powernote.project.powernote.model.Note;
 import com.powernote.project.powernote.model.Task;
 
@@ -47,7 +47,7 @@ import java.util.TreeSet;
 
     }
 }*/
-class ListAdapter extends BaseAdapter {
+public class ListAdapter extends BaseAdapter {
 
     private static final int TYPE_TASK = 0;
     private static final int TYPE_NOTE = 1;

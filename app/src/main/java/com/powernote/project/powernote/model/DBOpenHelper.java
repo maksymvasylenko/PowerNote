@@ -1,4 +1,4 @@
-package com.powernote.project.powernote;
+package com.powernote.project.powernote.model;
 
 import android.content.ContentValues;
 import android.content.Context;
