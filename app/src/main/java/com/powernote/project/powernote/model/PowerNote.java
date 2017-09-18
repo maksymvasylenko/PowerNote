@@ -64,20 +64,31 @@ public class PowerNote {
 
     public void addTask(Task task){
         long id = db.createTask(task);
-
-        Log.e("id while adding to DB", "" + id);
-
-
         tasks.put(id,task);
     }
 
     public void addNote(Note note){
-        db.createNote(note);
-        notes.put(note.getId(),note);
+        long id = db.createNote(note);
+        notes.put(id,note);
     }
 
     public void addTag(Tag tag){
-        db.createTag(tag);
+        long id = db.createTag(tag);
+        tags.put(id,tag);
+    }
+
+    public void updateTask(Task task){
+        db.updateTask(task);
+        tasks.put(task.getId(),task);
+    }
+
+    public void updateNote(Note note){
+        db.updateNote(note);
+        notes.put(note.getId(),note);
+    }
+
+    public void updateTag(Tag tag){
+        db.updateTag(tag);
         tags.put(tag.getId(),tag);
     }
 
