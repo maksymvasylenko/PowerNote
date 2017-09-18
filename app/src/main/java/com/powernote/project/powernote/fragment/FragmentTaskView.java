@@ -36,21 +36,17 @@ public class FragmentTaskView extends Fragment {
     private ChecklistViewAdapter adapter;
     private ListView lvCheckist;
 
+    private Switch swDeadline;
+    private Switch swChecklist;
+    private Switch swEffort;
+    private LinearLayout layoutChecklist;
+    private LinearLayout layoutDeadline;
+    private LinearLayout layoutEffort;
 
-
-    Switch swDeadline;
-    Switch swChecklist;
-    Switch swEffort;
-    LinearLayout layoutChecklist;
-    LinearLayout layoutDeadline;
-    LinearLayout layoutEffort;
-
-
-
-    LinearLayout layoutImages;
-    ImageView imageView;
-    TextView tvTime;
-    TextView tvDate;
+    private LinearLayout layoutImages;
+    private ImageView imageView;
+    private TextView tvTime;
+    private TextView tvDate;
 
     private PowerNote pwn = PowerNote.getInstance();
     private Task currentTask;
