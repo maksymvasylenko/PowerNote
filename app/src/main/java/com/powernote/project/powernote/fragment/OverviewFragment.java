@@ -80,9 +80,9 @@ public class OverviewFragment extends Fragment {
                     startActivity(myIntent);
 
                 }else{
-                    Intent myIntent = new Intent(getActivity(), ActivityEditTask.class);
+                    Intent myIntent = new Intent(getActivity(), ActivityDetailsTask.class);
                     Task task = (Task) listAdapter.getItem(position);
-                    myIntent.putExtra("taskDatabaseID", task.getId());
+                    myIntent.putExtra("action", 1);
                     startActivity(myIntent);
                 }
 

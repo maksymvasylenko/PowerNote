@@ -12,34 +12,30 @@
     <item
         android:id="@+id/action_take_photo"
         android:title="Take Photo"
-        android:icon="@drawable/ic_action_delete"
         android:orderInCategory="99"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_add_image"
         android:title="Choose image"
-        android:icon="@drawable/ic_action_delete"
         android:orderInCategory="98"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_record"
         android:title="Recording"
-        android:icon="@drawable/ic_action_delete"
         android:orderInCategory="97"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_add_checklist"
-        android:title="add checklist"
-        android:icon="@drawable/ic_action_delete"
+        android:title="Add checklist"
         android:orderInCategory="96"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_add_deadline"
-        android:title="add deadline"
+        android:title="Add deadline"
         android:orderInCategory="96"
         app:showAsAction="never" />
 

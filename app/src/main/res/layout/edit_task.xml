@@ -174,8 +174,6 @@
                         android:id="@+id/tv_priority"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/sb_effort"
                         android:text="Proirity"
                         android:textAlignment="center"
                         android:visibility="visible" />
@@ -185,8 +183,6 @@
                         style="@style/Widget.AppCompat.SeekBar.Discrete"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/tv_priority"
                         android:max="3"
                         android:progress="1"
                         android:visibility="visible" />
@@ -195,8 +191,6 @@
                         android:id="@+id/tv_effort"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/sw_deadline"
                         android:text="Effort"
                         android:textAlignment="center"
                         android:visibility="visible" />
@@ -206,8 +200,6 @@
                         style="@style/Widget.AppCompat.SeekBar.Discrete"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/tv_effort"
                         android:max="10"
                         android:progress="1"
                         android:visibility="visible" />
@@ -229,7 +221,7 @@
                 android:weightSum="3">
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/bt_edit_task_date"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginRight="10dp"
@@ -237,7 +229,7 @@
                     android:backgroundTint="@color/colorAccent" />
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/tv_edit_task_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.87"
@@ -246,7 +238,7 @@
                     android:textSize="18sp" />
 
                 <Button
-                    android:id="@+id/button4"
+                    android:id="@+id/bt_edit_task_time"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginRight="10dp"
@@ -254,7 +246,7 @@
                     android:backgroundTint="@color/colorAccent" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/tv_edit_task_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2.02"
@@ -263,6 +255,36 @@
                     android:textSize="18sp" />
 
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_images"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/layout_deadline"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/layout_deadline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/bt_task_edit_save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save"
+                android:layout_below="@+id/layout_images"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true" />
+
         </RelativeLayout>
     </ScrollView>
 

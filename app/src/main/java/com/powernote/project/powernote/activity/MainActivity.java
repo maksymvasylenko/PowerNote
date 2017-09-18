@@ -90,7 +90,8 @@ public class MainActivity extends AppCompatActivity{
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int which) {
-                                Intent myIntent = new Intent(MainActivity.this, ActivityEditTask.class);
+                                Intent myIntent = new Intent(MainActivity.this, ActivityDetailsTask.class);
+                                myIntent.putExtra("action", -1);
                                 startActivity(myIntent);
                             }
                         });

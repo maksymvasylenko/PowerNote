@@ -4,9 +4,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Switch;
+import android.widget.TextView;
+
+import com.powernote.project.powernote.model.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +24,52 @@ import java.util.List;
 public class FragmentTaskView extends Fragment {
     private ChecklistViewAdapter adapter;
     private ListView lvCheckist;
+
+
+
+    Switch swDeadline;
+    Switch swChecklist;
+    Switch swEffort;
+    LinearLayout layoutChecklist;
+    LinearLayout layoutDeadline;
+    LinearLayout layoutEffort;
+
+
+
+    LinearLayout layoutImages;
+    ImageView imageView;
+    TextView tvTime;
+    TextView tvDate;
+
+    private PowerNotes pwn = PowerNotes.getInstance();
+    private Task currentTask;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_viewer, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.action_delete:
+                pwn.deleteTask(pwn.getCurrentSelectedItem());
+                break;
+            case R.id.action_edit:
+
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Nullable
     @Override
@@ -31,4 +86,5 @@ public class FragmentTaskView extends Fragment {
 
         return view;
     }
+
 }
