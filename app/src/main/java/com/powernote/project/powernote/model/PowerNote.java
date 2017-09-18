@@ -1,13 +1,8 @@
-package com.powernote.project.powernote;
+package com.powernote.project.powernote.model;
 
 import android.content.Context;
 
-import com.powernote.project.powernote.model.Note;
-import com.powernote.project.powernote.model.Tag;
-import com.powernote.project.powernote.model.Task;
-
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by Maks on 09.09.2017.
