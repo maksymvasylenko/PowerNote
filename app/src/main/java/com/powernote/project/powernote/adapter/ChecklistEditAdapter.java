@@ -36,6 +36,8 @@ public class ChecklistEditAdapter extends ArrayAdapter<ListItem> {
         TextView text = (TextView) convertView.findViewById(R.id.cb_item);
         Button deleteItem = (Button) convertView.findViewById(R.id.bt_checklist_item_delete);
 
+        text.setText(item.getText());
+
         // Set views
         deleteItem.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
@@ -46,7 +48,6 @@ public class ChecklistEditAdapter extends ArrayAdapter<ListItem> {
             }
         });
 
-        text.setText(item.getText());
 
         return convertView;
     }

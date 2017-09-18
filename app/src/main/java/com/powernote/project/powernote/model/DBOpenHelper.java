@@ -5,10 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 public class DBOpenHelper extends SQLiteOpenHelper {
@@ -39,10 +43,12 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     private static final String KEY_TASK_DURATION = "task_duration";
     private static final String KEY_TASK_EFFORT = "task_effort";
     private static final String KEY_TASK_IMAGE_PATH = "task_image_path";
+    private static final String KEY_TASK_CHECKLIST = "task_checklist";
 
     //notes table column names
     private static final String KEY_NOTE_TEXT = "note_text";
     private static final String KEY_NOTE_NAME = "note_name";
+    private static final String KEY_NOTE_CHECKLIST = "note_checklist";
 
     //tags table column names
     private static final String KEY_TAG_NAME = "tag_name";
@@ -62,19 +68,20 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             + KEY_TASK_NAME + " TEXT," + KEY_TASK_DESCRIPTION + " TEXT,"
             + KEY_TASK_DEADLINE + " INTEGER," + KEY_TASK_RANK + " INTEGER,"
             + KEY_TASK_DURATION + " INTEGER," + KEY_CREATED_AT
-            + " INTEGER," + KEY_TASK_EFFORT + " INTEGER," + KEY_TASK_IMAGE_PATH + " TEXT" + ")";
+            + " INTEGER," + KEY_TASK_EFFORT + " INTEGER," + KEY_TASK_IMAGE_PATH + " TEXT,"
+            + KEY_TASK_CHECKLIST + " TEXT" + ")";
 
     //Notes table
     private static final String CREATE_TABLE_NOTES = "CREATE TABLE "
             + TABLE_NOTES + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
             + KEY_NOTE_NAME + " TEXT," + KEY_NOTE_TEXT + " TEXT,"
-            + KEY_CREATED_AT + " DATETIME" + ")";
+            + KEY_CREATED_AT + " INTEGER," + KEY_NOTE_CHECKLIST + " TEXT" + ")";
 
     //Tags table
     private static final String CREATE_TABLE_TAGS = "CREATE TABLE "
             + TABLE_TAGS + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
             + KEY_TAG_NAME + " TEXT," + KEY_CREATED_AT
-            + " DATETIME" + ")";
+            + " INTEGER" + ")";
 
     //Tasks_tags table
     private static final String CREATE_TABLE_TASKS_TAGS = "CREATE TABLE "
@@ -118,7 +125,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_TASK_NAME, newTask.getName());
+        values.put(KEY_TASK_NAME, newTask.getTitle());
         values.put(KEY_TASK_DESCRIPTION, newTask.getDescription());
         values.put(KEY_TASK_DEADLINE, newTask.getDeadline());
         values.put(KEY_TASK_RANK, newTask.getRank());
@@ -126,6 +133,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         values.put(KEY_CREATED_AT, getDateTime());
         values.put(KEY_TASK_EFFORT, newTask.getEffort());
         values.put(KEY_TASK_IMAGE_PATH, newTask.getImagePath());
+        values.put(KEY_TASK_CHECKLIST, serialize(newTask.getCheckList()));
 
         //fix adding tag(s)
 
@@ -152,7 +160,20 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     }
 
     public Task getNewTask(Cursor c){
-        return getNewTask(c);
+
+
+        Task task = new Task(c.getInt(c.getColumnIndex(KEY_ID)),
+                c.getInt(c.getColumnIndex(KEY_TASK_RANK)),
+                c.getString(c.getColumnIndex(KEY_TASK_NAME)),
+                c.getString(c.getColumnIndex(KEY_TASK_DESCRIPTION)),
+                c.getLong(c.getColumnIndex(KEY_TASK_DEADLINE)),
+                c.getLong(c.getColumnIndex(KEY_CREATED_AT)),
+                c.getLong(c.getColumnIndex(KEY_TASK_DURATION)),
+                c.getInt(c.getColumnIndex(KEY_TASK_EFFORT)),
+                c.getString(c.getColumnIndex(KEY_TASK_IMAGE_PATH)),
+                derialize(c.getString(c.getColumnIndex(KEY_TASK_CHECKLIST)))
+        );
+        return task;
     }
 
     public HashMap<Long, Task>  getAllTasks(){
@@ -206,7 +227,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
 
-        values.put(KEY_TASK_NAME, updatedTask.getName());
+        values.put(KEY_TASK_NAME, updatedTask.getTitle());
         values.put(KEY_TASK_DESCRIPTION, updatedTask.getDescription());
         values.put(KEY_TASK_DEADLINE, updatedTask.getDeadline());
         values.put(KEY_TASK_RANK, updatedTask.getRank());
@@ -231,9 +252,10 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_NOTE_NAME, newNote.getName());
-        values.put(KEY_NOTE_TEXT, newNote.getText());
+        values.put(KEY_NOTE_NAME, newNote.getTitle());
+        values.put(KEY_NOTE_TEXT, newNote.getDescription());
         values.put(KEY_CREATED_AT, getDateTime());
+        values.put(KEY_NOTE_CHECKLIST, serialize(newNote.getCheckList()));
 
         //fix adding tag(s)
 
@@ -245,8 +267,9 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     private Note getNewNote(Cursor c){
         Note note = new Note(c.getInt(c.getColumnIndex(KEY_ID)),
                 c.getString(c.getColumnIndex(KEY_NOTE_TEXT)),
-                c.getString(c.getColumnIndex(KEY_CREATED_AT)),
-                c.getString(c.getColumnIndex(KEY_NOTE_NAME))
+                c.getLong(c.getColumnIndex(KEY_CREATED_AT)),
+                c.getString(c.getColumnIndex(KEY_NOTE_NAME)),
+                derialize(c.getString(c.getColumnIndex(KEY_NOTE_CHECKLIST)))
         );
         return note;
     }
@@ -319,8 +342,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
 
-        values.put(KEY_NOTE_NAME, updatedNote.getName());
-        values.put(KEY_NOTE_TEXT, updatedNote.getText());
+        values.put(KEY_NOTE_NAME, updatedNote.getTitle());
+        values.put(KEY_NOTE_TEXT, updatedNote.getDescription());
         values.put(KEY_CREATED_AT, getDateTime());
 
         // updating row
@@ -421,11 +444,43 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     }
 
 
-    private String getDateTime() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(
-                "yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        Date date = new Date();
-        return dateFormat.format(date);
+    private long getDateTime() {
+        return System.currentTimeMillis();
     }
+
+
+
+
+
+
+    String ARRAY_DIVIDER = "#a1r2ra5yd2iv1i9der";
+    String ARRAY_DIVIDER_SECOND = "#d2isdi9dcvra2r2ra5y";
+
+    public String serialize(List<ListItem> items){
+
+        List<String> content = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            String a = items.get(i).getText() + ARRAY_DIVIDER_SECOND + String.valueOf(items.get(i).isChecked());
+            content.add(a);
+        }
+        return TextUtils.join(ARRAY_DIVIDER, content);
+    }
+
+    public List<ListItem> derialize(String content){
+
+        String[] c = content.split(ARRAY_DIVIDER);
+        List<ListItem> items = new ArrayList<>();
+
+        for (int i = 0; i < c.length ; i++) {
+            String[] stringItem = c[i].split(ARRAY_DIVIDER_SECOND);
+            items.add(new ListItem(stringItem[0], Boolean.valueOf(stringItem[1])));
+        }
+
+
+
+        return items;
+    }
+
+
 
 }

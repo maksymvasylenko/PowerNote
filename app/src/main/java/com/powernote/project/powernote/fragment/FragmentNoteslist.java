@@ -38,7 +38,7 @@ public class FragmentNoteslist extends Fragment {
         if(pwn.getNotes() != null) {
             ArrayList<Note> notes = new ArrayList<Note>(pwn.getNotes().values());
 
-            Log.e("test 2", "" + notes.get(0).getName());
+            Log.e("test 2", "" + notes.get(0).getTitle());
             ListAdapterNotes listAdapterNotes = new ListAdapterNotes(getContext(), R.layout.list_note_item, notes);
 
             ListView list = (ListView) view.findViewById(R.id.lv_notes);

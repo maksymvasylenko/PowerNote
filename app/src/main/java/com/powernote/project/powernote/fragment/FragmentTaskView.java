@@ -99,15 +99,6 @@ public class FragmentTaskView extends Fragment {
 
         lvCheckist = (ListView) view.findViewById(R.id.lv_checklist_view);
 
-        final List items = new ArrayList();
-        items.add(new ListItem("item1", true));
-
-        adapter = new ChecklistViewAdapter(getContext(), R.layout.checklist_item_alt, items);
-        lvCheckist.setAdapter(adapter);
-
-
-
-
 
         final TextView title = (TextView) view.findViewById(R.id.tv_task_view_title);
         final TextView description = (TextView) view.findViewById(R.id.tv_task_view_description);
@@ -119,7 +110,7 @@ public class FragmentTaskView extends Fragment {
 
         layoutEffort = (LinearLayout) view.findViewById(R.id.ll_task_view_effort_priority);
         layoutDeadline = (LinearLayout) view.findViewById(R.id.ll_task_view_deadline);
-
+        layoutChecklist = (LinearLayout) view.findViewById(R.id.layout_checklist);
 
 
         if(getArguments() != null) {
@@ -131,9 +122,18 @@ public class FragmentTaskView extends Fragment {
 
         if(currentTask != null) {
 
+            if(currentTask.getCheckList() != null){
+                layoutChecklist.setVisibility(View.VISIBLE);
+                final List items = currentTask.getCheckList();
+
+                adapter = new ChecklistViewAdapter(getContext(), R.layout.checklist_item_alt, items);
+                lvCheckist.setAdapter(adapter);
+            }
+
+
             //obligatory
-            if (currentTask.getName() != null) {
-                title.setText(currentTask.getName());
+            if (currentTask.getTitle() != null) {
+                title.setText(currentTask.getTitle());
             }
             if (currentTask.getDescription() != null) {
                 description.setText(currentTask.getDescription());

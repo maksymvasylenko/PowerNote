@@ -87,7 +87,7 @@ public class ActivityEditTask  extends AppCompatActivity{
 
         if(value != -1) {
             currentTask = pwn.getTask(value);
-            title.setText(currentTask.getName());
+            title.setText(currentTask.getTitle());
             description.setText(currentTask.getDescription());
 
             effort.setProgress(currentTask.getEffort());
@@ -117,13 +117,13 @@ public class ActivityEditTask  extends AppCompatActivity{
                 public void onClick(View v) {
 
                     currentTask.setRank(priority.getProgress());
-                    currentTask.setName(title.getText().toString());
+                    currentTask.setTitle(title.getText().toString());
                     currentTask.setDescription(description.getText().toString());
                     currentTask.setEffort(effort.getProgress());
                     currentTask.setDeadline(getTimeInMillisends());
 
                     pwn.addTask(currentTask);
-                    Log.e("test 1", "" + pwn.getTask(value).getName() );
+                    Log.e("test 1", "" + pwn.getTask(value).getTitle() );
                     Snackbar.make(v, "Task updated", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                     finish();
@@ -152,7 +152,7 @@ public class ActivityEditTask  extends AppCompatActivity{
                 public void onClick(View v) {
 
                     currentTask.setRank(priority.getProgress());
-                    currentTask.setName(title.getText().toString());
+                    currentTask.setTitle(title.getText().toString());
                     currentTask.setDescription(description.getText().toString());
                     currentTask.setEffort(effort.getProgress());
                     currentTask.setDeadline(getTimeInMillisends());

@@ -121,8 +121,8 @@ public class ListAdapter extends BaseAdapter {
                     Task currentTaskItem = (Task) getItem(position);
 
                     duration.setText("" + currentTaskItem.getDuration());
-                    if(currentTaskItem.getName() != null) {
-                        text.setText(currentTaskItem.getName());
+                    if(currentTaskItem.getTitle() != null) {
+                        text.setText(currentTaskItem.getTitle());
                     }else{
                         text.setText(currentTaskItem.getDescription());
                     }
@@ -133,10 +133,10 @@ public class ListAdapter extends BaseAdapter {
                     TextView text2 = (TextView) convertView.findViewById(R.id.listItemText);
                     Note currentNoteItem = (Note) getItem(position);
 
-                    if(currentNoteItem.getName() != null) {
-                        text2.setText(currentNoteItem.getName());
+                    if(currentNoteItem.getTitle() != null) {
+                        text2.setText(currentNoteItem.getTitle());
                     }else{
-                        text2.setText(currentNoteItem.getText());
+                        text2.setText(currentNoteItem.getDescription());
                     }
 
                     break;

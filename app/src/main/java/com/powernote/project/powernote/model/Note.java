@@ -1,57 +1,79 @@
 package com.powernote.project.powernote.model;
 
+import java.util.Calendar;
+import java.util.List;
+
 /**
  * Created by Cage on 9/4/17.
  */
 
 public class Note {
     private long id;
-    private String text, name, createdAt;
+    private String description, title;
+    private Calendar createdAt  = Calendar.getInstance();
+    private List<ListItem> checkList;
+    private String imagePath = null;
 
-    public Note(long id, String text, String createdAt, String name){
+    public Note(long id, String description, long createdAt, String title,List<ListItem> checklist){
         this.id = id;
-        this.text = text;
-        this.createdAt = createdAt;
-        this.name = name;
+        this.description = description;
+        this.createdAt.setTimeInMillis(createdAt);
+        this.title = title;
+        this.checkList = checklist;
     }
 
-    public Note(String text, String createdAt, String name){
-        this.text = text;
-        this.createdAt = createdAt;
-        this.name = name;
-    }
-
-    public Note(String text, String createdAt){
-        this.text = text;
-        this.createdAt = createdAt;
-        this.name = null;
+    public Note(){
+        this.id = -1;
+        this.description = null;
+        this.title = null;
     }
 
     public long getId() {
         return id;
     }
 
-    public String getCreatedAt() {
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public Calendar getCreatedAt() {
         return createdAt;
     }
 
-    public String getName() {
-        return name;
+    public List<ListItem> getCheckList() {
+        return checkList;
     }
 
-    public String getText() {
-        return text;
+    public void setCheckList(List<ListItem> checkList) {
+        this.checkList = checkList;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getDescription() {
+        return description;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+
+    public void setCreatedAt(long createdAt) {
+        this.createdAt.setTimeInMillis(createdAt);
     }
 }

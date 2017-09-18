@@ -46,16 +46,16 @@ public class ActivityEditNote extends AppCompatActivity{
         if(value != -1) {
             //onUpdate
             final Note note = pwn.getNote(value);
-            title.setText(note.getName());
-            text.setText(note.getText());
+            title.setText(note.getTitle());
+            text.setText(note.getDescription());
             saveButton.setText("Update");
 
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                note.setName(title.getText().toString());
-                note.setText(text.getText().toString());
+                note.setTitle(title.getText().toString());
+                note.setDescription(text.getText().toString());
 
 
                 pwn.addNote(note);
@@ -70,13 +70,14 @@ public class ActivityEditNote extends AppCompatActivity{
                 @Override
                 public void onClick(View v) {
 
-                Note newNote = new Note(text.getText().toString(),
-                        "timeStamp",
+                    // TODO: 18.09.2017  fix checklist
+                /*Note newNote = new Note(0,text.getText().toString(),
+                        1,
                         title.getText().toString());
 
                 pwn.addNote(newNote);
                 Snackbar.make(v, "Note Created", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                        .setAction("Action", null).show();*/
                 finish();
                 }
             });

@@ -41,10 +41,10 @@ public class ListAdapterNotes extends ArrayAdapter<Note> {
         TextView text2 = (TextView) v.findViewById(R.id.listItemText);
         Note currentNoteItem = (Note) getItem(position);
 
-        if(currentNoteItem.getName() != null) {
-            text2.setText(currentNoteItem.getName());
+        if(currentNoteItem.getTitle() != null) {
+            text2.setText(currentNoteItem.getTitle());
         }else{
-            text2.setText(currentNoteItem.getText());
+            text2.setText(currentNoteItem.getTitle());
         }
         return v;
 

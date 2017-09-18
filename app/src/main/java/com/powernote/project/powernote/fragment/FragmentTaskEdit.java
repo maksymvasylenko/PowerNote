@@ -58,6 +58,7 @@ public class FragmentTaskEdit extends Fragment {
 
     private ListView lvChecklist;
     private ChecklistEditAdapter adapter;
+    private List items;
 
     private Switch swDeadline;
     private Switch swChecklist;
@@ -72,12 +73,21 @@ public class FragmentTaskEdit extends Fragment {
     private TextView tvTime;
     private TextView tvDate;
 
+    private EditText title;
+    private EditText description;
+    private SeekBar effort;
+    private SeekBar priority;
+    Button saveButton;
+
     private PowerNote pwn = PowerNote.getInstance();
     private Task currentTask;
-
+    
     private SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d", Locale.US);
 
-    private Calendar calendar;
+    //variables for taking photo
+    static final int REQUEST_TAKE_PHOTO = 1;
+    Uri photoURI;
+    
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -121,6 +131,24 @@ public class FragmentTaskEdit extends Fragment {
 
         lvChecklist = (ListView) view.findViewById(R.id.lv_checklist_edit);
 
+
+        //initializing xml elements
+        title = (EditText) view.findViewById(R.id.et_task_edit_title);
+        description = (EditText) view.findViewById(R.id.et_task_edit_description);
+        effort = (SeekBar) view.findViewById(R.id.sb_task_edit_effort);
+        priority = (SeekBar) view.findViewById(R.id.sb_task_edit_priority);
+        saveButton = (Button) view.findViewById(R.id.bt_task_edit_save);
+
+        imageView = (ImageView) view.findViewById(R.id.image);
+        layoutImages = (LinearLayout) view.findViewById(R.id.layout_images);
+
+        Button date = (Button) view.findViewById(R.id.bt_edit_task_date);
+        Button time = (Button) view.findViewById(R.id.bt_edit_task_time);
+        tvDate = (TextView) view.findViewById(R.id.tv_edit_task_date);
+        tvTime = (TextView) view.findViewById(R.id.tv_edit_task_time);
+        
+        
+        
         // Switches (for switching items on and off)
         swChecklist = (Switch) view.findViewById(R.id.sw_checklist);
         swEffort = (Switch) view.findViewById(R.id.sw_effort);
@@ -131,6 +159,7 @@ public class FragmentTaskEdit extends Fragment {
         layoutEffort = (LinearLayout) view.findViewById(R.id.layout_effort);
         layoutDeadline = (LinearLayout) view.findViewById(R.id.layout_deadline);
 
+        
         // Switch listeners  et_task_edit_title
         swChecklist.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -166,7 +195,7 @@ public class FragmentTaskEdit extends Fragment {
         });
 
         // TODO: 9/12/17 get checklist from current task
-        final List items = new ArrayList();
+        items = new ArrayList();
 
         adapter = new ChecklistEditAdapter(getContext(), R.layout.checklist_item_alt, items);
         lvChecklist.setAdapter(adapter);
@@ -197,61 +226,26 @@ public class FragmentTaskEdit extends Fragment {
 
         // Set keyEvent listener on editText
         etCheckListInput.setOnEditorActionListener(listener);
+        
 
-        final EditText title = (EditText) view.findViewById(R.id.et_task_edit_title);
-        final EditText description = (EditText) view.findViewById(R.id.et_task_edit_description);
-        final SeekBar effort = (SeekBar) view.findViewById(R.id.sb_task_edit_effort);
-        final SeekBar priority = (SeekBar) view.findViewById(R.id.sb_task_edit_priority);
-        Button saveButton = (Button) view.findViewById(R.id.bt_task_edit_save);
-
-        imageView = (ImageView) view.findViewById(R.id.image);
-        layoutImages = (LinearLayout) view.findViewById(R.id.layout_images);
-
-        Button date = (Button) view.findViewById(R.id.bt_edit_task_date);
-        Button time = (Button) view.findViewById(R.id.bt_edit_task_time);
-        tvDate = (TextView) view.findViewById(R.id.tv_edit_task_date);
-        tvTime = (TextView) view.findViewById(R.id.tv_edit_task_time);
-
+        //// TODO: 18.09.2017 needs to be done through bundle not through model 
         if(pwn.getCurrentSelectedItem() == -1) {
             currentTask = new Task();
 
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    if (swChecklist.isChecked()) {
-                        // TODO: 9/18/17 save checklist
-                    }
-
-                    if (swDeadline.isChecked()) {
-                        // TODO: 9/18/17 set deadline as current selected deadline
-//                        currentTask.setDeadline(getDeadlineTimeInMillisends());
-
-                    }else{
-                        currentTask.setDeadline(-1);
-                    }
-
-                    if (swEffort.isChecked()) {
-                        currentTask.setEffort(effort.getProgress());
-                        currentTask.setRank(priority.getProgress());
-                    }else{
-                        currentTask.setEffort(-1);
-                        currentTask.setRank(-1);
-                    }
-
-                    currentTask.setName(title.getText().toString());
-                    currentTask.setDescription(description.getText().toString());
-
-                    pwn.addTask(currentTask);
+                    pwn.addTask(getTheCurrentSelectedData(currentTask));
                     Snackbar.make(v, "Task created", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
             });
+
         }else{
             currentTask = pwn.getTask(pwn.getCurrentSelectedItem());
 
             // Default items
-            title.setText(currentTask.getName());
+            title.setText(currentTask.getTitle());
             description.setText(currentTask.getDescription());
             saveButton.setText("Update");
 
@@ -276,29 +270,12 @@ public class FragmentTaskEdit extends Fragment {
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (swChecklist.isChecked()) {
-                        // TODO: 9/18/17 save the checklist
-                    }
 
-                    if (swDeadline.isChecked()) {
-                        currentTask.setDeadline(getDeadlineTimeInMillisends());
-                    }
-
-                    if (swEffort.isChecked()) {
-                        currentTask.setEffort(effort.getProgress());
-                        currentTask.setRank(priority.getProgress());
-                    }
-
-                    currentTask.setName(title.getText().toString());
-                    currentTask.setDescription(description.getText().toString());
-
-                    pwn.updateTask(currentTask);
+                    pwn.updateTask(getTheCurrentSelectedData(currentTask));
                     Snackbar.make(v, "Task updated", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
 
-
                     getActivity().getSupportFragmentManager().popBackStack();
-
                 }
             });
         }
@@ -358,9 +335,6 @@ public class FragmentTaskEdit extends Fragment {
         tvTime.setText(timeText);
     }
 
-    static final int REQUEST_TAKE_PHOTO = 1;
-    Uri photoURI;
-
     private void dispatchTakePictureIntent() {
 
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -413,4 +387,34 @@ public class FragmentTaskEdit extends Fragment {
         return image;
     }
 
+
+    private Task getTheCurrentSelectedData(Task task){
+
+        if (swChecklist.isChecked()) {
+            // TODO: 9/18/17 save checklist
+        }
+
+        if (swDeadline.isChecked()) {
+            // TODO: 9/18/17 set deadline as current selected deadline
+//                        currentTask.setDeadline(getDeadlineTimeInMillisends());
+        }else{
+            task.setDeadline(-1);
+        }
+
+        if (swEffort.isChecked()) {
+            task.setEffort(effort.getProgress());
+            task.setRank(priority.getProgress());
+        }else{
+            task.setEffort(-1);
+            task.setRank(-1);
+        }
+
+        task.setCreatedAt(System.currentTimeMillis());
+        task.setTitle(title.getText().toString());
+        task.setDescription(description.getText().toString());
+
+        task.setCheckList(items);
+
+        return task;
+    }
 }
