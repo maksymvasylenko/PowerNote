@@ -40,6 +40,7 @@
             android:textSize="18sp" />
 
         <LinearLayout
+            android:id="@+id/ll_task_view_deadline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -48,7 +49,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:orientation="horizontal"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_task_view_deadline_date"
@@ -89,7 +90,7 @@
             android:elevation="3dp"
             android:nestedScrollingEnabled="true"
             android:orientation="vertical"
-            android:visibility="visible"
+            android:visibility="gone"
             android:weightSum="1">
 
             <TextView
@@ -127,8 +128,9 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearLayout"
+            android:id="@+id/ll_task_view_effort_priority"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"

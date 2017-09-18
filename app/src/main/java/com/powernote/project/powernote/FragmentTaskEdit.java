@@ -208,7 +208,7 @@ public class FragmentTaskEdit extends Fragment {
         imageView = (ImageView) view.findViewById(R.id.image);
         layoutImages = (LinearLayout) view.findViewById(R.id.layout_images);
 
-        if(pwn.getCurrentSelectedItem() != 1) {
+        if(pwn.getCurrentSelectedItem() == -1) {
             currentTask = new Task();
 
             saveButton.setOnClickListener(new View.OnClickListener() {

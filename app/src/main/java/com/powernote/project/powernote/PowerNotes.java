@@ -1,6 +1,7 @@
 package com.powernote.project.powernote;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.powernote.project.powernote.model.Note;
 import com.powernote.project.powernote.model.Tag;
@@ -38,6 +39,19 @@ public class PowerNotes {
         notes = db.getAllNotes();
         tasks = db.getAllTasks();
         tags = db.getAllTags();
+
+
+        if(notes == null){
+            notes = new HashMap<>();
+        }
+        if(tasks == null){
+            tasks = new HashMap<>();
+        }
+        if(tags == null){
+            tags = new HashMap<>();
+        }
+
+
     }
 
     public DBOpenHelper getDB(){
@@ -61,8 +75,12 @@ public class PowerNotes {
     }
 
     public void addTask(Task task){
-        db.createTask(task);
-        tasks.put(db.createTask(task),task);
+        long id = db.createTask(task);
+
+        Log.e("id while adding to DB", "" + id);
+
+
+        tasks.put(id,task);
     }
 
     public void addNote(Note note){

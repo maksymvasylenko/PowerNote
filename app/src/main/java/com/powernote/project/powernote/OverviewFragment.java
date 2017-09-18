@@ -82,7 +82,8 @@ public class OverviewFragment extends Fragment {
                 }else{
                     Intent myIntent = new Intent(getActivity(), ActivityDetailsTask.class);
                     Task task = (Task) listAdapter.getItem(position);
-                    myIntent.putExtra("action", 1);
+                    Log.e("taskID", " " + task.getId());
+                    myIntent.putExtra("taskID", task.getId());
                     startActivity(myIntent);
                 }
 

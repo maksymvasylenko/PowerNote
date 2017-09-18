@@ -17,7 +17,7 @@ import android.util.Log;
 public class ActivityDetailsTask extends AppCompatActivity {
 
     private PowerNotes pwn = PowerNotes.getInstance();
-    private int value;
+    private long value;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,20 +32,30 @@ public class ActivityDetailsTask extends AppCompatActivity {
         android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
 
         Intent intent = getIntent();
-        value = intent.getIntExtra("action", -1);
+        value = intent.getLongExtra("taskID", -1);
         Log.e("taskDatabaseID", "task" + value);
 
 
 
         if(value != -1) {
+            pwn.setCurrentSelectedItem(value);
             fragmentManager.beginTransaction()
                     .replace(R.id.fl_activity_task_details_fragment_container, fragmentTaskView)
                     .commit();
         }else{
+
+
             fragmentManager.beginTransaction()
                     .replace(R.id.fl_activity_task_details_fragment_container, fragmentTaskEdit)
                     .commit();
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        pwn.setCurrentSelectedItem(-1);
+
+        super.onBackPressed();
     }
 }
