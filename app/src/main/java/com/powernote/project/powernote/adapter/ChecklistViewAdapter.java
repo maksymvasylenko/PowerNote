@@ -11,14 +11,14 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import com.powernote.project.powernote.model.ListItem;
+import com.powernote.project.powernote.model.ChecklistItem;
 import com.powernote.project.powernote.R;
 
 import java.util.List;
 
-public class ChecklistViewAdapter extends ArrayAdapter<ListItem> {
+public class ChecklistViewAdapter extends ArrayAdapter<ChecklistItem> {
 
-    public ChecklistViewAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<ListItem> objects) {
+    public ChecklistViewAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<ChecklistItem> objects) {
         super(context, resource, objects);
     }
 
@@ -30,7 +30,7 @@ public class ChecklistViewAdapter extends ArrayAdapter<ListItem> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.checklist_item, null);
         }
 
-        final ListItem item = getItem(position);
+        final ChecklistItem item = getItem(position);
 
         // Define views
         CheckBox checkItem = (CheckBox) convertView.findViewById(R.id.cb_item);

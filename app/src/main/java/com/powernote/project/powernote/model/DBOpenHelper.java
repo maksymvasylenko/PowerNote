@@ -6,14 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
+import android.util.Log;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 public class DBOpenHelper extends SQLiteOpenHelper {
 
@@ -60,6 +57,10 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     //tasks_tag table column names
     private static final String KEY_TASKSTAGS_TASK_ID = "task_id";
     private static final String KEY_TASKSTAGS_TAG_ID = "tag_id";
+
+    //
+    private static String ARRAY_DIVIDER = "#a1r2ra5yd2iv1i9der";
+    private static String ARRAY_DIVIDER_SECOND = "#d2isdi9dcvra2r2ra5y";
 
     //create table statements
     //Tasks table
@@ -133,7 +134,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         values.put(KEY_CREATED_AT, getDateTime());
         values.put(KEY_TASK_EFFORT, newTask.getEffort());
         values.put(KEY_TASK_IMAGE_PATH, newTask.getImagePath());
-        values.put(KEY_TASK_CHECKLIST, serialize(newTask.getCheckList()));
+        values.put(KEY_TASK_CHECKLIST, serializeChecklist(newTask.getCheckList()));
 
         //fix adding tag(s)
 
@@ -171,7 +172,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 c.getLong(c.getColumnIndex(KEY_TASK_DURATION)),
                 c.getInt(c.getColumnIndex(KEY_TASK_EFFORT)),
                 c.getString(c.getColumnIndex(KEY_TASK_IMAGE_PATH)),
-                derialize(c.getString(c.getColumnIndex(KEY_TASK_CHECKLIST)))
+                deserializeChecklist(c.getString(c.getColumnIndex(KEY_TASK_CHECKLIST)))
         );
         return task;
     }
@@ -191,10 +192,11 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 tasks.put(task.getId(), task);
             } while (c.moveToNext());
 
-            return tasks;
+//            return tasks;
         }else{
-            return null;
+//            return null;
         }
+        return tasks;
     }
 
     public HashMap<Long, Task> getAllTasksByTag(String tagName){
@@ -255,7 +257,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         values.put(KEY_NOTE_NAME, newNote.getTitle());
         values.put(KEY_NOTE_TEXT, newNote.getDescription());
         values.put(KEY_CREATED_AT, getDateTime());
-        values.put(KEY_NOTE_CHECKLIST, serialize(newNote.getCheckList()));
+        values.put(KEY_NOTE_CHECKLIST, serializeChecklist(newNote.getCheckList()));
 
         //fix adding tag(s)
 
@@ -269,7 +271,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 c.getString(c.getColumnIndex(KEY_NOTE_TEXT)),
                 c.getLong(c.getColumnIndex(KEY_CREATED_AT)),
                 c.getString(c.getColumnIndex(KEY_NOTE_NAME)),
-                derialize(c.getString(c.getColumnIndex(KEY_NOTE_CHECKLIST)))
+                deserializeChecklist(c.getString(c.getColumnIndex(KEY_NOTE_CHECKLIST)))
         );
         return note;
     }
@@ -430,34 +432,35 @@ public class DBOpenHelper extends SQLiteOpenHelper {
                 new String[] { String.valueOf(updatedTag.getId()) });
     }
 
-    public void deleteTag(long tagId){
+    /**
+     * Deletes a tag from the database
+     * @param tagId tag ID
+     */
+    void deleteTag(long tagId){
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_TAGS, KEY_ID + " = ?",
                 new String[] { String.valueOf(tagId) });
     }
 
-    // closing database
-    public void closeDB() {
+    /**
+     * Close the database
+     */
+    void closeDB() {
         SQLiteDatabase db = this.getReadableDatabase();
         if (db != null && db.isOpen())
             db.close();
     }
 
-
     private long getDateTime() {
         return System.currentTimeMillis();
     }
 
-
-
-
-
-
-    String ARRAY_DIVIDER = "#a1r2ra5yd2iv1i9der";
-    String ARRAY_DIVIDER_SECOND = "#d2isdi9dcvra2r2ra5y";
-
-    public String serialize(List<ListItem> items){
-
+    /**
+     * Serialize a checklist to allow for storage in the database
+     * @param items list of checkItems
+     * @return Serialized string of checklist items
+     */
+    public String serializeChecklist(List<ChecklistItem> items){
         List<String> content = new ArrayList<>();
         for (int i = 0; i < items.size(); i++) {
             String a = items.get(i).getText() + ARRAY_DIVIDER_SECOND + String.valueOf(items.get(i).isChecked());
@@ -466,21 +469,21 @@ public class DBOpenHelper extends SQLiteOpenHelper {
         return TextUtils.join(ARRAY_DIVIDER, content);
     }
 
-    public List<ListItem> derialize(String content){
-
-        String[] c = content.split(ARRAY_DIVIDER);
-        List<ListItem> items = new ArrayList<>();
-
-        for (int i = 0; i < c.length ; i++) {
-            String[] stringItem = c[i].split(ARRAY_DIVIDER_SECOND);
-            items.add(new ListItem(stringItem[0], Boolean.valueOf(stringItem[1])));
+    /**
+     * Deserialize a checklist for retrieval from the database
+     * @param content Serialized string of a checkItem list
+     * @return List of deserialized checkItems
+     */
+    private List<ChecklistItem> deserializeChecklist(String content){
+        if (content != null && !content.isEmpty()) {
+            String[] c = content.split(ARRAY_DIVIDER);
+            List<ChecklistItem> items = new ArrayList<>();
+            for (String aC : c) {
+                String[] stringItem = aC.split(ARRAY_DIVIDER_SECOND);
+            items.add(new ChecklistItem(stringItem[0], Boolean.valueOf(stringItem[1])));
+            }
+            return items;
         }
-
-
-
-        return items;
+        return null;
     }
-
-
-
 }

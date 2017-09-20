@@ -11,14 +11,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.powernote.project.powernote.model.ListItem;
+import com.powernote.project.powernote.model.ChecklistItem;
 import com.powernote.project.powernote.R;
 
 import java.util.List;
 
-public class ChecklistEditAdapter extends ArrayAdapter<ListItem> {
+public class ChecklistEditAdapter extends ArrayAdapter<ChecklistItem> {
 
-    public ChecklistEditAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<ListItem> objects) {
+    public ChecklistEditAdapter(@NonNull Context context, @LayoutRes int resource, @NonNull List<ChecklistItem> objects) {
         super(context, resource, objects);
     }
 
@@ -30,7 +30,7 @@ public class ChecklistEditAdapter extends ArrayAdapter<ListItem> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.checklist_item_alt, null);
         }
 
-        final ListItem item = getItem(position);
+        final ChecklistItem item = getItem(position);
 
         // Define views
         TextView text = (TextView) convertView.findViewById(R.id.cb_item);

@@ -256,7 +256,7 @@ public class ActivityEditTask  extends AppCompatActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_editor, menu);
+        getMenuInflater().inflate(R.menu.menu_task_edit, menu);
         return true;
     }
 

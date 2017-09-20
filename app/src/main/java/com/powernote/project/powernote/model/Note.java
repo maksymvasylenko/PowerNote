@@ -11,10 +11,10 @@ public class Note {
     private long id;
     private String description, title;
     private Calendar createdAt  = Calendar.getInstance();
-    private List<ListItem> checkList;
+    private List<ChecklistItem> checkList;
     private String imagePath = null;
 
-    public Note(long id, String description, long createdAt, String title,List<ListItem> checklist){
+    public Note(long id, String description, long createdAt, String title,List<ChecklistItem> checklist){
         this.id = id;
         this.description = description;
         this.createdAt.setTimeInMillis(createdAt);
@@ -48,11 +48,11 @@ public class Note {
         return createdAt;
     }
 
-    public List<ListItem> getCheckList() {
+    public List<ChecklistItem> getCheckList() {
         return checkList;
     }
 
-    public void setCheckList(List<ListItem> checkList) {
+    public void setCheckList(List<ChecklistItem> checkList) {
         this.checkList = checkList;
     }
 

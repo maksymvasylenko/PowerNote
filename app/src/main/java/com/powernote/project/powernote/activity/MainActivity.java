@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,10 +25,9 @@ import com.powernote.project.powernote.fragment.FragmentTaskView;
 import com.powernote.project.powernote.fragment.OverviewFragment;
 import com.powernote.project.powernote.model.PowerNote;
 import com.powernote.project.powernote.R;
+import com.powernote.project.powernote.model.TaskAddedCallback;
 
-public class MainActivity extends AppCompatActivity{
-
-//    private static final int EDITOR_REQUEST_CODE = 1001;
+public class MainActivity extends AppCompatActivity implements TaskAddedCallback{
 
     private PowerNote powerNote = PowerNote.getInstance();
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -100,6 +100,11 @@ public class MainActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void taskAdded() {
+        Log.d("asdf", "asdf");
     }
 
     private class SectionsPagerAdapter extends FragmentPagerAdapter {

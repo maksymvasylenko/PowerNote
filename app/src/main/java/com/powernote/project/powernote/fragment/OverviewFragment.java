@@ -19,15 +19,17 @@ import com.powernote.project.powernote.model.Note;
 import com.powernote.project.powernote.model.Task;
 import com.powernote.project.powernote.activity.ActivityEditNote;
 import com.powernote.project.powernote.activity.ActivityEditTask;
+import com.powernote.project.powernote.model.TaskAddedCallback;
 
 import java.util.HashMap;
 
 
-public class OverviewFragment extends Fragment {
+public class OverviewFragment extends Fragment{
 
     ListView list;
     ListAdapter listAdapter;
     PowerNote pwn;
+    TaskAddedCallback addedCallback;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,8 +40,12 @@ public class OverviewFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
-        // todo Check if callback listener is implemented in parent activity
+        try {
+            addedCallback = (TaskAddedCallback) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString()
+                    + " must implement listener");
+        }
     }
 
     @Override
@@ -48,7 +54,6 @@ public class OverviewFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
 
         listAdapter = new ListAdapter(getContext());
-
 
         if(pwn.getTasks() != null) {
 
@@ -82,14 +87,17 @@ public class OverviewFragment extends Fragment {
                 }else{
                     Intent myIntent = new Intent(getActivity(), ActivityDetailsTask.class);
                     Task task = (Task) listAdapter.getItem(position);
-//                    Log.e("taskID", " " + task.getId());
                     myIntent.putExtra("taskID", task.getId());
                     startActivity(myIntent);
                 }
-
             }
         });
-
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        listAdapter.notifyDataSetChanged();
     }
 }

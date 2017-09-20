@@ -1,10 +1,10 @@
 package com.powernote.project.powernote.model;
 
-public class ListItem {
+public class ChecklistItem {
     private String text = "";
     private boolean checked;
 
-    public ListItem(String text, boolean checked) {
+    public ChecklistItem(String text, boolean checked) {
         this.text = text;
         this.checked = checked;
     }

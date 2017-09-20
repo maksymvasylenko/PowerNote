@@ -43,8 +43,9 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import com.powernote.project.powernote.adapter.ChecklistEditAdapter;
-import com.powernote.project.powernote.model.ListItem;
+import com.powernote.project.powernote.model.ChecklistItem;
 import com.powernote.project.powernote.R;
+import com.powernote.project.powernote.model.TaskAddedCallback;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -77,7 +78,10 @@ public class FragmentTaskEdit extends Fragment {
     private EditText description;
     private SeekBar effort;
     private SeekBar priority;
-    Button saveButton;
+
+    private Button saveButton;
+
+    private TaskAddedCallback addedCallback;
 
     private PowerNote pwn = PowerNote.getInstance();
     private Task currentTask;
@@ -98,7 +102,7 @@ public class FragmentTaskEdit extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.menu_editor, menu);
+        inflater.inflate(R.menu.menu_task_edit, menu);
     }
 
     @Override
@@ -126,11 +130,10 @@ public class FragmentTaskEdit extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.edit_task, container, false);
 
         lvChecklist = (ListView) view.findViewById(R.id.lv_checklist_edit);
-
 
         //initializing xml elements
         title = (EditText) view.findViewById(R.id.et_task_edit_title);
@@ -146,9 +149,7 @@ public class FragmentTaskEdit extends Fragment {
         Button time = (Button) view.findViewById(R.id.bt_edit_task_time);
         tvDate = (TextView) view.findViewById(R.id.tv_edit_task_date);
         tvTime = (TextView) view.findViewById(R.id.tv_edit_task_time);
-        
-        
-        
+
         // Switches (for switching items on and off)
         swChecklist = (Switch) view.findViewById(R.id.sw_checklist);
         swEffort = (Switch) view.findViewById(R.id.sw_effort);
@@ -211,7 +212,7 @@ public class FragmentTaskEdit extends Fragment {
                         if (inputText.isEmpty()){
                             inputText = "Empty";
                         }
-                        items.add(new ListItem(inputText, false));
+                        items.add(new ChecklistItem(inputText, false));
                         etCheckListInput.setText("");
                         adapter.notifyDataSetChanged();
                     } else {
@@ -226,7 +227,6 @@ public class FragmentTaskEdit extends Fragment {
 
         // Set keyEvent listener on editText
         etCheckListInput.setOnEditorActionListener(listener);
-        
 
         //// TODO: 18.09.2017 needs to be done through bundle not through model 
         if(pwn.getCurrentSelectedItem() == -1) {
@@ -238,9 +238,9 @@ public class FragmentTaskEdit extends Fragment {
                     pwn.addTask(getTheCurrentSelectedData(currentTask));
                     Snackbar.make(v, "Task created", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
+                    // TODO: 9/19/17 callback to list fragment
                 }
             });
-
         }else{
             currentTask = pwn.getTask(pwn.getCurrentSelectedItem());
 
@@ -371,8 +371,7 @@ public class FragmentTaskEdit extends Fragment {
     }
 
     private File createImageFile() throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",Locale.US).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(

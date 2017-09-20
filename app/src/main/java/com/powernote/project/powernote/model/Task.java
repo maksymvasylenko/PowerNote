@@ -1,6 +1,5 @@
 package com.powernote.project.powernote.model;
 
-import java.util.Calendar;
 import java.util.List;
 
 public class Task extends Note{
@@ -13,7 +12,7 @@ public class Task extends Note{
     private List<Task> dependencies;
 
     public Task(long id, int rank, String title, String description, long deadline,
-                long createdAt, long duration, int effort, String imagePath, List<ListItem> checklist){
+                long createdAt, long duration, int effort, String imagePath, List<ChecklistItem> checklist){
         super(id, description, createdAt, title, checklist);
         this.rank = rank;
         this.deadline = deadline;

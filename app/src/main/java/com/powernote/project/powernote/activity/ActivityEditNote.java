@@ -16,10 +16,6 @@ import com.powernote.project.powernote.model.PowerNote;
 import com.powernote.project.powernote.R;
 import com.powernote.project.powernote.model.Note;
 
-/**
- * Created by Maks on 11.09.2017.
- */
-
 public class ActivityEditNote extends AppCompatActivity{
 
     private PowerNote pwn = PowerNote.getInstance();
@@ -36,32 +32,23 @@ public class ActivityEditNote extends AppCompatActivity{
 
         //todo : fix : instead of updating its just ssves new note (either make different activities or set new label and onClick for the button)
 
-
-
         Intent intent = getIntent();
         value = intent.getLongExtra("noteDatabaseID", -1);
         Log.e("noteDatabaseID", "note" + value);
 
         //todo : fix TimeStamp and add this note to array of notes in PowerNotes
         if(value != -1) {
-            //onUpdate
             final Note note = pwn.getNote(value);
             title.setText(note.getTitle());
             text.setText(note.getDescription());
             saveButton.setText("Update");
-
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                 note.setTitle(title.getText().toString());
                 note.setDescription(text.getText().toString());
-
-
                 pwn.addNote(note);
-                Snackbar.make(v, "Note Updated", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-
+                Snackbar.make(v, "Note Updated", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 finish();
                 }
             });
@@ -82,15 +69,11 @@ public class ActivityEditNote extends AppCompatActivity{
                 }
             });
         }
-
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_edit_note, menu);
+        getMenuInflater().inflate(R.menu.menu_note, menu);
         return true;
     }
 
@@ -108,19 +91,14 @@ public class ActivityEditNote extends AppCompatActivity{
                 }
                 break;
             case R.id.action_add_image:
-
                 break;
             case R.id.action_record:
-
                 break;
             case R.id.action_add_checklist:
-
                 break;
             default:
                 return super.onOptionsItemSelected(item);
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 }
