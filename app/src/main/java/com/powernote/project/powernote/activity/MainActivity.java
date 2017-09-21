@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int which) {
-                                Intent myIntent = new Intent(MainActivity.this, ActivityEditNote.class);
+                                Intent myIntent = new Intent(MainActivity.this, EditNoteActivity.class);
                                 //myIntent.putExtra("action", -1);
                                 notesFragment.startActivityForResult(myIntent, NOTE_EDITOR_REQUEST_CODE);
                             }
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog,
                                                 int which) {
-                                Intent myIntent = new Intent(MainActivity.this, ActivityDetailsTask.class);
+                                Intent myIntent = new Intent(MainActivity.this, TaskActivity.class);
                                 //myIntent.putExtra("action", -1);
                                 overFragment.startActivityForResult(myIntent, EDITOR_REQUEST_CODE);
                             }
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 }
