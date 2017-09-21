@@ -138,8 +138,8 @@ public class FragmentTaskEdit extends Fragment {
         //initializing xml elements
         title = (EditText) view.findViewById(R.id.et_task_edit_title);
         description = (EditText) view.findViewById(R.id.et_task_edit_description);
-        effort = (SeekBar) view.findViewById(R.id.sb_task_edit_effort);
-        priority = (SeekBar) view.findViewById(R.id.sb_task_edit_priority);
+        effort = (SeekBar) view.findViewById(R.id.sb_effort);
+        priority = (SeekBar) view.findViewById(R.id.sb_priority);
         saveButton = (Button) view.findViewById(R.id.bt_task_edit_save);
 
         imageView = (ImageView) view.findViewById(R.id.image);
@@ -449,6 +449,11 @@ public class FragmentTaskEdit extends Fragment {
         if (swEffort.isChecked()) {
             task.setEffort(effort.getProgress());
             task.setRank(priority.getProgress());
+
+
+            Log.e("edit Task", " effort:" + task.getEffort());
+            Log.e("edit Task", " progress:" + task.getRank());
+
         } else {
             task.setEffort(-1);
             task.setRank(-1);

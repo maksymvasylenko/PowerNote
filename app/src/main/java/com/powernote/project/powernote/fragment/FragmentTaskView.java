@@ -139,11 +139,15 @@ public class FragmentTaskView extends Fragment {
 			if(task.getDescription() != null) {
 				description.setText( task.getDescription() );
 			}
+
 			if(task.getEffort() != -1) {
 				layoutEffort.setVisibility( View.VISIBLE );
+				Log.e("View Task", " effort:" + task.getEffort());
+				Log.e("View Task", " progress:" + task.getRank());
 				effort.setProgress( task.getEffort() );
-				priority.setProgress( task.getRank() );
+				priority.setProgress( task.getRank());
 			}
+
 			if(task.getDeadline() != -1) {
 				layoutDeadline.setVisibility( View.VISIBLE );
 

@@ -31,7 +31,12 @@ public class NoteCursorAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
 
         TextView text = (TextView) view.findViewById(R.id.listItemText);
-        text.setText(cursor.getString(cursor.getColumnIndex(DBOpenHelper.KEY_NOTE_NAME)));
 
+        String title = cursor.getString(cursor.getColumnIndex(DBOpenHelper.KEY_NOTE_NAME));
+        if(title != null && !title.isEmpty()){
+            text.setText(title);
+        }else{
+            text.setText(cursor.getString(cursor.getColumnIndex(DBOpenHelper.KEY_NOTE_TEXT)));
+        }
     }
 }

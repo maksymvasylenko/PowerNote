@@ -155,7 +155,8 @@
                 android:layout_alignEnd="@+id/tv_task_view_deadline_time"
                 android:layout_alignStart="@+id/tv_task_view_deadline_date"
                 android:layout_below="@+id/effort"
-                android:progress="50" />
+                android:max="3"
+                android:progress="1" />
 
             <TextView
                 android:id="@+id/effort"
@@ -171,10 +172,11 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:max="10"
                 android:layout_alignEnd="@+id/pb_priority"
                 android:layout_alignStart="@+id/pb_priority"
                 android:layout_below="@+id/priority"
-                android:progress="80" />
+                android:progress="1" />
 
         </LinearLayout>
 

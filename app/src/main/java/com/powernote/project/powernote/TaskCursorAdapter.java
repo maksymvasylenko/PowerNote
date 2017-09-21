@@ -31,13 +31,16 @@ public class TaskCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
-        String noteText = cursor.getString(
-                cursor.getColumnIndex(DBOpenHelper.KEY_TASK_NAME));
-
 
 
         TextView text = (TextView) view.findViewById(R.id.tv_task_item_title);
-        text.setText(cursor.getString(cursor.getColumnIndex(DBOpenHelper.KEY_TASK_NAME)));
+
+        String title = cursor.getString(cursor.getColumnIndex(DBOpenHelper.KEY_TASK_NAME));
+        if(title != null && !title.isEmpty()){
+            text.setText(title);
+        }else{
+            text.setText(cursor.getString(cursor.getColumnIndex(DBOpenHelper.KEY_TASK_DESCRIPTION)));
+        }
 
     }
 }
