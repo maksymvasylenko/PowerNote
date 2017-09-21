@@ -21,9 +21,9 @@
         android:layout_margin="4dp"
         android:layout_toEndOf="@+id/imageDocIcon"
         android:layout_toRightOf="@+id/imageDocIcon"
-        android:singleLine="true"
         android:text="Dummy Text"
         android:textColor="@color/list_item_text"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:maxLines="1" />
 
 </RelativeLayout>

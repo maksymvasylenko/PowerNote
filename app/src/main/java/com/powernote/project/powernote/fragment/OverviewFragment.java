@@ -22,16 +22,21 @@ import com.powernote.project.powernote.adapter.TaskCursorAdapter;
 import com.powernote.project.powernote.R;
 import com.powernote.project.powernote.model.TaskAddedCallback;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static android.app.Activity.RESULT_OK;
 
 
 public class OverviewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int EDITOR_REQUEST_CODE = 1001;
-    
-    ListView list;
-    CursorAdapter cursorAdapter;
-    TaskAddedCallback addedCallback;
+
+    private List<Long> listOfSelectedId;
+
+    private ListView list;
+    private CursorAdapter cursorAdapter;
+    private TaskAddedCallback addedCallback;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +60,9 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
 
         cursorAdapter = new TaskCursorAdapter(getContext(), null, 0);
-        
+
+
+        listOfSelectedId = new ArrayList<>();
         list = (ListView) view.findViewById(R.id.listOverview);
         list.setAdapter(cursorAdapter);
 
@@ -80,6 +87,21 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
                     myIntent.putExtra("taskID", task.getId());
                     startActivity(myIntent);
                 }*/
+            }
+        });
+
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                listOfSelectedId.add(id);
+
+                Log.e("selectedItems", ":start");
+                for (int i = 0; i < listOfSelectedId.size(); i++) {
+                    Log.e("selectedItems", ":" + listOfSelectedId.get(i));
+                }
+
+                return true;
             }
         });
 
@@ -114,7 +136,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
     private void restartLoader() {
         getActivity().getLoaderManager().restartLoader(0, null, this);
     }
-    
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.e("result ", "overviewFragment");
