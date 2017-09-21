@@ -28,8 +28,7 @@ import static android.app.Activity.RESULT_OK;
 public class OverviewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int EDITOR_REQUEST_CODE = 1001;
-
-
+    
     ListView list;
     CursorAdapter cursorAdapter;
     TaskAddedCallback addedCallback;
@@ -56,8 +55,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
 
         cursorAdapter = new TaskCursorAdapter(getContext(), null, 0);
-
-
+        
         list = (ListView) view.findViewById(R.id.listOverview);
         list.setAdapter(cursorAdapter);
 
@@ -116,9 +114,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
     private void restartLoader() {
         getActivity().getLoaderManager().restartLoader(0, null, this);
     }
-
-
-
+    
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.e("result ", "overviewFragment");
