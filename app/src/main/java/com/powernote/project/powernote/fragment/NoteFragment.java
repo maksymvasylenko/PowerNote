@@ -11,84 +11,76 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CursorAdapter;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.powernote.project.powernote.adapter.ChecklistEditAdapter;
 import com.powernote.project.powernote.adapter.NoteCursorAdapter;
 import com.powernote.project.powernote.PowerNoteProvider;
 import com.powernote.project.powernote.R;
-import com.powernote.project.powernote.activity.EditNoteActivity;
+import com.powernote.project.powernote.activity.NoteActivity;
+import com.powernote.project.powernote.model.ChecklistItem;
 import com.powernote.project.powernote.model.DBOpenHelper;
 import com.powernote.project.powernote.model.TaskAddedCallback;
+
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
 public class NoteFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int NOTE_EDITOR_REQUEST_CODE = 1010;
-
-
-    ListView list;
-    CursorAdapter cursorAdapter;
-    TaskAddedCallback addedCallback;
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu( true );
-    }
+    
+    private ListView list;
+    private CursorAdapter cursorAdapter;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            addedCallback = (TaskAddedCallback) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement listener");
+            throw new ClassCastException(context.toString() + " must implement listener");
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
-
-        cursorAdapter = new NoteCursorAdapter(getContext(), null, 1);
-
-
-
+    
+    
+        insertNote();
+        insertNote();
+        insertNote();
+        
+        
+	    cursorAdapter = new NoteCursorAdapter(getContext(), null, 1);
         list = (ListView) view.findViewById(R.id.listOverview);
         list.setAdapter(cursorAdapter);
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent myIntent = new Intent(getActivity(), EditNoteActivity.class);
+                Intent myIntent = new Intent(getActivity(), NoteActivity.class);
                 myIntent.putExtra(PowerNoteProvider.CONTENT_ITEM_TYPE, id);
                 startActivityForResult(myIntent, NOTE_EDITOR_REQUEST_CODE);
-
-
             }
         });
-
-
+        
         getActivity().getLoaderManager().initLoader(1, null, this);
 
         return view;
-    }
-    
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu( menu, inflater );
-        inflater.inflate( R.menu.menu_note_list, menu );
     }
     
     private void insertNote() {
@@ -96,8 +88,6 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
         values.put(DBOpenHelper.KEY_NOTE_NAME, "title");
         values.put(DBOpenHelper.KEY_NOTE_TEXT, "description");
         values.put(DBOpenHelper.KEY_CREATED_AT, 1111);
-        //values.put(DBOpenHelper.KEY_TASK_CHECKLIST, serializeChecklist(task.getCheckList()));
-
         Uri noteUri = getActivity().getContentResolver().insert(PowerNoteProvider.CONTENT_URI_NOTES,
                 values);
         Log.d("MainActivity", "Inserted note " + noteUri);
@@ -131,16 +121,11 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.e("result ", "notesListFragment");
-        Log.e("result act", ""+resultCode);
-        Log.e("result act", "request code"+requestCode);
         if (requestCode == NOTE_EDITOR_REQUEST_CODE && resultCode == RESULT_OK) {
             Log.e("result act", "reload");
             restartLoader();
         }else{
-            Log.e("result act", "OK");
+            Log.e("result act", "reload failed");
         }
     }
-    
-    
 }

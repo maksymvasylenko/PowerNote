@@ -1,5 +1,6 @@
 package com.powernote.project.powernote.model;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class Note {
     private long id;
     private String description, title;
     private Calendar createdAt  = Calendar.getInstance();
-    private List<ChecklistItem> checkList;
+    private List<ChecklistItem> checkList = new ArrayList<>();
     private String imagePath = null;
 
     public Note(long id, String description, long createdAt, String title,List<ChecklistItem> checklist){

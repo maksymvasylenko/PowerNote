@@ -18,7 +18,7 @@ public class TaskActivity extends AppCompatActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate( savedInstanceState );
-		setContentView( R.layout.activity_task_details );
+		setContentView( R.layout.activity_task );
 		
 		// Define task edit and view fragments
 		Fragment fragmentTaskEdit = new TaskEditFragment();
