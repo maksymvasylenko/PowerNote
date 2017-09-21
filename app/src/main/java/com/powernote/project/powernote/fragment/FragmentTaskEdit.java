@@ -189,6 +189,7 @@ public class FragmentTaskEdit extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
                     layoutDeadline.setVisibility(View.VISIBLE);
+                    chooseDeadline();
                 } else {
                     layoutDeadline.setVisibility(View.GONE);
                 }
@@ -303,54 +304,53 @@ public class FragmentTaskEdit extends Fragment {
         }
 
 
-
-        date.setOnClickListener(new View.OnClickListener() {
+        layoutDeadline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int mYear = calendar.get(Calendar.YEAR);
-                int mMonth = calendar.get(Calendar.MONTH);
-                int mDay = calendar.get(Calendar.DAY_OF_MONTH);
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                calendar.set(Calendar.YEAR, year);
-                                calendar.set(Calendar.MONTH, monthOfYear);
-                                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                                updateDeadlineDateText(calendar);
-                            }
-                        }, mYear, mMonth, mDay);
-                datePickerDialog.show();
-
-                // TODO: 9/18/17 update new deadline as variable
-            }
-        });
-
-        time.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                int mHour = calendar.get(Calendar.HOUR_OF_DAY);
-                int mMinute = calendar.get(Calendar.MINUTE);
-
-                TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(),
-                        new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay,
-                                                  int minute) {
-                                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                                calendar.set(Calendar.MINUTE, minute);
-                                updateDeadlineTimeText(calendar);
-                                Log.e("calendar", ":" + calendar.getTimeInMillis());
-                            }
-                        }, mHour, mMinute, false);
-                timePickerDialog.show();
+                chooseDeadline();
             }
         });
 
         return view;
+    }
+
+    private void chooseDeadline(){
+        int mYear = calendar.get(Calendar.YEAR);
+        int mMonth = calendar.get(Calendar.MONTH);
+        int mDay = calendar.get(Calendar.DAY_OF_MONTH);
+        int mHour = calendar.get(Calendar.HOUR_OF_DAY);
+        int mMinute = calendar.get(Calendar.MINUTE);
+
+
+
+        final TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(),
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay,
+                                          int minute) {
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        calendar.set(Calendar.MINUTE, minute);
+                        updateDeadlineTimeText(calendar);
+                        Log.e("calendar", ":" + calendar.getTimeInMillis());
+                    }
+                }, mHour, mMinute, false);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, monthOfYear);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        updateDeadlineDateText(calendar);
+
+                        timePickerDialog.show();
+
+                    }
+                }, mYear, mMonth, mDay);
+
+        datePickerDialog.show();
     }
 
     private void updateDeadlineDateText(Calendar calendar) {
