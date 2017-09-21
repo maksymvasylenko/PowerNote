@@ -103,7 +103,15 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
+        switch (id){
+            case R.id.action_settings:
+                break;
+            case R.id.action_add:
+                break;
+            default:
+            return super.onOptionsItemSelected( item );
+        }
+        return super.onOptionsItemSelected( item );
     }
 
     @Override
