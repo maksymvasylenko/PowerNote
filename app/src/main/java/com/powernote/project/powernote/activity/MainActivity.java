@@ -20,26 +20,29 @@ import android.support.design.widget.TabLayout;
 import android.widget.Toast;
 
 import com.powernote.project.powernote.ActivityDetailsTask;
+import com.powernote.project.powernote.PowerNoteProvider;
 import com.powernote.project.powernote.fragment.FragmentTaskEdit;
 import com.powernote.project.powernote.fragment.FragmentTaskView;
+import com.powernote.project.powernote.fragment.NotesListFragment;
 import com.powernote.project.powernote.fragment.OverviewFragment;
-import com.powernote.project.powernote.model.PowerNote;
 import com.powernote.project.powernote.R;
 import com.powernote.project.powernote.model.TaskAddedCallback;
 
 public class MainActivity extends AppCompatActivity implements TaskAddedCallback{
 
-    private PowerNote powerNote = PowerNote.getInstance();
+
+    private static final int EDITOR_REQUEST_CODE = 1001;
+    private static final int NOTE_EDITOR_REQUEST_CODE = 1010;
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
+
+    private Fragment overFragment, notesFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Init DB
-        powerNote.initializeDB(getApplicationContext());
 
         // Init Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -66,7 +69,8 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
                             public void onClick(DialogInterface dialog,
                                                 int which) {
                                 Intent myIntent = new Intent(MainActivity.this, ActivityEditNote.class);
-                                startActivity(myIntent);
+                                //myIntent.putExtra("action", -1);
+                                notesFragment.startActivityForResult(myIntent, NOTE_EDITOR_REQUEST_CODE);
                             }
                         });
                 builder.setPositiveButton("Task",
@@ -74,8 +78,8 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
                             public void onClick(DialogInterface dialog,
                                                 int which) {
                                 Intent myIntent = new Intent(MainActivity.this, ActivityDetailsTask.class);
-                                myIntent.putExtra("action", -1);
-                                startActivity(myIntent);
+                                //myIntent.putExtra("action", -1);
+                                overFragment.startActivityForResult(myIntent, EDITOR_REQUEST_CODE);
                             }
                         });
                 builder.setNeutralButton("CANCEL",
@@ -137,9 +141,11 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
                 case 0:
                     return new FragmentTaskEdit();
                 case 1:
-                    return new OverviewFragment();
+                    overFragment = new OverviewFragment();
+                    return overFragment;
                 case 2:
-                    return new FragmentTaskView();
+                    notesFragment = new NotesListFragment();
+                    return notesFragment;
                 default:
                     return null;
             }
@@ -148,7 +154,14 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
 
     @Override
     protected void onDestroy() {
-        powerNote.closeDB();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.e("result ", "mainActivity");
+        Log.e("result act1", ""+resultCode);
+        Log.e("result act1", ""+requestCode);
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

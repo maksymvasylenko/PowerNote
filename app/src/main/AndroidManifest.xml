@@ -24,10 +24,6 @@
         </activity>
 
         <activity
-            android:name=".activity.ActivityEditTask">
-        </activity>
-
-        <activity
             android:name=".activity.ActivityEditNote">
         </activity>
 
@@ -36,14 +32,9 @@
         </activity>
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.powernote.project.powernote.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
-        </provider>
+            android:name=".PowerNoteProvider"
+            android:authorities="com.powernote.project.powernote.powernoteprovider"
+            android:exported="false" />
 
     </application>
 

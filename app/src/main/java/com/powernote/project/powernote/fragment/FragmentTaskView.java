@@ -1,8 +1,11 @@
 package com.powernote.project.powernote.fragment;
 
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,7 +17,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.powernote.project.powernote.model.PowerNote;
+import com.powernote.project.powernote.Methods;
+import com.powernote.project.powernote.PowerNoteProvider;
+import com.powernote.project.powernote.model.DBOpenHelper;
 import com.powernote.project.powernote.model.Task;
 
 import com.powernote.project.powernote.adapter.ChecklistViewAdapter;
@@ -22,6 +27,8 @@ import com.powernote.project.powernote.R;
 
 import java.util.Calendar;
 import java.util.List;
+
+import static android.app.Activity.RESULT_OK;
 
 public class FragmentTaskView extends Fragment {
 	private ChecklistViewAdapter adapter;
@@ -33,9 +40,10 @@ public class FragmentTaskView extends Fragment {
 	
 	private TextView tvTime;
 	private TextView tvDate;
-	
-	private PowerNote powerNote = PowerNote.getInstance();
+
 	private Task task;
+
+	private String noteFilter;
 	
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,15 +63,18 @@ public class FragmentTaskView extends Fragment {
 		switch (item.getItemId()) {
 			// Press delete
 			case R.id.action_delete:
-				powerNote.deleteTask( powerNote.getCurrentSelectedItem() );
-				getActivity().onBackPressed();
+
+				getActivity().getContentResolver().delete(PowerNoteProvider.CONTENT_URI_TASKS,
+						noteFilter, null);
+
+				getActivity().setResult(RESULT_OK);
+				getActivity().finish();
 				break;
 			// Press edit
 			case R.id.action_edit:
 				// Define a new TaskEditFragment and pass in the bundle from the parent activity
 				Fragment fragmentTaskEdit = new FragmentTaskEdit();
-				Bundle taskId = getArguments();
-				fragmentTaskEdit.setArguments( taskId );
+				fragmentTaskEdit.setArguments(getArguments());
 				
 				// Replace this fragment with an EditTaskFragment
 				getActivity().getSupportFragmentManager().beginTransaction().replace( R.id.fl_activity_task_details_fragment_container, fragmentTaskEdit )
@@ -97,22 +108,30 @@ public class FragmentTaskView extends Fragment {
 		
 		if(getArguments() != null) {
 			// Get the taskId that was passed in via the bundle and set the current task
-			long taskID = getArguments().getLong( "taskID" );
-			task = powerNote.getTask( taskID );
-		} else {
-			task = null;
-		}
-		
-		if(task != null) {
+
+
+			long id = getArguments().getLong(PowerNoteProvider.CONTENT_ITEM_TYPE);
+			Uri uri = Uri.parse(PowerNoteProvider.CONTENT_URI_TASKS + "/" + id);
+
+
+
+			noteFilter = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
+
+			Cursor cursor = getActivity().getContentResolver().query(uri,
+					DBOpenHelper.TASK_ALL_COLUMNS, noteFilter, null, null);
+			cursor.moveToFirst();
+
+			task = Methods.getNewTask(cursor);
+
 			// If the task contains a checklist
 			if(task.getCheckList() != null) {
 				layoutChecklist.setVisibility( View.VISIBLE );
 				final List items = task.getCheckList();
-				
+
 				adapter = new ChecklistViewAdapter( getContext(), R.layout.checklist_item_alt, items );
 				lvCheckist.setAdapter( adapter );
 			}
-			
+
 			// Fill views with their respective data from the task
 			if(task.getTitle() != null) {
 				title.setText( task.getTitle() );
@@ -127,20 +146,22 @@ public class FragmentTaskView extends Fragment {
 			}
 			if(task.getDeadline() != -1) {
 				layoutDeadline.setVisibility( View.VISIBLE );
-				
+
 				Calendar calendar = Calendar.getInstance();
 				calendar.setTimeInMillis( task.getDeadline() );
-				
+
 				int mYear = calendar.get( Calendar.YEAR );
 				int mMonth = calendar.get( Calendar.MONTH );
 				int mDay = calendar.get( Calendar.DAY_OF_MONTH );
 				tvDate.setText( mDay + "-" + (mMonth + 1) + "-" + mYear );
-				
+
 				int hour = calendar.get( Calendar.HOUR_OF_DAY );
 				int min = calendar.get( Calendar.MINUTE );
 				tvTime.setText( hour + ":" + min );
 			}
+
 		}
+
 		return view;
 	}
 }

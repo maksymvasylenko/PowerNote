@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -36,12 +37,15 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.powernote.project.powernote.model.PowerNote;
+import com.powernote.project.powernote.Methods;
+import com.powernote.project.powernote.PowerNoteProvider;
+import com.powernote.project.powernote.model.DBOpenHelper;
 import com.powernote.project.powernote.model.Task;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+
 import com.powernote.project.powernote.adapter.ChecklistEditAdapter;
 import com.powernote.project.powernote.model.ChecklistItem;
 import com.powernote.project.powernote.R;
@@ -54,6 +58,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
+
 
 public class FragmentTaskEdit extends Fragment {
 
@@ -83,15 +88,14 @@ public class FragmentTaskEdit extends Fragment {
 
     private TaskAddedCallback addedCallback;
 
-    private PowerNote pwn = PowerNote.getInstance();
     private Task currentTask;
-    
+
     private SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d", Locale.US);
 
     //variables for taking photo
     static final int REQUEST_TAKE_PHOTO = 1;
     Uri photoURI;
-    
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,9 +111,10 @@ public class FragmentTaskEdit extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_delete:
-                pwn.deleteTask(pwn.getCurrentSelectedItem());
+                getActivity().setResult(RESULT_OK);
+                getActivity().finish();
                 break;
             case R.id.action_take_photo:
                 dispatchTakePictureIntent();
@@ -160,12 +165,12 @@ public class FragmentTaskEdit extends Fragment {
         layoutEffort = (LinearLayout) view.findViewById(R.id.layout_effort);
         layoutDeadline = (LinearLayout) view.findViewById(R.id.layout_deadline);
 
-        
+
         // Switch listeners  et_task_edit_title
         swChecklist.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b){
+                if (b) {
                     layoutChecklist.setVisibility(View.VISIBLE);
                 } else {
                     layoutChecklist.setVisibility(View.GONE);
@@ -176,7 +181,7 @@ public class FragmentTaskEdit extends Fragment {
         swEffort.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b){
+                if (b) {
                     layoutEffort.setVisibility(View.VISIBLE);
                 } else {
                     layoutEffort.setVisibility(View.GONE);
@@ -187,7 +192,7 @@ public class FragmentTaskEdit extends Fragment {
         swDeadline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b){
+                if (b) {
                     layoutDeadline.setVisibility(View.VISIBLE);
                 } else {
                     layoutDeadline.setVisibility(View.GONE);
@@ -209,7 +214,7 @@ public class FragmentTaskEdit extends Fragment {
                 if (event == null) {
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         String inputText = etCheckListInput.getText().toString();
-                        if (inputText.isEmpty()){
+                        if (inputText.isEmpty()) {
                             inputText = "Empty";
                         }
                         items.add(new ChecklistItem(inputText, false));
@@ -228,21 +233,23 @@ public class FragmentTaskEdit extends Fragment {
         // Set keyEvent listener on editText
         etCheckListInput.setOnEditorActionListener(listener);
 
-        //// TODO: 18.09.2017 needs to be done through bundle not through model 
-        if(pwn.getCurrentSelectedItem() == -1) {
-            currentTask = new Task();
+        //// TODO: 18.09.2017 needs to be done through bundle not through model
 
-            saveButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    pwn.addTask(getTheCurrentSelectedData(currentTask));
-                    Snackbar.make(v, "Task created", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    // TODO: 9/19/17 callback to list fragment
-                }
-            });
-        }else{
-            currentTask = pwn.getTask(pwn.getCurrentSelectedItem());
+        if (getArguments() != null) {
+            // Get the taskId that was passed in via the bundle and set the current task
+
+
+            long id = getArguments().getLong(PowerNoteProvider.CONTENT_ITEM_TYPE);
+            Uri uri = Uri.parse(PowerNoteProvider.CONTENT_URI_TASKS + "/" + id);
+
+            final String noteFilter = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
+
+            Cursor cursor = getActivity().getContentResolver().query(uri,
+                    DBOpenHelper.TASK_ALL_COLUMNS, noteFilter, null, null);
+            cursor.moveToFirst();
+
+
+            currentTask = Methods.getNewTask(cursor);
 
             // Default items
             title.setText(currentTask.getTitle());
@@ -250,14 +257,14 @@ public class FragmentTaskEdit extends Fragment {
             saveButton.setText("Update");
 
             // Effort
-            if(currentTask.getEffort() != -1) {
+            if (currentTask.getEffort() != -1) {
                 layoutEffort.setVisibility(View.VISIBLE);
                 effort.setProgress(currentTask.getEffort());
                 priority.setProgress(currentTask.getRank());
             }
 
             // Deadline
-            if(currentTask.getDeadline() != -1) {
+            if (currentTask.getDeadline() != -1) {
                 layoutDeadline.setVisibility(View.VISIBLE);
 
                 Calendar calendar = Calendar.getInstance();
@@ -271,17 +278,41 @@ public class FragmentTaskEdit extends Fragment {
                 @Override
                 public void onClick(View v) {
 
-                    pwn.updateTask(getTheCurrentSelectedData(currentTask));
+                    //TODO fix updating
+                    getActivity().getContentResolver().update(PowerNoteProvider.CONTENT_URI_TASKS,
+                            Methods.getTaskValues(getTheCurrentSelectedData(currentTask)),noteFilter, null);
+
+
                     Snackbar.make(v, "Task updated", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
 
                     getActivity().getSupportFragmentManager().popBackStack();
                 }
             });
+
+        } else {
+            currentTask = new Task();
+
+            saveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getActivity().getContentResolver().insert(PowerNoteProvider.CONTENT_URI_TASKS,
+                            Methods.getTaskValues(getTheCurrentSelectedData(currentTask)));
+
+                    Snackbar.make(v, "Task created", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                    // TODO: 9/19/17 callback to list fragment
+
+
+                    Log.e("before finish act", "fin in taskEditFrag");
+                    getActivity().setResult(RESULT_OK);
+                    getActivity().finish();
+                }
+            });
         }
 
 
-        date.setOnClickListener(new View.OnClickListener(){
+        date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Calendar calendar = Calendar.getInstance();
@@ -302,7 +333,7 @@ public class FragmentTaskEdit extends Fragment {
             }
         });
 
-        time.setOnClickListener(new View.OnClickListener(){
+        time.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -325,12 +356,12 @@ public class FragmentTaskEdit extends Fragment {
         return view;
     }
 
-    private void updateDeadlineDateText(Calendar calendar){
+    private void updateDeadlineDateText(Calendar calendar) {
         String dateText = sdf.format(calendar.getTime().getTime());
         tvDate.setText(dateText);
     }
 
-    private void updateDeadlineTimeText(Calendar calendar){
+    private void updateDeadlineTimeText(Calendar calendar) {
         String timeText = sdf.format(calendar.getTime().getTime());
         tvTime.setText(timeText);
     }
@@ -338,7 +369,7 @@ public class FragmentTaskEdit extends Fragment {
     private void dispatchTakePictureIntent() {
 
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
         }
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -371,7 +402,7 @@ public class FragmentTaskEdit extends Fragment {
     }
 
     private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",Locale.US).format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
@@ -387,7 +418,7 @@ public class FragmentTaskEdit extends Fragment {
     }
 
 
-    private Task getTheCurrentSelectedData(Task task){
+    private Task getTheCurrentSelectedData(Task task) {
 
         if (swChecklist.isChecked()) {
             // TODO: 9/18/17 save checklist
@@ -396,14 +427,14 @@ public class FragmentTaskEdit extends Fragment {
         if (swDeadline.isChecked()) {
             // TODO: 9/18/17 set deadline as current selected deadline
 //                        currentTask.setDeadline(getDeadlineTimeInMillisends());
-        }else{
+        } else {
             task.setDeadline(-1);
         }
 
         if (swEffort.isChecked()) {
             task.setEffort(effort.getProgress());
             task.setRank(priority.getProgress());
-        }else{
+        } else {
             task.setEffort(-1);
             task.setRank(-1);
         }
@@ -416,4 +447,8 @@ public class FragmentTaskEdit extends Fragment {
 
         return task;
     }
+
+
+
+
 }
