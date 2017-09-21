@@ -12,18 +12,18 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 
-import com.powernote.project.powernote.ActivityDetailsTask;
-import com.powernote.project.powernote.NoteCursorAdapter;
+import com.powernote.project.powernote.adapter.NoteCursorAdapter;
 import com.powernote.project.powernote.PowerNoteProvider;
 import com.powernote.project.powernote.R;
-import com.powernote.project.powernote.TaskCursorAdapter;
-import com.powernote.project.powernote.activity.ActivityEditNote;
+import com.powernote.project.powernote.activity.EditNoteActivity;
 import com.powernote.project.powernote.model.DBOpenHelper;
 import com.powernote.project.powernote.model.TaskAddedCallback;
 
@@ -74,7 +74,7 @@ public class NotesListFragment extends Fragment implements LoaderManager.LoaderC
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent myIntent = new Intent(getActivity(), ActivityEditNote.class);
+                Intent myIntent = new Intent(getActivity(), EditNoteActivity.class);
                 myIntent.putExtra(PowerNoteProvider.CONTENT_ITEM_TYPE, id);
                 startActivityForResult(myIntent, NOTE_EDITOR_REQUEST_CODE);
 
@@ -87,7 +87,13 @@ public class NotesListFragment extends Fragment implements LoaderManager.LoaderC
 
         return view;
     }
-
+    
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu( menu, inflater );
+        inflater.inflate( R.menu.menu_note_list, menu );
+    }
+    
     private void insertNote() {
         ContentValues values = new ContentValues();
         values.put(DBOpenHelper.KEY_NOTE_NAME, "title");
@@ -137,6 +143,7 @@ public class NotesListFragment extends Fragment implements LoaderManager.LoaderC
         }else{
             Log.e("result act", "OK");
         }
-
     }
+    
+    
 }

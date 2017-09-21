@@ -15,7 +15,7 @@
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,11 +24,11 @@
         </activity>
 
         <activity
-            android:name=".activity.ActivityEditNote">
+            android:name=".activity.EditNoteActivity">
         </activity>
 
         <activity
-            android:name=".ActivityDetailsTask">
+            android:name=".activity.TaskActivity">
         </activity>
 
         <provider

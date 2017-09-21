@@ -1,13 +1,11 @@
 package com.powernote.project.powernote.fragment;
 
 import android.app.LoaderManager;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,10 +16,9 @@ import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 
-import com.powernote.project.powernote.ActivityDetailsTask;
+import com.powernote.project.powernote.activity.TaskActivity;
 import com.powernote.project.powernote.PowerNoteProvider;
-import com.powernote.project.powernote.TaskCursorAdapter;
-import com.powernote.project.powernote.model.DBOpenHelper;
+import com.powernote.project.powernote.adapter.TaskCursorAdapter;
 import com.powernote.project.powernote.R;
 import com.powernote.project.powernote.model.TaskAddedCallback;
 
@@ -68,7 +65,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent myIntent = new Intent(getActivity(), ActivityDetailsTask.class);
+                Intent myIntent = new Intent(getActivity(), TaskActivity.class);
                 myIntent.putExtra(PowerNoteProvider.CONTENT_ITEM_TYPE, id);
                 startActivityForResult(myIntent, EDITOR_REQUEST_CODE);
 

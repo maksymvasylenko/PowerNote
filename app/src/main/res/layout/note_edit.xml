@@ -1,29 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:padding="16dp"
+              android:weightSum="1">
 
-    <EditText
-        android:id="@+id/et_note_edit_title"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_note_edit_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:ems="10"
+            android:hint="Title"
+            android:inputType="textPersonName"
+            android:textSize="24sp"/>
+
+        <EditText
+            android:id="@+id/et_note_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/et_note_edit_title"
+            android:ems="10"
+            android:hint="Text"
+            android:inputType="textPersonName"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_checklist"
+        android:layout_width="wrap_content"
+        android:layout_height="210dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:ems="10"
-        android:hint="Title"
-        android:inputType="textPersonName" />
+        android:layout_marginBottom="16dp"
+        android:layout_weight="0.00"
+        android:background="@color/Note"
+        android:elevation="3dp"
+        android:nestedScrollingEnabled="true"
+        android:orientation="vertical"
+        android:visibility="visible"
+        android:weightSum="1">
 
-    <EditText
-        android:id="@+id/et_note_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/et_note_edit_title"
-        android:ems="10"
-        android:hint="Text"
-        android:inputType="textPersonName" />
+        <EditText
+            android:id="@+id/et_checklist_input"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:ems="10"
+            android:hint="Enter checklist item"
+            android:inputType="textCapSentences"/>
+
+        <ListView
+            android:id="@+id/lv_checklist_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/layout_deadline"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:divider="@null"
+            android:fastScrollEnabled="false"
+            android:footerDividersEnabled="false"
+            android:headerDividersEnabled="false"
+            android:isScrollContainer="false"
+            android:keepScreenOn="false"
+            android:minHeight="179dp"
+            android:nestedScrollingEnabled="true"
+            android:overScrollMode="ifContentScrolls"
+            android:scrollIndicators="top|bottom"
+            android:scrollbars="none"
+            android:smoothScrollbar="false"/>
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/bt_note_edit_save"
@@ -34,4 +95,4 @@
         android:layout_alignParentStart="true"
         android:layout_marginTop="19dp" />
 
-</RelativeLayout>
+</LinearLayout>

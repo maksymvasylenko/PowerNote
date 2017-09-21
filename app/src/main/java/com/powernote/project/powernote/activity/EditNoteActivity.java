@@ -20,7 +20,7 @@ import com.powernote.project.powernote.R;
 import com.powernote.project.powernote.model.DBOpenHelper;
 import com.powernote.project.powernote.model.Note;
 
-public class ActivityEditNote extends AppCompatActivity{
+public class EditNoteActivity extends AppCompatActivity{
 
     private String noteFilter;
     private Note note;
