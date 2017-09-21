@@ -3,6 +3,7 @@ package com.powernote.project.powernote.fragment;
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -25,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -62,6 +64,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class FragmentTaskEdit extends Fragment {
 
+    private static final int DATE_TIME = 9912, DATE = 1231;
     private ListView lvChecklist;
     private ChecklistEditAdapter adapter;
     private List items;
@@ -188,6 +191,10 @@ public class FragmentTaskEdit extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
+
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
                     layoutDeadline.setVisibility(View.VISIBLE);
                     chooseDeadline();
                 } else {
@@ -304,26 +311,54 @@ public class FragmentTaskEdit extends Fragment {
         }
 
 
-        layoutDeadline.setOnClickListener(new View.OnClickListener() {
+        date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chooseDeadline();
+                chooseDeadlineDate(DATE);
             }
         });
+
+        time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseDeadlineTime();
+            }
+        });
+
 
         return view;
     }
 
     private void chooseDeadline(){
+        chooseDeadlineDate(DATE_TIME);
+    }
+
+    private void chooseDeadlineDate(final int datePickerType){
         int mYear = calendar.get(Calendar.YEAR);
         int mMonth = calendar.get(Calendar.MONTH);
         int mDay = calendar.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        calendar.set(Calendar.YEAR, year);
+                        calendar.set(Calendar.MONTH, monthOfYear);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                        updateDeadlineDateText(calendar);
+                        if(datePickerType == DATE_TIME) {
+                            chooseDeadlineTime();
+                        }
+                    }
+                }, mYear, mMonth, mDay);
+
+        datePickerDialog.show();
+    }
+
+    private void chooseDeadlineTime() {
+
         int mHour = calendar.get(Calendar.HOUR_OF_DAY);
         int mMinute = calendar.get(Calendar.MINUTE);
-
-
-
-        final TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(),
+        TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(),
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay,
@@ -334,23 +369,7 @@ public class FragmentTaskEdit extends Fragment {
                         Log.e("calendar", ":" + calendar.getTimeInMillis());
                     }
                 }, mHour, mMinute, false);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
-                        calendar.set(Calendar.YEAR, year);
-                        calendar.set(Calendar.MONTH, monthOfYear);
-                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                        updateDeadlineDateText(calendar);
-
-                        timePickerDialog.show();
-
-                    }
-                }, mYear, mMonth, mDay);
-
-        datePickerDialog.show();
+        timePickerDialog.show();
     }
 
     private void updateDeadlineDateText(Calendar calendar) {
