@@ -66,23 +66,15 @@ public class FragmentTaskEdit extends Fragment {
     private ChecklistEditAdapter adapter;
     private List items;
 
-    private Switch swDeadline;
-    private Switch swChecklist;
-    private Switch swEffort;
+    private Switch swDeadline, swChecklist, swEffort;
 
-    private LinearLayout layoutChecklist;
-    private LinearLayout layoutDeadline;
-    private LinearLayout layoutEffort;
-    private LinearLayout layoutImages;
+    private LinearLayout layoutChecklist, layoutDeadline, layoutEffort, layoutImages;
 
     private ImageView imageView;
-    private TextView tvTime;
-    private TextView tvDate;
+    private TextView tvTime, tvDate;
 
-    private EditText title;
-    private EditText description;
-    private SeekBar effort;
-    private SeekBar priority;
+    private EditText title, description;
+    private SeekBar effort, priority;
 
     private Button saveButton;
 
@@ -91,10 +83,14 @@ public class FragmentTaskEdit extends Fragment {
     private Task currentTask;
 
     private SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d", Locale.US);
+    private SimpleDateFormat stf = new SimpleDateFormat("HH:mm", Locale.US);
 
     //variables for taking photo
     static final int REQUEST_TAKE_PHOTO = 1;
     Uri photoURI;
+
+
+    final Calendar calendar = Calendar.getInstance();
 
 
     @Override
@@ -122,10 +118,6 @@ public class FragmentTaskEdit extends Fragment {
             case R.id.action_add_image:
                 break;
             case R.id.action_record:
-                break;
-            case R.id.action_add_checklist:
-                break;
-            case R.id.action_add_deadline:
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -166,6 +158,9 @@ public class FragmentTaskEdit extends Fragment {
         layoutDeadline = (LinearLayout) view.findViewById(R.id.layout_deadline);
 
 
+        updateDeadlineTimeText(calendar);
+        updateDeadlineDateText(calendar);
+
         // Switch listeners  et_task_edit_title
         swChecklist.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -200,7 +195,6 @@ public class FragmentTaskEdit extends Fragment {
             }
         });
 
-        // TODO: 9/12/17 get checklist from current task
         items = new ArrayList();
 
         adapter = new ChecklistEditAdapter(getContext(), R.layout.checklist_item_alt, items);
@@ -233,10 +227,8 @@ public class FragmentTaskEdit extends Fragment {
         // Set keyEvent listener on editText
         etCheckListInput.setOnEditorActionListener(listener);
 
-        //// TODO: 18.09.2017 needs to be done through bundle not through model
 
         if (getArguments() != null) {
-            // Get the taskId that was passed in via the bundle and set the current task
 
 
             long id = getArguments().getLong(PowerNoteProvider.CONTENT_ITEM_TYPE);
@@ -301,7 +293,6 @@ public class FragmentTaskEdit extends Fragment {
 
                     Snackbar.make(v, "Task created", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-                    // TODO: 9/19/17 callback to list fragment
 
 
                     Log.e("before finish act", "fin in taskEditFrag");
@@ -312,10 +303,10 @@ public class FragmentTaskEdit extends Fragment {
         }
 
 
+
         date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Calendar calendar = Calendar.getInstance();
                 int mYear = calendar.get(Calendar.YEAR);
                 int mMonth = calendar.get(Calendar.MONTH);
                 int mDay = calendar.get(Calendar.DAY_OF_MONTH);
@@ -324,6 +315,9 @@ public class FragmentTaskEdit extends Fragment {
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                calendar.set(Calendar.YEAR, year);
+                                calendar.set(Calendar.MONTH, monthOfYear);
+                                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                                 updateDeadlineDateText(calendar);
                             }
                         }, mYear, mMonth, mDay);
@@ -337,16 +331,19 @@ public class FragmentTaskEdit extends Fragment {
 
             @Override
             public void onClick(View v) {
-                final Calendar c = Calendar.getInstance();
-                int mHour = c.get(Calendar.HOUR_OF_DAY);
-                int mMinute = c.get(Calendar.MINUTE);
+
+                int mHour = calendar.get(Calendar.HOUR_OF_DAY);
+                int mMinute = calendar.get(Calendar.MINUTE);
 
                 TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(),
                         new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay,
                                                   int minute) {
-                                updateDeadlineTimeText(c);
+                                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                calendar.set(Calendar.MINUTE, minute);
+                                updateDeadlineTimeText(calendar);
+                                Log.e("calendar", ":" + calendar.getTimeInMillis());
                             }
                         }, mHour, mMinute, false);
                 timePickerDialog.show();
@@ -362,7 +359,7 @@ public class FragmentTaskEdit extends Fragment {
     }
 
     private void updateDeadlineTimeText(Calendar calendar) {
-        String timeText = sdf.format(calendar.getTime().getTime());
+        String timeText = stf.format(calendar.getTime().getTime());
         tvTime.setText(timeText);
     }
 
@@ -421,12 +418,11 @@ public class FragmentTaskEdit extends Fragment {
     private Task getTheCurrentSelectedData(Task task) {
 
         if (swChecklist.isChecked()) {
-            // TODO: 9/18/17 save checklist
+            task.setCheckList(items);
         }
 
         if (swDeadline.isChecked()) {
-            // TODO: 9/18/17 set deadline as current selected deadline
-//                        currentTask.setDeadline(getDeadlineTimeInMillisends());
+            task.setDeadline(calendar.getTimeInMillis());
         } else {
             task.setDeadline(-1);
         }
@@ -443,12 +439,8 @@ public class FragmentTaskEdit extends Fragment {
         task.setTitle(title.getText().toString());
         task.setDescription(description.getText().toString());
 
-        task.setCheckList(items);
+        // TODO: 21.09.2017 implement image and duration
 
         return task;
     }
-
-
-
-
 }

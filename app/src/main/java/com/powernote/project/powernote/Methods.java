@@ -30,7 +30,7 @@ public class Methods {
         values.put(DBOpenHelper.KEY_TASK_DEADLINE, task.getDeadline());
         values.put(DBOpenHelper.KEY_TASK_RANK, task.getRank());
         values.put(DBOpenHelper.KEY_TASK_DURATION, task.getDuration());
-        values.put(DBOpenHelper.KEY_CREATED_AT, getDateTime());
+        values.put(DBOpenHelper.KEY_CREATED_AT, task.getCreatedAt().getTimeInMillis());// maybe getter should already return in millis
         values.put(DBOpenHelper.KEY_TASK_EFFORT, task.getEffort());
         values.put(DBOpenHelper.KEY_TASK_IMAGE_PATH, task.getImagePath());
         values.put(DBOpenHelper.KEY_TASK_CHECKLIST, serializeChecklist(task.getCheckList()));
@@ -42,7 +42,7 @@ public class Methods {
         ContentValues values = new ContentValues();
         values.put(DBOpenHelper.KEY_NOTE_NAME, note.getTitle());
         values.put(DBOpenHelper.KEY_NOTE_TEXT, note.getDescription());
-        values.put(DBOpenHelper.KEY_CREATED_AT, getDateTime());
+        values.put(DBOpenHelper.KEY_CREATED_AT, note.getCreatedAt().getTimeInMillis());
         values.put(DBOpenHelper.KEY_NOTE_CHECKLIST, serializeChecklist(note.getCheckList()));
         return values;
     }
