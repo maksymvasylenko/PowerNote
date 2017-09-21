@@ -1,46 +1,47 @@
 package com.powernote.project.powernote.fragment;
 
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 
-import com.powernote.project.powernote.activity.TaskActivity;
+import com.powernote.project.powernote.adapter.NoteCursorAdapter;
 import com.powernote.project.powernote.PowerNoteProvider;
-import com.powernote.project.powernote.adapter.TaskCursorAdapter;
 import com.powernote.project.powernote.R;
+import com.powernote.project.powernote.activity.EditNoteActivity;
+import com.powernote.project.powernote.model.DBOpenHelper;
 import com.powernote.project.powernote.model.TaskAddedCallback;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
+public class NoteFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
-public class OverviewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+    private static final int NOTE_EDITOR_REQUEST_CODE = 1010;
 
-    private static final int EDITOR_REQUEST_CODE = 1001;
 
-    private List<Long> listOfSelectedId;
-
-    private ListView list;
-    private CursorAdapter cursorAdapter;
-    private TaskAddedCallback addedCallback;
+    ListView list;
+    CursorAdapter cursorAdapter;
+    TaskAddedCallback addedCallback;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu( true );
     }
 
     @Override
@@ -59,10 +60,10 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
 
-        cursorAdapter = new TaskCursorAdapter(getContext(), null, 0);
+        cursorAdapter = new NoteCursorAdapter(getContext(), null, 1);
 
 
-        listOfSelectedId = new ArrayList<>();
+
         list = (ListView) view.findViewById(R.id.listOverview);
         list.setAdapter(cursorAdapter);
 
@@ -70,45 +71,36 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Intent myIntent = new Intent(getActivity(), TaskActivity.class);
+                Intent myIntent = new Intent(getActivity(), EditNoteActivity.class);
                 myIntent.putExtra(PowerNoteProvider.CONTENT_ITEM_TYPE, id);
-                startActivityForResult(myIntent, EDITOR_REQUEST_CODE);
+                startActivityForResult(myIntent, NOTE_EDITOR_REQUEST_CODE);
 
 
-                /*if(cursorAdapter.getItemViewType(position) == 1){
-                    Intent myIntent = new Intent(getActivity(), ActivityEditNote.class);
-                    Note note = (Note) cursorAdapter.getItem(position);
-                    myIntent.putExtra("noteDatabaseID", note.getId());
-                    startActivity(myIntent);
-
-                }else{
-                    Intent myIntent = new Intent(getActivity(), ActivityDetailsTask.class);
-                    Task task = (Task) cursorAdapter.getItem(position);
-                    myIntent.putExtra("taskID", task.getId());
-                    startActivity(myIntent);
-                }*/
-            }
-        });
-
-        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-                listOfSelectedId.add(id);
-
-                Log.e("selectedItems", ":start");
-                for (int i = 0; i < listOfSelectedId.size(); i++) {
-                    Log.e("selectedItems", ":" + listOfSelectedId.get(i));
-                }
-
-                return true;
             }
         });
 
 
-        getActivity().getLoaderManager().initLoader(0, null, this);
+        getActivity().getLoaderManager().initLoader(1, null, this);
 
         return view;
+    }
+    
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu( menu, inflater );
+        inflater.inflate( R.menu.menu_note_list, menu );
+    }
+    
+    private void insertNote() {
+        ContentValues values = new ContentValues();
+        values.put(DBOpenHelper.KEY_NOTE_NAME, "title");
+        values.put(DBOpenHelper.KEY_NOTE_TEXT, "description");
+        values.put(DBOpenHelper.KEY_CREATED_AT, 1111);
+        //values.put(DBOpenHelper.KEY_TASK_CHECKLIST, serializeChecklist(task.getCheckList()));
+
+        Uri noteUri = getActivity().getContentResolver().insert(PowerNoteProvider.CONTENT_URI_NOTES,
+                values);
+        Log.d("MainActivity", "Inserted note " + noteUri);
     }
 
     @Override
@@ -119,7 +111,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getContext(), PowerNoteProvider.CONTENT_URI_TASKS,
+        return new CursorLoader(getContext(), PowerNoteProvider.CONTENT_URI_NOTES,
                 null, null, null, null);
     }
 
@@ -134,19 +126,21 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void restartLoader() {
-        getActivity().getLoaderManager().restartLoader(0, null, this);
+        getActivity().getLoaderManager().restartLoader(1, null, this);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.e("result ", "overviewFragment");
+        Log.e("result ", "notesListFragment");
         Log.e("result act", ""+resultCode);
-        if (requestCode == EDITOR_REQUEST_CODE && resultCode == RESULT_OK) {
+        Log.e("result act", "request code"+requestCode);
+        if (requestCode == NOTE_EDITOR_REQUEST_CODE && resultCode == RESULT_OK) {
             Log.e("result act", "reload");
             restartLoader();
         }else{
-            Log.e("result act", "not correct request code");
+            Log.e("result act", "OK");
         }
-
     }
+    
+    
 }

@@ -30,7 +30,7 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
-public class FragmentTaskView extends Fragment {
+public class TaskViewFragment extends Fragment {
 	private ChecklistViewAdapter adapter;
 	private ListView lvCheckist;
 	
@@ -73,7 +73,7 @@ public class FragmentTaskView extends Fragment {
 			// Press edit
 			case R.id.action_edit:
 				// Define a new TaskEditFragment and pass in the bundle from the parent activity
-				Fragment fragmentTaskEdit = new FragmentTaskEdit();
+				Fragment fragmentTaskEdit = new TaskEditFragment();
 				fragmentTaskEdit.setArguments(getArguments());
 				
 				// Replace this fragment with an EditTaskFragment

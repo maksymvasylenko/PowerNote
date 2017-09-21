@@ -62,7 +62,7 @@ import java.util.Locale;
 import static android.app.Activity.RESULT_OK;
 
 
-public class FragmentTaskEdit extends Fragment {
+public class TaskEditFragment extends Fragment {
 
     private static final int DATE_TIME = 9912, DATE = 1231;
     private ListView lvChecklist;

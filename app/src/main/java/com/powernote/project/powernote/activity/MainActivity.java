@@ -13,21 +13,19 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import android.support.design.widget.TabLayout;
 import android.widget.Toast;
 
-import com.powernote.project.powernote.fragment.FragmentTaskEdit;
-import com.powernote.project.powernote.fragment.NotesListFragment;
-import com.powernote.project.powernote.fragment.OverviewFragment;
+import com.powernote.project.powernote.fragment.TaskEditFragment;
+import com.powernote.project.powernote.fragment.NoteFragment;
+import com.powernote.project.powernote.fragment.TaskListFragment;
 import com.powernote.project.powernote.R;
 import com.powernote.project.powernote.model.TaskAddedCallback;
 
 public class MainActivity extends AppCompatActivity implements TaskAddedCallback{
-
-
+    
     private static final int EDITOR_REQUEST_CODE = 1001;
     private static final int NOTE_EDITOR_REQUEST_CODE = 1010;
 
@@ -96,8 +94,7 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
         getMenuInflater().inflate(R.menu.menu_overview, menu);
         return true;
     }
-
-
+    
     @Override
     public void taskAdded() {
         Log.d("asdf", "asdf");
@@ -131,12 +128,12 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
         public Fragment getItem(int position) {
             switch(position){
                 case 0:
-                    return new FragmentTaskEdit();
+                    return new TaskEditFragment();
                 case 1:
-                    overFragment = new OverviewFragment();
+                    overFragment = new TaskListFragment();
                     return overFragment;
                 case 2:
-                    notesFragment = new NotesListFragment();
+                    notesFragment = new NoteFragment();
                     return notesFragment;
                 default:
                     return null;

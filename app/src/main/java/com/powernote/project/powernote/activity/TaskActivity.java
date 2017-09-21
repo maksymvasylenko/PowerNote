@@ -7,8 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.powernote.project.powernote.PowerNoteProvider;
 import com.powernote.project.powernote.R;
-import com.powernote.project.powernote.fragment.FragmentTaskEdit;
-import com.powernote.project.powernote.fragment.FragmentTaskView;
+import com.powernote.project.powernote.fragment.TaskEditFragment;
+import com.powernote.project.powernote.fragment.TaskViewFragment;
 
 /**
  * TaskActivity allows for the viewing and editing of tasks
@@ -21,8 +21,8 @@ public class TaskActivity extends AppCompatActivity {
 		setContentView( R.layout.activity_task_details );
 		
 		// Define task edit and view fragments
-		Fragment fragmentTaskEdit = new FragmentTaskEdit();
-		Fragment fragmentTaskView = new FragmentTaskView();
+		Fragment fragmentTaskEdit = new TaskEditFragment();
+		Fragment fragmentTaskView = new TaskViewFragment();
 		
 		// Get the fragment manager to allow for switching fragments
 		android.support.v4.app.FragmentManager fragmentManager = getSupportFragmentManager();
