@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -60,6 +61,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
+import static android.support.v4.content.FileProvider.getUriForFile;
 
 
 public class FragmentTaskEdit extends Fragment {
@@ -90,10 +92,12 @@ public class FragmentTaskEdit extends Fragment {
 
     //variables for taking photo
     static final int REQUEST_TAKE_PHOTO = 1;
-    Uri photoURI;
+    Uri photoURI = null;
 
 
     final Calendar calendar = Calendar.getInstance();
+
+    private String noteFilter;
 
 
     @Override
@@ -112,6 +116,9 @@ public class FragmentTaskEdit extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_delete:
+                getActivity().getContentResolver().delete(PowerNoteProvider.CONTENT_URI_NOTES,
+                        noteFilter, null);
+
                 getActivity().setResult(RESULT_OK);
                 getActivity().finish();
                 break;
@@ -242,7 +249,8 @@ public class FragmentTaskEdit extends Fragment {
             long id = getArguments().getLong(PowerNoteProvider.CONTENT_ITEM_TYPE);
             Uri uri = Uri.parse(PowerNoteProvider.CONTENT_URI_TASKS + "/" + id);
 
-            final String noteFilter = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
+
+            noteFilter = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
 
             Cursor cursor = getActivity().getContentResolver().query(uri,
                     DBOpenHelper.TASK_ALL_COLUMNS, noteFilter, null, null);
@@ -274,6 +282,13 @@ public class FragmentTaskEdit extends Fragment {
                 updateDeadlineTimeText(calendar);
             }
 
+            if(currentTask.getImagePath() != null && !currentTask.getImagePath().isEmpty()){
+
+                layoutImages.setVisibility(View.VISIBLE);
+                Uri imageUri = Uri.parse(currentTask.getImagePath());
+                imageView.setImageURI(imageUri);
+            }
+
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -286,6 +301,7 @@ public class FragmentTaskEdit extends Fragment {
                     Snackbar.make(v, "Task updated", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
 
+                    getActivity().setResult(RESULT_OK);
                     getActivity().getSupportFragmentManager().popBackStack();
                 }
             });
@@ -382,10 +398,13 @@ public class FragmentTaskEdit extends Fragment {
         tvTime.setText(timeText);
     }
 
+
+
+
     private void dispatchTakePictureIntent() {
 
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+            ActivityCompat.requestPermissions(getActivity(), new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
         }
 
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -418,7 +437,7 @@ public class FragmentTaskEdit extends Fragment {
     }
 
     private File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",Locale.US).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(
@@ -432,6 +451,7 @@ public class FragmentTaskEdit extends Fragment {
         Log.e("test 22:", image.getAbsolutePath());
         return image;
     }
+
 
 
     private Task getTheCurrentSelectedData(Task task) {
@@ -462,6 +482,11 @@ public class FragmentTaskEdit extends Fragment {
         task.setCreatedAt(System.currentTimeMillis());
         task.setTitle(title.getText().toString());
         task.setDescription(description.getText().toString());
+
+        task.setImagePath(photoURI.toString());
+
+        Log.e("imagePath",":" + photoURI.getPath());
+        Log.e("imagePath",":" + photoURI.toString());
 
         // TODO: 21.09.2017 implement image and duration
 

@@ -6,10 +6,16 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,6 +26,7 @@ import com.powernote.project.powernote.activity.TaskActivity;
 import com.powernote.project.powernote.PowerNoteProvider;
 import com.powernote.project.powernote.adapter.TaskCursorAdapter;
 import com.powernote.project.powernote.R;
+import com.powernote.project.powernote.model.DBOpenHelper;
 import com.powernote.project.powernote.model.TaskAddedCallback;
 
 import java.util.ArrayList;
@@ -38,9 +45,14 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
     private CursorAdapter cursorAdapter;
     private TaskAddedCallback addedCallback;
 
+    private MenuItem delete;
+    private boolean boolVisibility = false;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -94,11 +106,28 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-                listOfSelectedId.add(id);
+
 
                 Log.e("selectedItems", ":start");
-                for (int i = 0; i < listOfSelectedId.size(); i++) {
-                    Log.e("selectedItems", ":" + listOfSelectedId.get(i));
+                if(!listOfSelectedId.contains(id)) {
+                    listOfSelectedId.add(id);
+                    for (int i = 0; i < listOfSelectedId.size(); i++) {
+                        Log.e("selectedItems", ":" + listOfSelectedId.get(i));
+                    }
+                    view.setBackgroundColor(Color.LTGRAY);
+                }else{
+                    listOfSelectedId.remove(listOfSelectedId.indexOf(id));
+                    view.setBackgroundColor(Color.WHITE);
+                }
+
+
+
+                if(listOfSelectedId.size() == 1) {
+                    boolVisibility = true;
+                    ActivityCompat.invalidateOptionsMenu(getActivity());
+                }else if(listOfSelectedId.size() == 0){
+                    boolVisibility = false;
+                    ActivityCompat.invalidateOptionsMenu(getActivity());
                 }
 
                 return true;
@@ -140,7 +169,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.e("result ", "overviewFragment");
-        Log.e("result act", ""+resultCode);
+        Log.e("result act", "" + resultCode);
         if (requestCode == EDITOR_REQUEST_CODE && resultCode == RESULT_OK) {
             Log.e("result act", "reload");
             restartLoader();
@@ -148,5 +177,44 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
             Log.e("result act", "not correct request code");
         }
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu( menu, inflater );
+        inflater.inflate( R.menu.menu_overview, menu );
+        delete = menu.findItem(R.id.action_delete);
+        delete.setVisible(boolVisibility);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Press delete
+            case R.id.action_delete:
+
+                String [] stringList = new String[listOfSelectedId.size()];
+
+                for (int i = 0; i < listOfSelectedId.size(); i++) {
+                    stringList[i] = listOfSelectedId.get(i).toString();
+                }
+
+                String noteFilter = DBOpenHelper.KEY_ID + " IN (" + new String(new char[stringList.length-1]).replace("\0", "?,") + "?)";
+
+                getActivity().getContentResolver().delete(PowerNoteProvider.CONTENT_URI_TASKS,
+                        noteFilter, stringList);
+
+                listOfSelectedId = new ArrayList<>();
+
+                boolVisibility = false;
+                ActivityCompat.invalidateOptionsMenu(getActivity());
+
+                restartLoader();
+                break;
+            default:
+                return super.onOptionsItemSelected( item );
+        }
+        return super.onOptionsItemSelected( item );
     }
 }

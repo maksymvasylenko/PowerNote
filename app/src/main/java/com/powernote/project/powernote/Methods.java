@@ -66,7 +66,8 @@ public class Methods {
                 c.getString(c.getColumnIndex(DBOpenHelper.KEY_NOTE_TEXT)),
                 c.getLong(c.getColumnIndex(DBOpenHelper.KEY_CREATED_AT)),
                 c.getString(c.getColumnIndex(DBOpenHelper.KEY_NOTE_NAME)),
-                deserializeChecklist(c.getString(c.getColumnIndex(DBOpenHelper.KEY_NOTE_CHECKLIST))));
+                deserializeChecklist(c.getString(c.getColumnIndex(DBOpenHelper.KEY_NOTE_CHECKLIST))),
+                "");//// TODO: 21.09.2017 fix this!!!!!!!!!!!
         return note;
     }
 

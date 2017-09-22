@@ -13,7 +13,7 @@ public class Task extends Note{
 
     public Task(long id, int rank, String title, String description, long deadline,
                 long createdAt, long duration, int effort, String imagePath, List<ChecklistItem> checklist){
-        super(id, description, createdAt, title, checklist);
+        super(id, description, createdAt, title, checklist, imagePath);
         this.rank = rank;
         this.deadline = deadline;
         this.duration = duration;

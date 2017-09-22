@@ -1,10 +1,15 @@
 package com.powernote.project.powernote.fragment;
 
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -12,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -25,6 +31,11 @@ import com.powernote.project.powernote.model.Task;
 import com.powernote.project.powernote.adapter.ChecklistViewAdapter;
 import com.powernote.project.powernote.R;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URI;
 import java.util.Calendar;
 import java.util.List;
 
@@ -37,6 +48,7 @@ public class FragmentTaskView extends Fragment {
 	private LinearLayout layoutChecklist;
 	private LinearLayout layoutDeadline;
 	private LinearLayout layoutEffort;
+    private LinearLayout layoutImage;
 	
 	private TextView tvTime;
 	private TextView tvDate;
@@ -48,7 +60,7 @@ public class FragmentTaskView extends Fragment {
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate( savedInstanceState );
-		setHasOptionsMenu( true );
+		setHasOptionsMenu(true);
 	}
 	
 	@Override
@@ -105,6 +117,10 @@ public class FragmentTaskView extends Fragment {
 		layoutEffort = (LinearLayout) view.findViewById( R.id.ll_task_view_effort_priority );
 		layoutDeadline = (LinearLayout) view.findViewById( R.id.ll_task_view_deadline );
 		layoutChecklist = (LinearLayout) view.findViewById( R.id.layout_checklist );
+        layoutImage = (LinearLayout) view.findViewById( R.id.layout_images );
+
+
+        ImageView imageView = (ImageView) view.findViewById( R.id.image );
 		
 		if(getArguments() != null) {
 			// Get the taskId that was passed in via the bundle and set the current task
@@ -164,8 +180,24 @@ public class FragmentTaskView extends Fragment {
 				tvTime.setText( hour + ":" + min );
 			}
 
+			if(task.getImagePath() != null && !task.getImagePath().isEmpty() ){
+                layoutImage.setVisibility( View.VISIBLE );
+
+
+				Uri imageUri = Uri.parse(task.getImagePath());
+				imageView.setImageURI(imageUri);
+
+				//imageView.setImageURI(Uri.parse("com.powernote.project.powernote.fileprovider" + task.getImagePath()));
+            }
+
 		}
 
 		return view;
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		getActivity().finish();
 	}
 }

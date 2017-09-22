@@ -14,12 +14,13 @@ public class Note {
     private List<ChecklistItem> checkList;
     private String imagePath = null;
 
-    public Note(long id, String description, long createdAt, String title,List<ChecklistItem> checklist){
+    public Note(long id, String description, long createdAt, String title,List<ChecklistItem> checklist, String imagePath){
         this.id = id;
         this.description = description;
         this.createdAt.setTimeInMillis(createdAt);
         this.title = title;
         this.checkList = checklist;
+        this.imagePath = imagePath;
     }
 
     public Note(){
