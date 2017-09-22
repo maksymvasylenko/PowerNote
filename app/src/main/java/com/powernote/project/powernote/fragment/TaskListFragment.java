@@ -35,7 +35,7 @@ import java.util.List;
 import static android.app.Activity.RESULT_OK;
 
 
-public class OverviewFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class TaskListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int EDITOR_REQUEST_CODE = 1001;
 
@@ -72,8 +72,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
 
         cursorAdapter = new TaskCursorAdapter(getContext(), null, 0);
-
-
+        
         listOfSelectedId = new ArrayList<>();
         list = (ListView) view.findViewById(R.id.listOverview);
         list.setAdapter(cursorAdapter);
@@ -133,8 +132,7 @@ public class OverviewFragment extends Fragment implements LoaderManager.LoaderCa
                 return true;
             }
         });
-
-
+        
         getActivity().getLoaderManager().initLoader(0, null, this);
 
         return view;

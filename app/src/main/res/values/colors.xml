@@ -4,5 +4,5 @@
     <color name="colorPrimaryDark">#e46533</color>
     <color name="colorAccent">#3faaf7</color>
     <color name="Note">#fff1ae</color>
-    <color name="list_item_text">#333</color>
+    <color name="list_item_text">#63333333</color>
 </resources>

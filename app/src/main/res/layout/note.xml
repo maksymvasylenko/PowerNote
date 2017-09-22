@@ -3,13 +3,15 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              android:padding="16dp"
               android:weightSum="1">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
         android:orientation="vertical">
 
         <EditText
@@ -38,10 +40,12 @@
     <LinearLayout
         android:id="@+id/layout_checklist"
         android:layout_width="wrap_content"
-        android:layout_height="210dp"
+        android:layout_height="200dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_weight="0.00"
         android:background="@color/Note"
         android:elevation="3dp"
@@ -50,17 +54,30 @@
         android:visibility="visible"
         android:weightSum="1">
 
-        <EditText
-            android:id="@+id/et_checklist_input"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:ems="10"
-            android:hint="Enter checklist item"
-            android:inputType="textCapSentences"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_checklist_input"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="Enter checklist item"
+                android:inputType="textCapSentences"/>
+
+            <Button
+                android:id="@+id/bt_add_checklist_item"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_plus"
+                android:backgroundTint="@color/list_item_text"/>
+        </LinearLayout>
 
         <ListView
             android:id="@+id/lv_checklist_edit"
@@ -72,17 +89,20 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:divider="@null"
+            android:fadeScrollbars="true"
+            android:fastScrollAlwaysVisible="false"
             android:fastScrollEnabled="false"
             android:footerDividersEnabled="false"
             android:headerDividersEnabled="false"
             android:isScrollContainer="false"
             android:keepScreenOn="false"
-            android:minHeight="179dp"
+            android:minHeight="178dp"
             android:nestedScrollingEnabled="true"
             android:overScrollMode="ifContentScrolls"
-            android:scrollIndicators="top|bottom"
-            android:scrollbars="none"
-            android:smoothScrollbar="false"/>
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="horizontal|vertical"
+            android:smoothScrollbar="true"
+            android:verticalScrollbarPosition="left"/>
 
     </LinearLayout>
 
@@ -90,9 +110,9 @@
         android:id="@+id/bt_note_edit_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save"
-        android:layout_below="@+id/et_note_edit_text"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="19dp" />
+        android:layout_below="@+id/et_note_edit_text"
+        android:layout_marginTop="19dp"
+        android:text="Save"/>
 
 </LinearLayout>
