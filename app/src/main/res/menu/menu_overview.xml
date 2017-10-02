@@ -8,6 +8,15 @@
         android:icon="@drawable/ic_plus"
         android:title="@string/action_add"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_delete"
+        android:orderInCategory="99"
+        android:icon="@drawable/ic_action_delete"
+        android:title="@string/action_add"
+        android:visible="false"
+        app:showAsAction="always" />
+
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

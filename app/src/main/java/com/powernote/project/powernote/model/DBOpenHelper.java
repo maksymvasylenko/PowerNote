@@ -41,19 +41,24 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public static final String KEY_TASK_EFFORT = "task_effort";
     public static final String KEY_TASK_IMAGE_PATH = "task_image_path";
     public static final String KEY_TASK_CHECKLIST = "task_checklist";
+    public static final String KEY_TASK_BACKGROUNDCOLOR = "task_backgroundcolor";
 
     public static final String[] TASK_ALL_COLUMNS = {KEY_ID,KEY_CREATED_AT,
             KEY_TASK_NAME,KEY_TASK_DESCRIPTION,KEY_TASK_DEADLINE,KEY_TASK_RANK,KEY_TASK_DURATION,
-            KEY_TASK_EFFORT,KEY_TASK_IMAGE_PATH,KEY_TASK_CHECKLIST};
+            KEY_TASK_EFFORT,KEY_TASK_IMAGE_PATH,KEY_TASK_CHECKLIST};//KEY_TASK_BACKGROUNDCOLOR
 
 
     //notes table column names
     public static final String KEY_NOTE_TEXT = "note_text";
     public static final String KEY_NOTE_NAME = "note_name";
     public static final String KEY_NOTE_CHECKLIST = "note_checklist";
+    public static final String KEY_NOTE_IMAGE_PATH = "note_image_path";
+    public static final String KEY_NOTE_BACKGROUNDCOLOR = "note_backgroundcolor";
+
 
     public static final String[] NOTE_ALL_COLUMNS = {KEY_ID,KEY_CREATED_AT,
-            KEY_NOTE_TEXT,KEY_NOTE_NAME,KEY_NOTE_CHECKLIST};
+            KEY_NOTE_TEXT,KEY_NOTE_NAME,KEY_NOTE_CHECKLIST
+            };//,KEY_NOTE_IMAGE_PATH,KEY_NOTE_BACKGROUNDCOLOR
 
 
     //tags table column names
@@ -66,10 +71,6 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     //tasks_tag table column names
     public static final String KEY_TASKSTAGS_TASK_ID = "task_id";
     public static final String KEY_TASKSTAGS_TAG_ID = "tag_id";
-
-    //
-    public static String ARRAY_DIVIDER = "#a1r2ra5yd2iv1i9der";
-    public static String ARRAY_DIVIDER_SECOND = "#d2isdi9dcvra2r2ra5y";
 
     //create table statements
     //Tasks table
@@ -85,7 +86,8 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_NOTES = "CREATE TABLE "
             + TABLE_NOTES + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
             + KEY_NOTE_NAME + " TEXT," + KEY_NOTE_TEXT + " TEXT,"
-            + KEY_CREATED_AT + " INTEGER," + KEY_NOTE_CHECKLIST + " TEXT" + ")";
+            + KEY_CREATED_AT + " INTEGER," + KEY_NOTE_CHECKLIST + " TEXT,"
+            + KEY_TASK_CHECKLIST + " TEXT"+ ")";
 
     //Tags table
     private static final String CREATE_TABLE_TAGS = "CREATE TABLE "

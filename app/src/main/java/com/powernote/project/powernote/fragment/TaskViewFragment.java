@@ -85,7 +85,7 @@ public class TaskViewFragment extends Fragment {
 			// Press edit
 			case R.id.action_edit:
 				// Define a new TaskEditFragment and pass in the bundle from the parent activity
-				Fragment fragmentTaskEdit = new TaskEditFragment();
+				Fragment fragmentTaskEdit = new FragmentTaskEdit();
 				fragmentTaskEdit.setArguments(getArguments());
 				
 				// Replace this fragment with an EditTaskFragment

@@ -1,6 +1,7 @@
 package com.powernote.project.powernote.fragment;
 
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -12,12 +13,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
@@ -44,9 +47,6 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
     private ListView list;
     private CursorAdapter cursorAdapter;
     private TaskAddedCallback addedCallback;
-
-    private MenuItem delete;
-    private boolean boolVisibility = false;
 
 
     @Override
@@ -85,51 +85,52 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
                 myIntent.putExtra(PowerNoteProvider.CONTENT_ITEM_TYPE, id);
                 startActivityForResult(myIntent, EDITOR_REQUEST_CODE);
 
-
-                /*if(cursorAdapter.getItemViewType(position) == 1){
-                    Intent myIntent = new Intent(getActivity(), ActivityEditNote.class);
-                    Note note = (Note) cursorAdapter.getItem(position);
-                    myIntent.putExtra("noteDatabaseID", note.getId());
-                    startActivity(myIntent);
-
-                }else{
-                    Intent myIntent = new Intent(getActivity(), ActivityDetailsTask.class);
-                    Task task = (Task) cursorAdapter.getItem(position);
-                    myIntent.putExtra("taskID", task.getId());
-                    startActivity(myIntent);
-                }*/
             }
         });
 
-        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        list.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-
-
-                Log.e("selectedItems", ":start");
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
                 if(!listOfSelectedId.contains(id)) {
                     listOfSelectedId.add(id);
-                    for (int i = 0; i < listOfSelectedId.size(); i++) {
-                        Log.e("selectedItems", ":" + listOfSelectedId.get(i));
-                    }
-                    view.setBackgroundColor(Color.LTGRAY);
                 }else{
                     listOfSelectedId.remove(listOfSelectedId.indexOf(id));
-                    view.setBackgroundColor(Color.WHITE);
                 }
+            }
 
-
-
-                if(listOfSelectedId.size() == 1) {
-                    boolVisibility = true;
-                    ActivityCompat.invalidateOptionsMenu(getActivity());
-                }else if(listOfSelectedId.size() == 0){
-                    boolVisibility = false;
-                    ActivityCompat.invalidateOptionsMenu(getActivity());
-                }
-
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                mode.getMenuInflater().inflate(R.menu.menu_extra_functions, menu);
                 return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+
+                switch (item.getItemId()) {
+                    // Press delete
+                    case R.id.action_delete:
+                        actionDelete();
+                        mode.finish();
+                        return true;
+                    case R.id.action_change_color:
+                        actionChangeColor();
+                        mode.finish();
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                listOfSelectedId = new ArrayList<>();
             }
         });
         
@@ -137,6 +138,8 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
 
         return view;
     }
+
+
 
     @Override
     public void onResume() {
@@ -177,42 +180,41 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
 
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu( menu, inflater );
-        inflater.inflate( R.menu.menu_overview, menu );
-        delete = menu.findItem(R.id.action_delete);
-        delete.setVisible(boolVisibility);
+    public void actionDelete(){
+        String [] stringList = new String[listOfSelectedId.size()];
 
+        for (int i = 0; i < listOfSelectedId.size(); i++) {
+            stringList[i] = listOfSelectedId.get(i).toString();
+        }
+
+        String noteFilter = DBOpenHelper.KEY_ID + " IN (" + new String(new char[stringList.length-1]).replace("\0", "?,") + "?)";
+
+        getActivity().getContentResolver().delete(PowerNoteProvider.CONTENT_URI_TASKS,
+                noteFilter, stringList);
+
+        listOfSelectedId = new ArrayList<>();
+        restartLoader();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Press delete
-            case R.id.action_delete:
 
-                String [] stringList = new String[listOfSelectedId.size()];
+    public void actionChangeColor(){
 
-                for (int i = 0; i < listOfSelectedId.size(); i++) {
-                    stringList[i] = listOfSelectedId.get(i).toString();
-                }
+        //// TODO: 02.10.2017 implement change color action
+        String [] stringList = new String[listOfSelectedId.size()];
 
-                String noteFilter = DBOpenHelper.KEY_ID + " IN (" + new String(new char[stringList.length-1]).replace("\0", "?,") + "?)";
-
-                getActivity().getContentResolver().delete(PowerNoteProvider.CONTENT_URI_TASKS,
-                        noteFilter, stringList);
-
-                listOfSelectedId = new ArrayList<>();
-
-                boolVisibility = false;
-                ActivityCompat.invalidateOptionsMenu(getActivity());
-
-                restartLoader();
-                break;
-            default:
-                return super.onOptionsItemSelected( item );
+        for (int i = 0; i < listOfSelectedId.size(); i++) {
+            stringList[i] = listOfSelectedId.get(i).toString();
         }
-        return super.onOptionsItemSelected( item );
+
+        String noteFilter = DBOpenHelper.KEY_ID + " IN (" + new String(new char[stringList.length-1]).replace("\0", "?,") + "?)";
+
+        ContentValues values = new ContentValues();
+        values.put(DBOpenHelper.KEY_TASK_NAME, "holly Molly 2");
+
+        getActivity().getContentResolver().update(PowerNoteProvider.CONTENT_URI_TASKS, values,
+                noteFilter, stringList);
+
+        listOfSelectedId = new ArrayList<>();
+        restartLoader();
     }
 }

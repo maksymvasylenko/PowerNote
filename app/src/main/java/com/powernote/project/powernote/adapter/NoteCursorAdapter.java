@@ -1,7 +1,9 @@
 package com.powernote.project.powernote.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +35,7 @@ public class NoteCursorAdapter extends CursorAdapter {
 
         TextView text = (TextView) view.findViewById(R.id.listItemText);
         text.setText(cursor.getString(cursor.getColumnIndex(DBOpenHelper.KEY_NOTE_NAME)));
+
 
     }
 }

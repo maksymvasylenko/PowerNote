@@ -7,14 +7,17 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -35,6 +38,7 @@ import com.powernote.project.powernote.model.ChecklistItem;
 import com.powernote.project.powernote.model.DBOpenHelper;
 import com.powernote.project.powernote.model.TaskAddedCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
@@ -45,6 +49,16 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
     
     private ListView list;
     private CursorAdapter cursorAdapter;
+
+    private List<Long> listOfSelectedId;
+    private boolean boolMultiSelection = false;//boolean if multi selection started
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -58,12 +72,8 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
-    
-    
-        insertNote();
-        insertNote();
-        insertNote();
-        
+
+        listOfSelectedId = new ArrayList<>();
         
 	    cursorAdapter = new NoteCursorAdapter(getContext(), null, 1);
         list = (ListView) view.findViewById(R.id.listOverview);
@@ -72,9 +82,23 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent myIntent = new Intent(getActivity(), NoteActivity.class);
-                myIntent.putExtra(PowerNoteProvider.CONTENT_ITEM_TYPE, id);
-                startActivityForResult(myIntent, NOTE_EDITOR_REQUEST_CODE);
+                if(boolMultiSelection){
+                    selectionOfItem(id, view);
+                }else {
+                    Intent myIntent = new Intent(getActivity(), NoteActivity.class);
+                    myIntent.putExtra(PowerNoteProvider.CONTENT_ITEM_TYPE, id);
+                    startActivityForResult(myIntent, NOTE_EDITOR_REQUEST_CODE);
+                }
+            }
+        });
+
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                selectionOfItem(id, view);
+
+                return true;
             }
         });
         
@@ -82,15 +106,35 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
 
         return view;
     }
-    
-    private void insertNote() {
-        ContentValues values = new ContentValues();
-        values.put(DBOpenHelper.KEY_NOTE_NAME, "title");
-        values.put(DBOpenHelper.KEY_NOTE_TEXT, "description");
-        values.put(DBOpenHelper.KEY_CREATED_AT, 1111);
-        Uri noteUri = getActivity().getContentResolver().insert(PowerNoteProvider.CONTENT_URI_NOTES,
-                values);
-        Log.d("MainActivity", "Inserted note " + noteUri);
+
+    //method for adding and deleting from list Of selected Items
+    //changes background color to grey, activates menu with extra functionality(delete, etc)
+    public void selectionOfItem(long itemId, View clickedView){
+        Log.e("selectedItems", ":start");
+        if(!listOfSelectedId.contains(itemId)) {
+            listOfSelectedId.add(itemId);
+            for (int i = 0; i < listOfSelectedId.size(); i++) {
+                Log.e("selectedItems", ":" + listOfSelectedId.get(i));
+            }
+            clickedView.setBackgroundColor(Color.LTGRAY);
+        }else{
+            listOfSelectedId.remove(listOfSelectedId.indexOf(itemId));
+            clickedView.setBackgroundColor(Color.WHITE);
+        }
+
+        if(listOfSelectedId.size() == 1) {
+            boolMultiSelection = true;
+            ActivityCompat.invalidateOptionsMenu(getActivity());
+        }else if(listOfSelectedId.size() == 0){
+            finishSelectionOfItems();
+        }
+        Log.e("selectedItems", ":" + boolMultiSelection);
+    }
+
+    public void finishSelectionOfItems(){
+        listOfSelectedId = new ArrayList<>();
+        boolMultiSelection = false;
+        ActivityCompat.invalidateOptionsMenu(getActivity());
     }
 
     @Override
@@ -127,5 +171,45 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
         }else{
             Log.e("result act", "reload failed");
         }
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu( menu, inflater );
+        inflater.inflate( R.menu.menu_extra_functions, menu );
+        MenuItem delete = menu.findItem(R.id.action_delete);
+        delete.setVisible(boolMultiSelection);
+        Log.e("create menu", ":" + boolMultiSelection);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Press delete
+            case R.id.action_delete:
+                actionDelete();
+                break;
+            default:
+                return super.onOptionsItemSelected( item );
+        }
+        return super.onOptionsItemSelected( item );
+    }
+
+    public void actionDelete(){
+        String [] stringList = new String[listOfSelectedId.size()];
+
+        for (int i = 0; i < listOfSelectedId.size(); i++) {
+            stringList[i] = listOfSelectedId.get(i).toString();
+        }
+
+        String noteFilter = DBOpenHelper.KEY_ID + " IN (" + new String(new char[stringList.length-1]).replace("\0", "?,") + "?)";
+
+        getActivity().getContentResolver().delete(PowerNoteProvider.CONTENT_URI_NOTES,
+                noteFilter, stringList);
+
+        finishSelectionOfItems();
+
+        restartLoader();
     }
 }

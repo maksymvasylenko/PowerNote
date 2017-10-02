@@ -138,7 +138,7 @@ public class FragmentTaskEdit extends Fragment {
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.edit_task, container, false);
+        final View view = inflater.inflate(R.layout.task_edit, container, false);
 
         lvChecklist = (ListView) view.findViewById(R.id.lv_checklist_edit);
 
@@ -483,10 +483,14 @@ public class FragmentTaskEdit extends Fragment {
         task.setTitle(title.getText().toString());
         task.setDescription(description.getText().toString());
 
-        task.setImagePath(photoURI.toString());
+        if(photoURI != null){
+            task.setImagePath(photoURI.toString());
+            Log.e("imagePath",":" + photoURI.getPath());
+            Log.e("imagePath",":" + photoURI.toString());
+        }
 
-        Log.e("imagePath",":" + photoURI.getPath());
-        Log.e("imagePath",":" + photoURI.toString());
+
+
 
         // TODO: 21.09.2017 implement image and duration
 
