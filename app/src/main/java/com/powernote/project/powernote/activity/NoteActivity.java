@@ -1,10 +1,16 @@
 package com.powernote.project.powernote.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -12,9 +18,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import com.powernote.project.powernote.Methods;
 import com.powernote.project.powernote.PowerNoteProvider;
@@ -24,7 +30,12 @@ import com.powernote.project.powernote.model.ChecklistItem;
 import com.powernote.project.powernote.model.DBOpenHelper;
 import com.powernote.project.powernote.model.Note;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class NoteActivity extends AppCompatActivity {
 	
@@ -34,12 +45,19 @@ public class NoteActivity extends AppCompatActivity {
 	// Storing the note object received from the database
 	private Note note;
 	private ListView lvChecklist;
-	private LinearLayout layoutChecklist;
+	private LinearLayout layoutChecklist, layoutImages;
 	private List<ChecklistItem> items;
 	private Button buttonAddChecklistItem;
 	private long contentType;
 	private EditText title;
 	private EditText text;
+	private ImageView imageView;
+
+
+	//variables for taking photo
+	static final int REQUEST_TAKE_PHOTO = 12364, REQUEST_ADD_PHOTO = 26513;
+
+	private String imagePath = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +67,9 @@ public class NoteActivity extends AppCompatActivity {
 		title = (EditText) findViewById(R.id.et_note_edit_title);
 		text = (EditText) findViewById(R.id.et_note_edit_text);
 		View rootLayout = text.getRootView();
+
+		imageView = (ImageView) findViewById(R.id.image);
+		layoutImages = (LinearLayout) findViewById(R.id.layout_images);
 
 
 
@@ -65,6 +86,11 @@ public class NoteActivity extends AppCompatActivity {
 			cursor.moveToFirst();
 			note = Methods.getNewNote( cursor );
 
+			if(note.getImagePath() != null && !note.getImagePath().isEmpty() ){
+				Methods.setPic(note.getImagePath(), imageView, this);
+				layoutImages.setVisibility( View.VISIBLE );
+			}
+
 			rootLayout.setBackgroundColor(note.getBackgroundColor());
 			title.setText( note.getTitle() );
 			text.setText( note.getDescription() );
@@ -79,6 +105,7 @@ public class NoteActivity extends AppCompatActivity {
 		Log.d("note", note.getTitle());
 		note.setTitle( title.getText().toString() );
 		note.setDescription( text.getText().toString() );
+		note.setImagePath(imagePath);
 		getContentResolver().update( PowerNoteProvider.CONTENT_URI_NOTES, Methods.getNoteValues( note ), noteFilter, null );
 		setResult( RESULT_OK );
 		finish();
@@ -89,6 +116,7 @@ public class NoteActivity extends AppCompatActivity {
 		note.setTitle( title.getText().toString() );
 		Log.d("note", note.getTitle());
 		note.setDescription( text.getText().toString() );
+		note.setImagePath(imagePath);
 		getContentResolver().insert( PowerNoteProvider.CONTENT_URI_NOTES, Methods.getNoteValues( note ) );
 		setResult( RESULT_OK );
 		finish();
@@ -116,12 +144,10 @@ public class NoteActivity extends AppCompatActivity {
 				finish();
 				break;
 			case R.id.action_take_photo:
-				Intent takePictureIntent = new Intent( MediaStore.ACTION_IMAGE_CAPTURE );
-				if(takePictureIntent.resolveActivity( getPackageManager() ) != null) {
-					startActivityForResult( takePictureIntent, 1 );
-				}
+				dispatchTakePictureIntent();
 				break;
 			case R.id.action_add_image:
+				addImageFromGallery();
 				break;
 			case R.id.action_record:
 				break;
@@ -163,4 +189,102 @@ public class NoteActivity extends AppCompatActivity {
 			}
 		} );
 	}
+
+
+
+
+
+
+
+	private void dispatchTakePictureIntent() {
+
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE }, 0);
+		}
+
+		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		// Ensure that there's a camera activity to handle the intent
+		if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+			// Create the File where the photo should go
+			File photoFile = null;
+			try {
+				photoFile = createImageFile();
+			} catch (IOException ex) {
+				// Error occurred while creating the File
+			}
+
+			// Continue only if the File was successfully created
+			if (photoFile != null) {
+				Log.e("dispatch photo ", "" + photoFile.getAbsolutePath());
+				Uri photoURI = FileProvider.getUriForFile(this,
+						"com.powernote.project.powernote.fileprovider",
+						photoFile);
+				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+				startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+			}
+		}
+	}
+
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+			Methods.setPic(imagePath, imageView, this);
+
+
+
+			Log.e("setted picture", "");
+			layoutImages.setVisibility(View.VISIBLE);
+		}else if(requestCode == REQUEST_ADD_PHOTO && resultCode == RESULT_OK){
+			Log.e("add gallery picture", "");
+
+
+			Uri selectedImage = data.getData();
+
+			String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+			Cursor cursor = getContentResolver().query(selectedImage,
+					filePathColumn, null, null, null);
+			cursor.moveToFirst();
+
+			int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+			String picturePath = cursor.getString(columnIndex);
+			cursor.close();
+
+			Methods.setPic(picturePath, imageView, this);
+			imagePath = picturePath;
+			layoutImages.setVisibility(View.VISIBLE);
+		}
+		Log.e("fragment task edit ", "code:" + requestCode);
+
+	}
+
+	private File createImageFile() throws IOException {
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+		String imageFileName = "JPEG_" + timeStamp + "_";
+		File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+		File image = File.createTempFile(
+				imageFileName,  /* prefix */
+				".jpg",         /* suffix */
+				storageDir      /* directory */
+		);
+
+		// Save a file: imagePath for use with ACTION_VIEW intents
+		note.setImagePath(image.getAbsolutePath());
+
+		imagePath = image.getAbsolutePath();
+
+
+		Log.e("test 22:", image.getAbsolutePath());
+		return image;
+	}
+
+	private void addImageFromGallery(){
+		startActivityForResult(
+				new Intent(
+						Intent.ACTION_PICK,
+						android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI
+				), REQUEST_ADD_PHOTO);
+	}
+
 }

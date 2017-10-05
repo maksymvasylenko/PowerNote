@@ -129,12 +129,7 @@ public class FragmentTaskEdit extends Fragment {
                 dispatchTakePictureIntent();
                 break;
             case R.id.action_add_image:
-
-                startActivityForResult(
-                        new Intent(
-                                Intent.ACTION_PICK,
-                                android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI
-                        ), REQUEST_ADD_PHOTO);
+                addImageFromGallery();
                 break;
             case R.id.action_record:
                 break;
@@ -452,7 +447,6 @@ public class FragmentTaskEdit extends Fragment {
             Methods.setPic(imagePath, imageView, getActivity());
 
 
-            galleryAddPic();
 
             Log.e("setted picture", "");
             layoutImages.setVisibility(View.VISIBLE);
@@ -473,18 +467,11 @@ public class FragmentTaskEdit extends Fragment {
             cursor.close();
 
             Methods.setPic(picturePath, imageView, getActivity());
+            imagePath = picturePath;
             layoutImages.setVisibility(View.VISIBLE);
         }
         Log.e("fragment task edit ", "code:" + requestCode);
 
-    }
-
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(imagePath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        getActivity().sendBroadcast(mediaScanIntent);
     }
 
     private File createImageFile() throws IOException {
@@ -505,6 +492,14 @@ public class FragmentTaskEdit extends Fragment {
 
         Log.e("test 22:", image.getAbsolutePath());
         return image;
+    }
+
+    private void addImageFromGallery(){
+        startActivityForResult(
+                new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI
+                ), REQUEST_ADD_PHOTO);
     }
 
 

@@ -183,13 +183,8 @@ public class TaskViewFragment extends Fragment {
 			}
 
 			if(task.getImagePath() != null && !task.getImagePath().isEmpty() ){
-                layoutImage.setVisibility( View.VISIBLE );
-
-
-
                 Methods.setPic(task.getImagePath(), imageView, getActivity());
-
-				//imageView.setImageURI(Uri.parse("com.powernote.project.powernote.fileprovider" + task.getImagePath()));
+                layoutImage.setVisibility( View.VISIBLE );
             }
 
 		}
