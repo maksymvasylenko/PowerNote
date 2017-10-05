@@ -14,20 +14,23 @@ public class Note {
     private Calendar createdAt  = Calendar.getInstance();
     private List<ChecklistItem> checkList = new ArrayList<>();
     private String imagePath = null;
+    private int backgroundColor = -1;
 
-    public Note(long id, String description, long createdAt, String title,List<ChecklistItem> checklist, String imagePath){
+    public Note(long id, String description, long createdAt, String title,List<ChecklistItem> checklist, String imagePath, int backgroundColor){
         this.id = id;
         this.description = description;
         this.createdAt.setTimeInMillis(createdAt);
         this.title = title;
         this.checkList = checklist;
         this.imagePath = imagePath;
+        this.backgroundColor = backgroundColor;
     }
 
     public Note(){
         this.id = -1;
         this.description = null;
         this.title = null;
+        this.backgroundColor = -263685;
     }
 
     public long getId() {
@@ -74,8 +77,15 @@ public class Note {
         this.title = title;
     }
 
-
     public void setCreatedAt(long createdAt) {
         this.createdAt.setTimeInMillis(createdAt);
+    }
+
+    public int getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 }

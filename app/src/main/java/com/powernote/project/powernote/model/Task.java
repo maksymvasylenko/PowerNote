@@ -12,8 +12,8 @@ public class Task extends Note{
     private List<Task> dependencies;
 
     public Task(long id, int rank, String title, String description, long deadline,
-                long createdAt, long duration, int effort, String imagePath, List<ChecklistItem> checklist){
-        super(id, description, createdAt, title, checklist, imagePath);
+                long createdAt, long duration, int effort, String imagePath, List<ChecklistItem> checklist, int backgroundColor){
+        super(id, description, createdAt, title, checklist, imagePath, backgroundColor);
         this.rank = rank;
         this.deadline = deadline;
         this.duration = duration;

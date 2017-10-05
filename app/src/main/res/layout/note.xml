@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:weightSum="1">
+    android:id="@+id/noteActivityRootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,22 +19,18 @@
             android:id="@+id/et_note_edit_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:ems="10"
             android:hint="Title"
             android:inputType="textPersonName"
-            android:textSize="24sp"/>
+            android:textSize="24sp" />
 
         <EditText
             android:id="@+id/et_note_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/et_note_edit_title"
             android:ems="10"
             android:hint="Text"
-            android:inputType="textPersonName"/>
+            android:inputType="textPersonName" />
 
     </LinearLayout>
 
@@ -41,8 +38,6 @@
         android:id="@+id/layout_checklist"
         android:layout_width="wrap_content"
         android:layout_height="200dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
@@ -69,14 +64,14 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:hint="Enter checklist item"
-                android:inputType="textCapSentences"/>
+                android:inputType="textCapSentences" />
 
             <Button
                 android:id="@+id/bt_add_checklist_item"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ic_plus"
-                android:backgroundTint="@color/list_item_text"/>
+                android:backgroundTint="@color/list_item_text" />
         </LinearLayout>
 
         <ListView
@@ -102,17 +97,8 @@
             android:scrollbarStyle="outsideOverlay"
             android:scrollbars="horizontal|vertical"
             android:smoothScrollbar="true"
-            android:verticalScrollbarPosition="left"/>
+            android:verticalScrollbarPosition="left" />
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/bt_note_edit_save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/et_note_edit_text"
-        android:layout_marginTop="19dp"
-        android:text="Save"/>
 
 </LinearLayout>

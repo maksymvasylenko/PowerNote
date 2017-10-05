@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.powernote.project.powernote.Methods;
 import com.powernote.project.powernote.PowerNoteProvider;
@@ -43,11 +44,14 @@ public class NoteActivity extends AppCompatActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate( savedInstanceState );
-		setContentView( R.layout.note );
+		setContentView(R.layout.note);
 		
-		title = (EditText) findViewById( R.id.et_note_edit_title );
-		text = (EditText) findViewById( R.id.et_note_edit_text );
-		
+		title = (EditText) findViewById(R.id.et_note_edit_title);
+		text = (EditText) findViewById(R.id.et_note_edit_text);
+		View rootLayout = text.getRootView();
+
+
+
 		// Get the intent from the parent class, and get the content type
 		Intent intent = getIntent();
 		contentType = intent.getLongExtra( PowerNoteProvider.CONTENT_ITEM_TYPE, -1 );
@@ -60,11 +64,13 @@ public class NoteActivity extends AppCompatActivity {
 			Cursor cursor = getContentResolver().query( uri, DBOpenHelper.NOTE_ALL_COLUMNS, noteFilter, null, null );
 			cursor.moveToFirst();
 			note = Methods.getNewNote( cursor );
+
+			rootLayout.setBackgroundColor(note.getBackgroundColor());
 			title.setText( note.getTitle() );
 			text.setText( note.getDescription() );
+
 		}
-		
-		//todo : fix TimeStamp and add this note to array of notes in PowerNotes
+
 		
 		initializeChecklist();
 	}
@@ -140,7 +146,7 @@ public class NoteActivity extends AppCompatActivity {
 		
 		// Define and set adapter for checklist listView
 		final ChecklistEditAdapter adapter = new ChecklistEditAdapter( getApplicationContext(), R.layout.checklist_item_alt, items );
-		lvChecklist.setAdapter( adapter );
+		//lvChecklist.setAdapter( adapter );
 		
 		buttonAddChecklistItem = (Button) findViewById( R.id.bt_add_checklist_item );
 		

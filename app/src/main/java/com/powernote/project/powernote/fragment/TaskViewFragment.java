@@ -139,6 +139,8 @@ public class TaskViewFragment extends Fragment {
 
 			task = Methods.getNewTask(cursor);
 
+			view.setBackgroundColor(task.getBackgroundColor());
+
 			// If the task contains a checklist
 			if(task.getCheckList() != null) {
 				layoutChecklist.setVisibility( View.VISIBLE );
@@ -184,8 +186,8 @@ public class TaskViewFragment extends Fragment {
                 layoutImage.setVisibility( View.VISIBLE );
 
 
-				Uri imageUri = Uri.parse(task.getImagePath());
-				imageView.setImageURI(imageUri);
+
+                Methods.setPic(task.getImagePath(), imageView, getActivity());
 
 				//imageView.setImageURI(Uri.parse("com.powernote.project.powernote.fileprovider" + task.getImagePath()));
             }

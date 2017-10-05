@@ -1,5 +1,6 @@
 package com.powernote.project.powernote.fragment;
 
+import android.app.Dialog;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -22,8 +24,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.powernote.project.powernote.activity.TaskActivity;
 import com.powernote.project.powernote.PowerNoteProvider;
@@ -111,7 +115,7 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
             }
 
             @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
 
                 switch (item.getItemId()) {
                     // Press delete
@@ -120,8 +124,45 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
                         mode.finish();
                         return true;
                     case R.id.action_change_color:
-                        actionChangeColor();
-                        mode.finish();
+
+
+
+                        final Dialog dialog = new Dialog(getContext());
+                        dialog.setContentView(R.layout.choose_color_dialog);
+                        dialog.setTitle("Choose Color");
+
+                        dialog.show();
+
+                        Button btnGreen = (Button) dialog.findViewById(R.id.colorGreenButton);
+                        Button btnRed = (Button) dialog.findViewById(R.id.colorRedrButton);
+                        Button btnPurple = (Button) dialog.findViewById(R.id.colorPurpleButton);
+
+                        Button btnBlue = (Button) dialog.findViewById(R.id.colorBlueButton);
+                        Button btnDarkBlue = (Button) dialog.findViewById(R.id.colorDarkBlueButton);
+                        Button btnOrange = (Button) dialog.findViewById(R.id.colorOrangeButton);
+
+                        Button btnYellow = (Button) dialog.findViewById(R.id.colorYellowButton);
+                        Button btnPink = (Button) dialog.findViewById(R.id.colorPinkButton);
+                        Button btnWhite = (Button) dialog.findViewById(R.id.colorWhiteButton);
+
+
+                        setColorButton(getResources().getColor(R.color.colorPurple), btnPurple, mode, dialog);
+                        setColorButton(getResources().getColor(R.color.colorRed), btnRed, mode, dialog);
+                        setColorButton(getResources().getColor(R.color.colorGreen), btnGreen, mode, dialog);
+
+                        setColorButton(getResources().getColor(R.color.colorBlue), btnBlue, mode, dialog);
+                        setColorButton(getResources().getColor(R.color.colorDarkBlue), btnDarkBlue, mode, dialog);
+                        setColorButton(getResources().getColor(R.color.colorOrange), btnOrange, mode, dialog);
+
+                        setColorButton(getResources().getColor(R.color.colorYellow), btnYellow, mode, dialog);
+                        setColorButton(getResources().getColor(R.color.colorPink), btnPink, mode, dialog);
+                        setColorButton(getResources().getColor(R.color.colorWhite), btnWhite, mode, dialog);
+
+
+
+                        Log.e("list size:","" + listOfSelectedId.size());
+
+
                         return true;
                     default:
                         return false;
@@ -139,7 +180,25 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
         return view;
     }
 
+    private void setColorButton(final int color, Button btn, final ActionMode mode, final Dialog dialog){
+        GradientDrawable gd = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{color,color});
+        gd.setCornerRadius(100f);
 
+        btn.setBackgroundDrawable(gd);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionChangeColor(color);
+                Log.e("color", "" + color);
+                mode.finish();
+                dialog.cancel();
+            }
+        });
+
+    }
 
     @Override
     public void onResume() {
@@ -187,6 +246,7 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
             stringList[i] = listOfSelectedId.get(i).toString();
         }
 
+
         String noteFilter = DBOpenHelper.KEY_ID + " IN (" + new String(new char[stringList.length-1]).replace("\0", "?,") + "?)";
 
         getActivity().getContentResolver().delete(PowerNoteProvider.CONTENT_URI_TASKS,
@@ -197,19 +257,20 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
 
-    public void actionChangeColor(){
+    public void actionChangeColor(int color){
 
-        //// TODO: 02.10.2017 implement change color action
         String [] stringList = new String[listOfSelectedId.size()];
 
         for (int i = 0; i < listOfSelectedId.size(); i++) {
             stringList[i] = listOfSelectedId.get(i).toString();
         }
+        Log.e("stringList", "" + (stringList.length-1) + ":" + stringList.length + ":" + listOfSelectedId.size());
+
 
         String noteFilter = DBOpenHelper.KEY_ID + " IN (" + new String(new char[stringList.length-1]).replace("\0", "?,") + "?)";
 
         ContentValues values = new ContentValues();
-        values.put(DBOpenHelper.KEY_TASK_NAME, "holly Molly 2");
+        values.put(DBOpenHelper.KEY_BACKGROUNDCOLOR, color);// get color int dynamically
 
         getActivity().getContentResolver().update(PowerNoteProvider.CONTENT_URI_TASKS, values,
                 noteFilter, stringList);

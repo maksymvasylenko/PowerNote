@@ -1,8 +1,13 @@
 package com.powernote.project.powernote;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.widget.ImageView;
 
 import com.powernote.project.powernote.model.ChecklistItem;
 import com.powernote.project.powernote.model.DBOpenHelper;
@@ -18,56 +23,93 @@ import java.util.List;
 
 public class Methods {
 
-    public static String ARRAY_DIVIDER = "#a1r2ra5yd2iv1i9der";
-    public static String ARRAY_DIVIDER_SECOND = "#d2isdi9dcvra2r2ra5y";
+    private static String ARRAY_DIVIDER = "#a1r2ra5yd2iv1i9der";
+    private static String ARRAY_DIVIDER_SECOND = "#d2isdi9dcvra2r2ra5y";
 
     //might need these methods
 
+
+
+
+    public static void setPic(String imagePath, ImageView imageView, Activity activity) {
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
+
+
+
+        // Get the dimensions of the bitmap
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imagePath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+
+        // Determine how much to scale down the image
+        int scaleFactor = Math.min(photoW/width, photoH/height);
+
+        // Decode the image file into a Bitmap sized to fill the View
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
+        imageView.setImageBitmap(bitmap);
+    }
+
+
     static public ContentValues getTaskValues(Task task){
         ContentValues values = new ContentValues();
-        values.put(DBOpenHelper.KEY_TASK_NAME, task.getTitle());
-        values.put(DBOpenHelper.KEY_TASK_DESCRIPTION, task.getDescription());
+        values.put(DBOpenHelper.KEY_NAME, task.getTitle());
+        values.put(DBOpenHelper.KEY_DESCRIPTION, task.getDescription());
         values.put(DBOpenHelper.KEY_TASK_DEADLINE, task.getDeadline());
         values.put(DBOpenHelper.KEY_TASK_RANK, task.getRank());
         values.put(DBOpenHelper.KEY_TASK_DURATION, task.getDuration());
         values.put(DBOpenHelper.KEY_CREATED_AT, task.getCreatedAt().getTimeInMillis());// maybe getter should already return in millis
         values.put(DBOpenHelper.KEY_TASK_EFFORT, task.getEffort());
-        values.put(DBOpenHelper.KEY_TASK_IMAGE_PATH, task.getImagePath());
-        values.put(DBOpenHelper.KEY_TASK_CHECKLIST, serializeChecklist(task.getCheckList()));
+        values.put(DBOpenHelper.KEY_IMAGE_PATH, task.getImagePath());
+        values.put(DBOpenHelper.KEY_CHECKLIST, serializeChecklist(task.getCheckList()));
+        values.put(DBOpenHelper.KEY_BACKGROUNDCOLOR, task.getBackgroundColor());
 
         return values;
     }
 
     static public ContentValues getNoteValues(Note note){
         ContentValues values = new ContentValues();
-        values.put(DBOpenHelper.KEY_NOTE_NAME, note.getTitle());
-        values.put(DBOpenHelper.KEY_NOTE_TEXT, note.getDescription());
+        values.put(DBOpenHelper.KEY_NAME, note.getTitle());
+        values.put(DBOpenHelper.KEY_DESCRIPTION, note.getDescription());
         values.put(DBOpenHelper.KEY_CREATED_AT, note.getCreatedAt().getTimeInMillis());
-        values.put(DBOpenHelper.KEY_NOTE_CHECKLIST, serializeChecklist(note.getCheckList()));
+        values.put(DBOpenHelper.KEY_CHECKLIST, serializeChecklist(note.getCheckList()));
+        values.put(DBOpenHelper.KEY_IMAGE_PATH, note.getImagePath());
+        values.put(DBOpenHelper.KEY_BACKGROUNDCOLOR, note.getBackgroundColor());
         return values;
     }
 
     static public Task getNewTask(Cursor c){
         Task task = new Task(c.getInt(c.getColumnIndex(DBOpenHelper.KEY_ID)),
                 c.getInt(c.getColumnIndex(DBOpenHelper.KEY_TASK_RANK)),
-                c.getString(c.getColumnIndex(DBOpenHelper.KEY_TASK_NAME)),
-                c.getString(c.getColumnIndex(DBOpenHelper.KEY_TASK_DESCRIPTION)),
+                c.getString(c.getColumnIndex(DBOpenHelper.KEY_NAME)),
+                c.getString(c.getColumnIndex(DBOpenHelper.KEY_DESCRIPTION)),
                 c.getLong(c.getColumnIndex(DBOpenHelper.KEY_TASK_DEADLINE)),
                 c.getLong(c.getColumnIndex(DBOpenHelper.KEY_CREATED_AT)),
                 c.getLong(c.getColumnIndex(DBOpenHelper.KEY_TASK_DURATION)),
                 c.getInt(c.getColumnIndex(DBOpenHelper.KEY_TASK_EFFORT)),
-                c.getString(c.getColumnIndex(DBOpenHelper.KEY_TASK_IMAGE_PATH)),
-                deserializeChecklist(c.getString(c.getColumnIndex(DBOpenHelper.KEY_TASK_CHECKLIST))));
+                c.getString(c.getColumnIndex(DBOpenHelper.KEY_IMAGE_PATH)),
+                deserializeChecklist(c.getString(c.getColumnIndex(DBOpenHelper.KEY_CHECKLIST))),
+                c.getInt(c.getColumnIndex(DBOpenHelper.KEY_BACKGROUNDCOLOR)));
         return task;
     }
 
     static public Note getNewNote(Cursor c){
         Note note = new Note(c.getInt(c.getColumnIndex(DBOpenHelper.KEY_ID)),
-                c.getString(c.getColumnIndex(DBOpenHelper.KEY_NOTE_TEXT)),
+                c.getString(c.getColumnIndex(DBOpenHelper.KEY_DESCRIPTION)),
                 c.getLong(c.getColumnIndex(DBOpenHelper.KEY_CREATED_AT)),
-                c.getString(c.getColumnIndex(DBOpenHelper.KEY_NOTE_NAME)),
-                deserializeChecklist(c.getString(c.getColumnIndex(DBOpenHelper.KEY_NOTE_CHECKLIST))),
-                "");//// TODO: 21.09.2017 fix this!!!!!!!!!!!
+                c.getString(c.getColumnIndex(DBOpenHelper.KEY_NAME)),
+                deserializeChecklist(c.getString(c.getColumnIndex(DBOpenHelper.KEY_CHECKLIST))),
+                c.getString(c.getColumnIndex(DBOpenHelper.KEY_IMAGE_PATH)),
+                c.getInt(c.getColumnIndex(DBOpenHelper.KEY_BACKGROUNDCOLOR)));
         return note;
     }
 
@@ -81,7 +123,7 @@ public class Methods {
      * @param items list of checkItems
      * @return Serialized string of checklist items
      */
-    static public String serializeChecklist(List<ChecklistItem> items){
+    private static String serializeChecklist(List<ChecklistItem> items){
         if(items != null) {
             List<String> content = new ArrayList<>();
             for (int i = 0; i < items.size(); i++) {

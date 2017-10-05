@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -61,7 +63,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
-import static android.support.v4.content.FileProvider.getUriForFile;
 
 
 public class FragmentTaskEdit extends Fragment {
@@ -91,8 +92,10 @@ public class FragmentTaskEdit extends Fragment {
     private SimpleDateFormat stf = new SimpleDateFormat("HH:mm", Locale.US);
 
     //variables for taking photo
-    static final int REQUEST_TAKE_PHOTO = 1;
-    Uri photoURI = null;
+    static final int REQUEST_TAKE_PHOTO = 12364, REQUEST_ADD_PHOTO = 26513;
+
+    private String imagePath = null;
+
 
 
     final Calendar calendar = Calendar.getInstance();
@@ -126,6 +129,12 @@ public class FragmentTaskEdit extends Fragment {
                 dispatchTakePictureIntent();
                 break;
             case R.id.action_add_image:
+
+                startActivityForResult(
+                        new Intent(
+                                Intent.ACTION_PICK,
+                                android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI
+                        ), REQUEST_ADD_PHOTO);
                 break;
             case R.id.action_record:
                 break;
@@ -139,6 +148,7 @@ public class FragmentTaskEdit extends Fragment {
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.task_edit, container, false);
+
 
         lvChecklist = (ListView) view.findViewById(R.id.lv_checklist_edit);
 
@@ -258,6 +268,8 @@ public class FragmentTaskEdit extends Fragment {
 
 
             currentTask = Methods.getNewTask(cursor);
+
+            view.setBackgroundColor(currentTask.getBackgroundColor());
 
             // Default items
             title.setText(currentTask.getTitle());
@@ -401,6 +413,9 @@ public class FragmentTaskEdit extends Fragment {
 
 
 
+
+
+
     private void dispatchTakePictureIntent() {
 
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -417,9 +432,11 @@ public class FragmentTaskEdit extends Fragment {
             } catch (IOException ex) {
                 // Error occurred while creating the File
             }
+
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                photoURI = FileProvider.getUriForFile(getContext(),
+                Log.e("dispatch photo ", "" + photoFile.getAbsolutePath());
+                Uri photoURI = FileProvider.getUriForFile(getContext(),
                         "com.powernote.project.powernote.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
@@ -428,12 +445,46 @@ public class FragmentTaskEdit extends Fragment {
         }
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            imageView.setImageURI(photoURI);
+            Methods.setPic(imagePath, imageView, getActivity());
+
+
+            galleryAddPic();
+
+            Log.e("setted picture", "");
+            layoutImages.setVisibility(View.VISIBLE);
+        }else if(requestCode == REQUEST_ADD_PHOTO && resultCode == RESULT_OK){
+            Log.e("add gallery picture", "");
+
+
+            Uri selectedImage = data.getData();
+
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+            Cursor cursor = getActivity().getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            Methods.setPic(picturePath, imageView, getActivity());
             layoutImages.setVisibility(View.VISIBLE);
         }
+        Log.e("fragment task edit ", "code:" + requestCode);
+
+    }
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(imagePath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        getActivity().sendBroadcast(mediaScanIntent);
     }
 
     private File createImageFile() throws IOException {
@@ -446,8 +497,12 @@ public class FragmentTaskEdit extends Fragment {
                 storageDir      /* directory */
         );
 
-        // Save a file: path for use with ACTION_VIEW intents
+        // Save a file: imagePath for use with ACTION_VIEW intents
         currentTask.setImagePath(image.getAbsolutePath());
+
+        imagePath = image.getAbsolutePath();
+
+
         Log.e("test 22:", image.getAbsolutePath());
         return image;
     }
@@ -483,17 +538,16 @@ public class FragmentTaskEdit extends Fragment {
         task.setTitle(title.getText().toString());
         task.setDescription(description.getText().toString());
 
-        if(photoURI != null){
-            task.setImagePath(photoURI.toString());
-            Log.e("imagePath",":" + photoURI.getPath());
-            Log.e("imagePath",":" + photoURI.toString());
+        if(imagePath != null){
+            task.setImagePath(imagePath);
         }
 
 
 
 
-        // TODO: 21.09.2017 implement image and duration
+        // TODO: 21.09.2017 implement duration
 
         return task;
     }
 }
+

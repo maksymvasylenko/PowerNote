@@ -15,9 +15,6 @@
             android:id="@+id/tv_task_view_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
@@ -29,9 +26,6 @@
             android:id="@+id/tv_task_view_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/tv_task_view_title"
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
@@ -42,8 +36,6 @@
             android:id="@+id/ll_task_view_deadline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/linearLayout"
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
@@ -54,9 +46,6 @@
                 android:id="@+id/tv_task_view_deadline_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/tv_task_view_deadline_time"
-                android:layout_alignBottom="@+id/tv_task_view_deadline_time"
-                android:layout_alignStart="@+id/tv_task_view_description"
                 android:text="Tue, Sep 12"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/darker_gray"
@@ -66,8 +55,6 @@
                 android:id="@+id/tv_task_view_deadline_time"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/layout_checklist"
-                android:layout_below="@+id/layout_checklist"
                 android:layout_weight="1"
                 android:text="18:00"
                 android:textAlignment="textEnd"
@@ -80,8 +67,6 @@
             android:id="@+id/layout_checklist"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_below="@+id/tv_task_view_description"
-            android:layout_centerHorizontal="true"
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
@@ -106,8 +91,6 @@
                 android:id="@+id/lv_checklist_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/layout_deadline"
                 android:layout_marginBottom="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
@@ -131,8 +114,6 @@
             android:layout_width="match_parent"
             android:visibility="gone"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:orientation="vertical">
@@ -141,8 +122,6 @@
                 android:id="@+id/priority"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignStart="@+id/pb_effort"
-                android:layout_below="@+id/pb_priority"
                 android:layout_weight="1"
                 android:text="Priority" />
 
@@ -151,8 +130,6 @@
                 style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignEnd="@+id/tv_task_view_deadline_time"
-                android:layout_alignStart="@+id/tv_task_view_deadline_date"
                 android:layout_below="@+id/effort"
                 android:max="3"
                 android:progress="1" />
@@ -161,8 +138,6 @@
                 android:id="@+id/effort"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/tv_task_view_deadline_date"
                 android:layout_weight="1"
                 android:text="Effort" />
 
@@ -172,9 +147,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:max="10"
-                android:layout_alignEnd="@+id/pb_priority"
-                android:layout_alignStart="@+id/pb_priority"
-                android:layout_below="@+id/priority"
                 android:progress="1" />
 
         </LinearLayout>
@@ -183,8 +155,6 @@
             android:id="@+id/layout_images"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/layout_deadline"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:orientation="vertical"
@@ -192,8 +162,6 @@
 
             <ImageView
                 android:id="@+id/image"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@+id/layout_deadline"
                 android:layout_width="match_parent"
                 android:src="@drawable/ic_document_red"
                 android:layout_height="wrap_content" />

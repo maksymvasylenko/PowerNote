@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.powernote.project.powernote.PowerNoteProvider;
 import com.powernote.project.powernote.R;
@@ -53,5 +54,14 @@ public class TaskActivity extends AppCompatActivity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
+	}
+
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		Log.e("task activity ", "code:" + requestCode);
+
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 }

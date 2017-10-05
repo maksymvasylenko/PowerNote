@@ -49,41 +49,6 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        // Init Floating Action Button
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-//                builder.setTitle("Create");
-//                builder.setMessage("What do you want to create?");
-//                builder.setNegativeButton("Note",
-//                        new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog,
-//                                                int which) {
-//                                Intent myIntent = new Intent(MainActivity.this, NoteActivity.class);
-//                                //myIntent.putExtra("action", -1);
-//                                notesFragment.startActivityForResult(myIntent, NOTE_EDITOR_REQUEST_CODE);
-//                            }
-//                        });
-//                builder.setPositiveButton("Task",
-//                        new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog,
-//                                                int which) {
-//                                Intent myIntent = new Intent(MainActivity.this, TaskActivity.class);
-//                                //myIntent.putExtra("action", -1);
-//                                taskListFragment.startActivityForResult(myIntent, EDITOR_REQUEST_CODE);
-//                            }
-//                        });
-//                builder.setNeutralButton("CANCEL",
-//                        new DialogInterface.OnClickListener() {
-//                            public void onClick(DialogInterface dialog,
-//                                                int which) {
-//                            }
-//                        });
-//                builder.show();
-//            }
-//        });
     }
 
     @Override

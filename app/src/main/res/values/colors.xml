@@ -2,8 +2,27 @@
 <resources>
     <color name="colorPrimary">#f7713c</color>
     <color name="colorPrimaryDark">#e46533</color>
-    <color name="colorAccent">#3faaf7</color>
+    <color name="colorAccent">#c83faaf7</color>
     <color name="Note">#fff1ae</color>
     <color name="list_item_text">#63333333</color>
-    <color name="selectedItem">#3faaf7</color>
+
+
+    <color name="colorSelected">#b4c9c7c9</color>
+    <color name="colorSelectedBorder">#696569</color>
+
+    <color name="colorRed">#ff8980</color>
+    <color name="colorRed2">#d03427</color>
+    <color name="colorGreen">#ccff91</color>
+    <color name="colorGreen2">#749a48</color>
+    <color name="colorPurple">#b288ff</color>
+    <color name="colorPurple2">#483669</color>
+
+    <color name="colorOrange">#fed17f</color>
+    <color name="colorYellow">#fffe8e</color>
+    <color name="colorBlue">#a6feec</color>
+    <color name="colorDarkBlue">#82b0fd</color>
+    <color name="colorPink">#f7bad0</color>
+    <color name="colorWhite">#fbf9fb</color>
+
+    178,136,255)
 </resources>
