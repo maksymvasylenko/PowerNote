@@ -22,7 +22,7 @@ public class Task extends Note{
 
     public Task(){}
 
-    public double getDuration() {
+    public long getDuration() {
         return duration;
     }
 

@@ -61,6 +61,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -72,14 +73,15 @@ public class FragmentTaskEdit extends Fragment {
     private ChecklistEditAdapter adapter;
     private List items;
 
-    private Switch swDeadline, swChecklist, swEffort;
+    private Switch swDeadline, swChecklist, swEffort, swDuration;
 
-    private LinearLayout layoutChecklist, layoutDeadline, layoutEffort, layoutImages;
+    private LinearLayout layoutChecklist, layoutDeadline,
+            layoutEffort, layoutImages, layoutDuration;
 
     private ImageView imageView;
     private TextView tvTime, tvDate;
 
-    private EditText title, description;
+    private EditText title, description, durationHours, durationMinutes;
     private SeekBar effort, priority;
 
     private Button saveButton;
@@ -154,6 +156,9 @@ public class FragmentTaskEdit extends Fragment {
         priority = (SeekBar) view.findViewById(R.id.sb_priority);
         saveButton = (Button) view.findViewById(R.id.bt_task_edit_save);
 
+        durationHours = (EditText) view.findViewById(R.id.et_task_edit_duration_hours);
+        durationMinutes = (EditText) view.findViewById(R.id.et_task_edit_duration_minutes);
+
         imageView = (ImageView) view.findViewById(R.id.image);
         layoutImages = (LinearLayout) view.findViewById(R.id.layout_images);
 
@@ -166,11 +171,13 @@ public class FragmentTaskEdit extends Fragment {
         swChecklist = (Switch) view.findViewById(R.id.sw_checklist);
         swEffort = (Switch) view.findViewById(R.id.sw_effort);
         swDeadline = (Switch) view.findViewById(R.id.sw_deadline);
+        swDuration = (Switch) view.findViewById(R.id.sw_duration);
 
         // Layouts (containers for items that can be switched on or off)
         layoutChecklist = (LinearLayout) view.findViewById(R.id.layout_checklist);
         layoutEffort = (LinearLayout) view.findViewById(R.id.layout_effort);
         layoutDeadline = (LinearLayout) view.findViewById(R.id.layout_deadline);
+        layoutDuration = (LinearLayout) view.findViewById(R.id.layout_duration);
 
 
         updateDeadlineTimeText(calendar);
@@ -211,6 +218,19 @@ public class FragmentTaskEdit extends Fragment {
                     chooseDeadline();
                 } else {
                     layoutDeadline.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        swDuration.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    Log.e("swDuration", " on");
+                    layoutDuration.setVisibility(View.VISIBLE);
+                } else {
+                    Log.e("swDuration", " off");
+                    layoutDuration.setVisibility(View.GONE);
                 }
             }
         });
@@ -289,6 +309,7 @@ public class FragmentTaskEdit extends Fragment {
                 updateDeadlineTimeText(calendar);
             }
 
+            //image
             if(currentTask.getImagePath() != null && !currentTask.getImagePath().isEmpty()){
 
                 layoutImages.setVisibility(View.VISIBLE);
@@ -296,11 +317,26 @@ public class FragmentTaskEdit extends Fragment {
                 imageView.setImageURI(imageUri);
             }
 
+            //duration
+            if (currentTask.getDuration() != -1) {
+                layoutDuration.setVisibility(View.VISIBLE);
+
+                long duration = currentTask.getDuration();
+
+                long hourConverted = TimeUnit.MILLISECONDS.toHours(duration);
+                long minConverted = TimeUnit.MILLISECONDS.toMinutes(duration) -
+                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration));
+
+                durationHours.setText(String.valueOf(hourConverted));
+                durationMinutes.setText(String.valueOf(minConverted));
+
+            }
+
+
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    //TODO fix updating
                     getActivity().getContentResolver().update(PowerNoteProvider.CONTENT_URI_TASKS,
                             Methods.getTaskValues(getTheCurrentSelectedData(currentTask)),noteFilter, null);
 
@@ -538,9 +574,45 @@ public class FragmentTaskEdit extends Fragment {
         }
 
 
+        if(swDuration.isChecked()){
+            // TODO: 21.09.2017 implement duration
+
+            int hours = 0;
+            if(!durationHours.getText().toString().isEmpty()){
+                hours = Integer.parseInt(durationHours.getText().toString());
+            }
+
+            int min = 0;
+            if(!durationHours.getText().toString().isEmpty()){
+                min = Integer.parseInt(durationMinutes.getText().toString());
+            }
 
 
-        // TODO: 21.09.2017 implement duration
+
+            long h = TimeUnit.MILLISECONDS.convert(hours, TimeUnit.HOURS);
+            long m = TimeUnit.MILLISECONDS.convert(min, TimeUnit.MINUTES);
+
+            long t = m + h;
+            Log.e("duration hours", ":" + h);
+            Log.e("duration min", ":" + m);
+            Log.e("duration total", ":" + t);
+
+
+
+
+            long hourConverted = TimeUnit.MILLISECONDS.toHours(t);
+            long minConverted = TimeUnit.MILLISECONDS.toMinutes(t) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(t));
+
+            Log.e("duration hour converted", ":" + hourConverted);
+            Log.e("duration min converted", ":" + minConverted);
+
+
+
+            task.setDuration(t);
+        }else{
+            task.setDuration(-1);
+        }
+
 
         return task;
     }

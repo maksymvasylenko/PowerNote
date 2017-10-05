@@ -92,6 +92,17 @@
                     android:textIsSelectable="false"
                     android:textStyle="italic" />
 
+                <Switch
+                    android:id="@+id/sw_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:splitTrack="false"
+                    android:text="Duration"
+                    android:textAlignment="center"
+                    android:textIsSelectable="false"
+                    android:textStyle="italic" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -245,11 +256,52 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layout_images"
+                android:id="@+id/layout_duration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_below="@id/layout_deadline"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/et_task_edit_duration_hours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="0"
+                    android:inputType="number"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="hour(s)"
+                    android:textAlignment="textStart"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/et_task_edit_duration_minutes"
+                    android:layout_width="wrap_content"
+                    android:hint="0"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="minute(s)"
+                    android:textAlignment="textStart"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_images"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/layout_duration"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:orientation="vertical"

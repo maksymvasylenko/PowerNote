@@ -157,6 +157,90 @@
             </LinearLayout>
 
             <LinearLayout
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:id="@+id/ll_task_view_duration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Completed"
+                    android:gravity="center"
+                    android:textSize="25sp" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:gravity="center"
+                    android:layout_marginRight="16dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_marginStart="10dp"
+                        android:id="@+id/tv_task_view_duration_hours"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="textStart"
+                        android:textSize="22sp"
+                        android:text="0"/>
+
+                    <TextView
+                        android:layout_marginStart="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="hour(s)"
+                        android:textSize="22sp" />
+
+                    <TextView
+                        android:layout_marginStart="10dp"
+                        android:id="@+id/tv_task_view_duration_minutes"
+                        android:layout_width="wrap_content"
+                        android:text="0"
+                        android:textSize="22sp"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginStart="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="textEnd"
+                        android:text="minute(s)"
+                        android:textSize="22sp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_marginTop="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Completed"
+                    android:gravity="center"
+                    android:textSize="20sp" />
+
+                <ProgressBar
+                    android:id="@+id/pb_duration_completed"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progress="0" />
+
+                <Button
+                    android:id="@+id/bt_task_view_start_working"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Start working" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/layout_images"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

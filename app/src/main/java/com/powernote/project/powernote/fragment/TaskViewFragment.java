@@ -1,5 +1,6 @@
 package com.powernote.project.powernote.fragment;
 
+import android.app.Dialog;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,6 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -38,6 +40,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -45,13 +48,13 @@ public class TaskViewFragment extends Fragment {
 	private ChecklistViewAdapter adapter;
 	private ListView lvCheckist;
 	
-	private LinearLayout layoutChecklist;
-	private LinearLayout layoutDeadline;
-	private LinearLayout layoutEffort;
-    private LinearLayout layoutImage;
+	private LinearLayout layoutChecklist,layoutDeadline,
+			layoutEffort, layoutImage, layoutDuration;
 	
-	private TextView tvTime;
-	private TextView tvDate;
+	private TextView tvTime, tvDate, tvDurationHours, tvDurationMinutes;
+
+	private Button btnStartWorking;
+	private ProgressBar pbDurationComplet;
 
 	private Task task;
 
@@ -113,11 +116,21 @@ public class TaskViewFragment extends Fragment {
 		
 		tvDate = (TextView) view.findViewById( R.id.tv_task_view_deadline_date );
 		tvTime = (TextView) view.findViewById( R.id.tv_task_view_deadline_time );
+
+
+		//duration xml views
+		tvDurationHours = (TextView) view.findViewById( R.id.tv_task_view_duration_hours );
+		tvDurationMinutes = (TextView) view.findViewById( R.id.tv_task_view_duration_minutes );
+		btnStartWorking = (Button) view.findViewById(R.id.bt_task_view_start_working);
+		layoutDuration = (LinearLayout) view.findViewById( R.id.ll_task_view_duration );
+		pbDurationComplet = (ProgressBar) view.findViewById(R.id.pb_duration_completed);
+
 		
 		layoutEffort = (LinearLayout) view.findViewById( R.id.ll_task_view_effort_priority );
 		layoutDeadline = (LinearLayout) view.findViewById( R.id.ll_task_view_deadline );
 		layoutChecklist = (LinearLayout) view.findViewById( R.id.layout_checklist );
         layoutImage = (LinearLayout) view.findViewById( R.id.layout_images );
+
 
 
         ImageView imageView = (ImageView) view.findViewById( R.id.image );
@@ -186,6 +199,31 @@ public class TaskViewFragment extends Fragment {
                 Methods.setPic(task.getImagePath(), imageView, getActivity());
                 layoutImage.setVisibility( View.VISIBLE );
             }
+
+            if(task.getDuration() != -1){
+				layoutDuration.setVisibility( View.VISIBLE );
+
+				long duration = task.getDuration();
+
+				long hourConverted = TimeUnit.MILLISECONDS.toHours(duration);
+				long minConverted = TimeUnit.MILLISECONDS.toMinutes(duration) -
+						TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration));
+
+				tvDurationHours.setText(String.valueOf(hourConverted));
+				tvDurationMinutes.setText(String.valueOf(minConverted));
+
+				btnStartWorking.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						final Dialog dialog = new Dialog(getContext());
+						dialog.setContentView(R.layout.start_working_stopwatch);
+						dialog.setTitle("Working for ...");
+
+						dialog.show();
+					}
+				});
+
+			}
 
 		}
 
