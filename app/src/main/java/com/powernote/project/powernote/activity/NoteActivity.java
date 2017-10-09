@@ -1,9 +1,12 @@
 package com.powernote.project.powernote.activity;
 
 import android.Manifest;
+import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +37,7 @@ import com.powernote.project.powernote.model.Note;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -52,6 +57,7 @@ public class NoteActivity extends AppCompatActivity {
 	private EditText title;
 	private EditText text;
 	private ImageView imageView;
+	private View rootLayout;
 
 
 	//variables for taking photo
@@ -66,7 +72,7 @@ public class NoteActivity extends AppCompatActivity {
 		
 		title = (EditText) findViewById(R.id.et_note_edit_title);
 		text = (EditText) findViewById(R.id.et_note_edit_text);
-		View rootLayout = text.getRootView();
+		rootLayout = text.getRootView();
 
 		imageView = (ImageView) findViewById(R.id.image);
 		layoutImages = (LinearLayout) findViewById(R.id.layout_images);
@@ -142,6 +148,9 @@ public class NoteActivity extends AppCompatActivity {
 				getContentResolver().delete( PowerNoteProvider.CONTENT_URI_NOTES, noteFilter, null );
 				setResult( RESULT_OK );
 				finish();
+				break;
+			case R.id.action_change_color:
+				changingColorDialog();
 				break;
 			case R.id.action_take_photo:
 				dispatchTakePictureIntent();
@@ -285,6 +294,62 @@ public class NoteActivity extends AppCompatActivity {
 						Intent.ACTION_PICK,
 						android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI
 				), REQUEST_ADD_PHOTO);
+	}
+
+
+	private void changingColorDialog(){
+		final Dialog dialog = new Dialog(this);
+		dialog.setContentView(R.layout.choose_color_dialog);
+		dialog.setTitle("Choose Color");
+
+		dialog.show();
+
+		Button btnGreen = (Button) dialog.findViewById(R.id.colorGreenButton);
+		Button btnRed = (Button) dialog.findViewById(R.id.colorRedrButton);
+		Button btnPurple = (Button) dialog.findViewById(R.id.colorPurpleButton);
+
+		Button btnBlue = (Button) dialog.findViewById(R.id.colorBlueButton);
+		Button btnDarkBlue = (Button) dialog.findViewById(R.id.colorDarkBlueButton);
+		Button btnOrange = (Button) dialog.findViewById(R.id.colorOrangeButton);
+
+		Button btnYellow = (Button) dialog.findViewById(R.id.colorYellowButton);
+		Button btnPink = (Button) dialog.findViewById(R.id.colorPinkButton);
+		Button btnWhite = (Button) dialog.findViewById(R.id.colorWhiteButton);
+
+
+		setColorButton(getResources().getColor(R.color.colorPurple), btnPurple, dialog);
+		setColorButton(getResources().getColor(R.color.colorRed), btnRed, dialog);
+		setColorButton(getResources().getColor(R.color.colorGreen), btnGreen, dialog);
+
+		setColorButton(getResources().getColor(R.color.colorBlue), btnBlue, dialog);
+		setColorButton(getResources().getColor(R.color.colorDarkBlue), btnDarkBlue, dialog);
+		setColorButton(getResources().getColor(R.color.colorOrange), btnOrange, dialog);
+
+		setColorButton(getResources().getColor(R.color.colorYellow), btnYellow, dialog);
+		setColorButton(getResources().getColor(R.color.colorPink), btnPink, dialog);
+		setColorButton(getResources().getColor(R.color.colorWhite), btnWhite, dialog);
+
+
+	}
+
+	private void setColorButton(final int color, Button btn, final Dialog dialog){
+		GradientDrawable gd = new GradientDrawable(
+				GradientDrawable.Orientation.TOP_BOTTOM,
+				new int[]{color,color});
+		gd.setCornerRadius(100f);
+
+		btn.setBackgroundDrawable(gd);
+
+		btn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				note.setBackgroundColor(color);
+				rootLayout.setBackgroundColor(note.getBackgroundColor());
+				Log.e("color", "" + color);
+				dialog.cancel();
+			}
+		});
+
 	}
 
 }

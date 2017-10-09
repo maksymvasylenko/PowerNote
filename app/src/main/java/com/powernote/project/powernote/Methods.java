@@ -72,6 +72,7 @@ public class Methods {
         values.put(DBOpenHelper.KEY_IMAGE_PATH, task.getImagePath());
         values.put(DBOpenHelper.KEY_CHECKLIST, serializeChecklist(task.getCheckList()));
         values.put(DBOpenHelper.KEY_BACKGROUNDCOLOR, task.getBackgroundColor());
+        values.put(DBOpenHelper.KEY_TASK_SPEND, task.getSpend());
 
         return values;
     }
@@ -98,7 +99,8 @@ public class Methods {
                 c.getInt(c.getColumnIndex(DBOpenHelper.KEY_TASK_EFFORT)),
                 c.getString(c.getColumnIndex(DBOpenHelper.KEY_IMAGE_PATH)),
                 deserializeChecklist(c.getString(c.getColumnIndex(DBOpenHelper.KEY_CHECKLIST))),
-                c.getInt(c.getColumnIndex(DBOpenHelper.KEY_BACKGROUNDCOLOR)));
+                c.getInt(c.getColumnIndex(DBOpenHelper.KEY_BACKGROUNDCOLOR)),
+                c.getLong(c.getColumnIndex(DBOpenHelper.KEY_TASK_SPEND)));
         return task;
     }
 

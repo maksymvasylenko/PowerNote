@@ -169,7 +169,7 @@
                     android:layout_marginTop="15dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Completed"
+                    android:text="Duration"
                     android:gravity="center"
                     android:textSize="25sp" />
 
@@ -220,9 +220,9 @@
                     android:layout_marginTop="15dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Completed"
+                    android:text="Spend:"
                     android:gravity="center"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
                 <ProgressBar
                     android:id="@+id/pb_duration_completed"

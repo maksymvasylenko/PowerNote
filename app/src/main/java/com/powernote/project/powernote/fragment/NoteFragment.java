@@ -191,7 +191,6 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
             @Override
             public void onClick(View v) {
                 actionChangeColor(color);
-                Log.e("color", "" + color);
                 mode.finish();
                 dialog.cancel();
             }
@@ -258,7 +257,6 @@ public class NoteFragment extends Fragment implements LoaderManager.LoaderCallba
         for (int i = 0; i < listOfSelectedId.size(); i++) {
             stringList[i] = listOfSelectedId.get(i).toString();
         }
-        Log.e("stringList", "" + (stringList.length-1) + ":" + stringList.length + ":" + listOfSelectedId.size());
 
 
         String noteFilter = DBOpenHelper.KEY_ID + " IN (" + new String(new char[stringList.length-1]).replace("\0", "?,") + "?)";

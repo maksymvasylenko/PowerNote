@@ -1,11 +1,14 @@
 package com.powernote.project.powernote.fragment;
 
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -33,6 +36,8 @@ import com.powernote.project.powernote.model.Task;
 import com.powernote.project.powernote.adapter.ChecklistViewAdapter;
 import com.powernote.project.powernote.R;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -55,6 +60,8 @@ public class TaskViewFragment extends Fragment {
 
 	private Button btnStartWorking;
 	private ProgressBar pbDurationComplet;
+
+	private View view;
 
 	private Task task;
 
@@ -96,6 +103,9 @@ public class TaskViewFragment extends Fragment {
 						// Add the fragment to the backStack to be popped later by the parent activity
 						.addToBackStack( null ).commit();
 				break;
+			case R.id.action_change_color:
+				changingColorDialog();
+				break;
 			default:
 				return super.onOptionsItemSelected( item );
 		}
@@ -105,7 +115,7 @@ public class TaskViewFragment extends Fragment {
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		View view = inflater.inflate( R.layout.task_view, container, false );
+		view = inflater.inflate( R.layout.task_view, container, false );
 		
 		lvCheckist = (ListView) view.findViewById( R.id.lv_checklist_view );
 		
@@ -140,7 +150,7 @@ public class TaskViewFragment extends Fragment {
 
 
 			long id = getArguments().getLong(PowerNoteProvider.CONTENT_ITEM_TYPE);
-			Uri uri = Uri.parse(PowerNoteProvider.CONTENT_URI_TASKS + "/" + id);
+			final Uri uri = Uri.parse(PowerNoteProvider.CONTENT_URI_TASKS + "/" + id);
 
 
 
@@ -203,7 +213,7 @@ public class TaskViewFragment extends Fragment {
             if(task.getDuration() != -1){
 				layoutDuration.setVisibility( View.VISIBLE );
 
-				long duration = task.getDuration();
+				final long duration = task.getDuration();
 
 				long hourConverted = TimeUnit.MILLISECONDS.toHours(duration);
 				long minConverted = TimeUnit.MILLISECONDS.toMinutes(duration) -
@@ -212,12 +222,42 @@ public class TaskViewFragment extends Fragment {
 				tvDurationHours.setText(String.valueOf(hourConverted));
 				tvDurationMinutes.setText(String.valueOf(minConverted));
 
+
+
+				Log.e("spend millis",":"+ task.getSpend());
+				long spendInPercentages= (task.getSpend()*100)/(duration);
+				int spendInPercentagesInt = ((Number)spendInPercentages).intValue();
+				pbDurationComplet.setProgress(spendInPercentagesInt);
+
 				btnStartWorking.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						final Dialog dialog = new Dialog(getContext());
 						dialog.setContentView(R.layout.start_working_stopwatch);
 						dialog.setTitle("Working for ...");
+
+
+						TextView tvSecondsLeft = (TextView) dialog.findViewById(R.id.tv_seconds_left);
+						ProgressBar pbCompleted = (ProgressBar) dialog.findViewById(R.id.pb_stopwatch_dialog_duration_completed);
+						Button btnStop = (Button) dialog.findViewById(R.id.btn_stopwatch_dialog_stop_working);
+
+						tvSecondsLeft.setText("0 left");
+
+						Log.e("millis left", "" + (task.getDuration() - task.getSpend()));
+						final MyCountDownTimer myCountDownTimer = new MyCountDownTimer(task.getDuration() - task.getSpend(), 1000, duration, pbCompleted, tvSecondsLeft);
+						myCountDownTimer.start();
+
+						btnStop.setOnClickListener(new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+
+								myCountDownTimer.cancel();
+
+								saveSpendTime(myCountDownTimer.getMillisSpend());
+
+								dialog.cancel();
+							}
+						});
 
 						dialog.show();
 					}
@@ -228,6 +268,130 @@ public class TaskViewFragment extends Fragment {
 		}
 
 		return view;
+	}
+
+	public class MyCountDownTimer extends CountDownTimer {
+
+		private long millisUntilFinished, millisInFuture, duration, spendBefore;
+		private ProgressBar progressBar;
+		private TextView seconds;
+
+
+
+		public MyCountDownTimer(long millisInFuture, long countDownInterval, long duration, ProgressBar progressBar, TextView seconds) {
+			super(millisInFuture, countDownInterval);
+			this.millisInFuture = millisInFuture;
+			this.progressBar = progressBar;
+			this.seconds = seconds;
+			this.duration = duration;
+			this.spendBefore = this.duration - this.millisInFuture;
+		}
+
+		@Override
+		public void onTick(long millisUntilFinished) {
+
+			this.millisUntilFinished = millisUntilFinished;
+
+			long spendMillis = duration - millisUntilFinished;
+			long spendInPercentages = (spendMillis*100)/(duration);
+			int spendInPercentagesInt = ((Number)spendInPercentages).intValue();
+
+			seconds.setText(millisUntilFinished/1000 + " sec left");
+			progressBar.setProgress(spendInPercentagesInt);
+		}
+
+		@Override
+		public void onFinish() {
+			seconds.setText("Congrats! you are dumbass");
+			saveSpendTime(getMillisSpend());
+		}
+
+		public long getMillisSpend() {
+			return spendBefore + (millisInFuture - millisUntilFinished);
+		}
+	}
+
+
+	private void changingColorDialog(){
+		final Dialog dialog = new Dialog(getContext());
+		dialog.setContentView(R.layout.choose_color_dialog);
+		dialog.setTitle("Choose Color");
+
+		dialog.show();
+
+		Button btnGreen = (Button) dialog.findViewById(R.id.colorGreenButton);
+		Button btnRed = (Button) dialog.findViewById(R.id.colorRedrButton);
+		Button btnPurple = (Button) dialog.findViewById(R.id.colorPurpleButton);
+
+		Button btnBlue = (Button) dialog.findViewById(R.id.colorBlueButton);
+		Button btnDarkBlue = (Button) dialog.findViewById(R.id.colorDarkBlueButton);
+		Button btnOrange = (Button) dialog.findViewById(R.id.colorOrangeButton);
+
+		Button btnYellow = (Button) dialog.findViewById(R.id.colorYellowButton);
+		Button btnPink = (Button) dialog.findViewById(R.id.colorPinkButton);
+		Button btnWhite = (Button) dialog.findViewById(R.id.colorWhiteButton);
+
+
+		setColorButton(getResources().getColor(R.color.colorPurple), btnPurple, dialog);
+		setColorButton(getResources().getColor(R.color.colorRed), btnRed, dialog);
+		setColorButton(getResources().getColor(R.color.colorGreen), btnGreen, dialog);
+
+		setColorButton(getResources().getColor(R.color.colorBlue), btnBlue, dialog);
+		setColorButton(getResources().getColor(R.color.colorDarkBlue), btnDarkBlue, dialog);
+		setColorButton(getResources().getColor(R.color.colorOrange), btnOrange, dialog);
+
+		setColorButton(getResources().getColor(R.color.colorYellow), btnYellow, dialog);
+		setColorButton(getResources().getColor(R.color.colorPink), btnPink, dialog);
+		setColorButton(getResources().getColor(R.color.colorWhite), btnWhite, dialog);
+
+
+	}
+
+	private void setColorButton(final int color, Button btn, final Dialog dialog){
+		GradientDrawable gd = new GradientDrawable(
+				GradientDrawable.Orientation.TOP_BOTTOM,
+				new int[]{color,color});
+		gd.setCornerRadius(100f);
+
+		btn.setBackgroundDrawable(gd);
+
+		btn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				saveBackgroundColor(color);
+				dialog.cancel();
+			}
+		});
+
+	}
+
+	private void saveBackgroundColor(int color){
+
+		task.setBackgroundColor(color);
+		view.setBackgroundColor(task.getBackgroundColor());
+
+		ContentValues values = new ContentValues();
+		values.put(DBOpenHelper.KEY_BACKGROUNDCOLOR, color);
+
+		getActivity().getContentResolver().update(PowerNoteProvider.CONTENT_URI_TASKS, values,
+				noteFilter, null);
+
+		getActivity().setResult(RESULT_OK);
+	}
+
+	private void saveSpendTime(long millisSpend){
+
+		task.setSpend(millisSpend);
+
+		long spendInPercentages= (task.getSpend()*100)/(task.getDuration());
+		int spendInPercentagesInt = ((Number)spendInPercentages).intValue();
+		pbDurationComplet.setProgress(spendInPercentagesInt);
+
+		ContentValues values = new ContentValues();
+		values.put(DBOpenHelper.KEY_TASK_SPEND, millisSpend);
+
+		getActivity().getContentResolver().update(PowerNoteProvider.CONTENT_URI_TASKS, values,
+				noteFilter, null);
 	}
 
 	@Override

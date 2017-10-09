@@ -125,8 +125,6 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
                         return true;
                     case R.id.action_change_color:
 
-
-
                         final Dialog dialog = new Dialog(getContext());
                         dialog.setContentView(R.layout.choose_color_dialog);
                         dialog.setTitle("Choose Color");
@@ -157,11 +155,6 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
                         setColorButton(getResources().getColor(R.color.colorYellow), btnYellow, mode, dialog);
                         setColorButton(getResources().getColor(R.color.colorPink), btnPink, mode, dialog);
                         setColorButton(getResources().getColor(R.color.colorWhite), btnWhite, mode, dialog);
-
-
-
-                        Log.e("list size:","" + listOfSelectedId.size());
-
 
                         return true;
                     default:
@@ -239,7 +232,7 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
 
     }
 
-    public void actionDelete(){
+    private void actionDelete(){
         String [] stringList = new String[listOfSelectedId.size()];
 
         for (int i = 0; i < listOfSelectedId.size(); i++) {
@@ -257,7 +250,7 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
 
-    public void actionChangeColor(int color){
+    private void actionChangeColor(int color){
 
         String [] stringList = new String[listOfSelectedId.size()];
 
@@ -270,7 +263,7 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
         String noteFilter = DBOpenHelper.KEY_ID + " IN (" + new String(new char[stringList.length-1]).replace("\0", "?,") + "?)";
 
         ContentValues values = new ContentValues();
-        values.put(DBOpenHelper.KEY_BACKGROUNDCOLOR, color);// get color int dynamically
+        values.put(DBOpenHelper.KEY_BACKGROUNDCOLOR, color);
 
         getActivity().getContentResolver().update(PowerNoteProvider.CONTENT_URI_TASKS, values,
                 noteFilter, stringList);

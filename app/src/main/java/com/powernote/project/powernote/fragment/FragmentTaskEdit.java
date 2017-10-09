@@ -2,6 +2,7 @@ package com.powernote.project.powernote.fragment;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -86,6 +88,8 @@ public class FragmentTaskEdit extends Fragment {
 
     private Button saveButton;
 
+    private View view;
+
     private TaskAddedCallback addedCallback;
 
     private Task currentTask;
@@ -133,7 +137,8 @@ public class FragmentTaskEdit extends Fragment {
             case R.id.action_add_image:
                 addImageFromGallery();
                 break;
-            case R.id.action_record:
+            case R.id.action_change_color:
+                changingColorDialog();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -144,7 +149,7 @@ public class FragmentTaskEdit extends Fragment {
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.task_edit, container, false);
+        view = inflater.inflate(R.layout.task_edit, container, false);
 
 
         lvChecklist = (ListView) view.findViewById(R.id.lv_checklist_edit);
@@ -226,10 +231,8 @@ public class FragmentTaskEdit extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    Log.e("swDuration", " on");
                     layoutDuration.setVisibility(View.VISIBLE);
                 } else {
-                    Log.e("swDuration", " off");
                     layoutDuration.setVisibility(View.GONE);
                 }
             }
@@ -362,7 +365,6 @@ public class FragmentTaskEdit extends Fragment {
                             .setAction("Action", null).show();
 
 
-                    Log.e("before finish act", "fin in taskEditFrag");
                     getActivity().setResult(RESULT_OK);
                     getActivity().finish();
                 }
@@ -526,7 +528,6 @@ public class FragmentTaskEdit extends Fragment {
         imagePath = image.getAbsolutePath();
 
 
-        Log.e("test 22:", image.getAbsolutePath());
         return image;
     }
 
@@ -556,10 +557,6 @@ public class FragmentTaskEdit extends Fragment {
             task.setEffort(effort.getProgress());
             task.setRank(priority.getProgress());
 
-
-            Log.e("edit Task", " effort:" + task.getEffort());
-            Log.e("edit Task", " progress:" + task.getRank());
-
         } else {
             task.setEffort(-1);
             task.setRank(-1);
@@ -575,7 +572,6 @@ public class FragmentTaskEdit extends Fragment {
 
 
         if(swDuration.isChecked()){
-            // TODO: 21.09.2017 implement duration
 
             int hours = 0;
             if(!durationHours.getText().toString().isEmpty()){
@@ -583,38 +579,81 @@ public class FragmentTaskEdit extends Fragment {
             }
 
             int min = 0;
-            if(!durationHours.getText().toString().isEmpty()){
+            if(!durationMinutes.getText().toString().isEmpty()){
                 min = Integer.parseInt(durationMinutes.getText().toString());
             }
 
+            long hoursInMillis = TimeUnit.MILLISECONDS.convert(hours, TimeUnit.HOURS);
+            long minInMillis = TimeUnit.MILLISECONDS.convert(min, TimeUnit.MINUTES);
+            long totalInMillis = hoursInMillis + minInMillis;
 
+            task.setDuration(totalInMillis);
 
-            long h = TimeUnit.MILLISECONDS.convert(hours, TimeUnit.HOURS);
-            long m = TimeUnit.MILLISECONDS.convert(min, TimeUnit.MINUTES);
-
-            long t = m + h;
-            Log.e("duration hours", ":" + h);
-            Log.e("duration min", ":" + m);
-            Log.e("duration total", ":" + t);
-
-
-
-
-            long hourConverted = TimeUnit.MILLISECONDS.toHours(t);
-            long minConverted = TimeUnit.MILLISECONDS.toMinutes(t) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(t));
-
-            Log.e("duration hour converted", ":" + hourConverted);
-            Log.e("duration min converted", ":" + minConverted);
-
-
-
-            task.setDuration(t);
+            if(task.getSpend() == -1){
+                task.setSpend(0);
+            }
         }else{
             task.setDuration(-1);
+            task.setSpend(-1);
         }
 
 
         return task;
     }
+
+    private void changingColorDialog(){
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.choose_color_dialog);
+        dialog.setTitle("Choose Color");
+
+        dialog.show();
+
+        Button btnGreen = (Button) dialog.findViewById(R.id.colorGreenButton);
+        Button btnRed = (Button) dialog.findViewById(R.id.colorRedrButton);
+        Button btnPurple = (Button) dialog.findViewById(R.id.colorPurpleButton);
+
+        Button btnBlue = (Button) dialog.findViewById(R.id.colorBlueButton);
+        Button btnDarkBlue = (Button) dialog.findViewById(R.id.colorDarkBlueButton);
+        Button btnOrange = (Button) dialog.findViewById(R.id.colorOrangeButton);
+
+        Button btnYellow = (Button) dialog.findViewById(R.id.colorYellowButton);
+        Button btnPink = (Button) dialog.findViewById(R.id.colorPinkButton);
+        Button btnWhite = (Button) dialog.findViewById(R.id.colorWhiteButton);
+
+
+        setColorButton(getResources().getColor(R.color.colorPurple), btnPurple, dialog);
+        setColorButton(getResources().getColor(R.color.colorRed), btnRed, dialog);
+        setColorButton(getResources().getColor(R.color.colorGreen), btnGreen, dialog);
+
+        setColorButton(getResources().getColor(R.color.colorBlue), btnBlue, dialog);
+        setColorButton(getResources().getColor(R.color.colorDarkBlue), btnDarkBlue, dialog);
+        setColorButton(getResources().getColor(R.color.colorOrange), btnOrange, dialog);
+
+        setColorButton(getResources().getColor(R.color.colorYellow), btnYellow, dialog);
+        setColorButton(getResources().getColor(R.color.colorPink), btnPink, dialog);
+        setColorButton(getResources().getColor(R.color.colorWhite), btnWhite, dialog);
+
+
+    }
+
+    private void setColorButton(final int color, Button btn, final Dialog dialog){
+        GradientDrawable gd = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{color,color});
+        gd.setCornerRadius(100f);
+
+        btn.setBackgroundDrawable(gd);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentTask.setBackgroundColor(color);
+                view.setBackgroundColor(currentTask.getBackgroundColor());
+                dialog.cancel();
+            }
+        });
+
+    }
+
 }
 
