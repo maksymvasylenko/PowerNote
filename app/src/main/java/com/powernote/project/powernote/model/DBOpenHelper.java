@@ -32,28 +32,31 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public static final String KEY_ID = "_id";
     public static final String KEY_CREATED_AT = "created_at";
 
+
+    public static final String KEY_NAME = "name";
+    public static final String KEY_DESCRIPTION = "description";
+    public static final String KEY_CHECKLIST = "checklist";
+    public static final String KEY_IMAGE_PATH = "image_path";
+    public static final String KEY_BACKGROUNDCOLOR = "backgroundcolor";
+
     //tasks table column names
-    public static final String KEY_TASK_NAME = "task_name";
-    public static final String KEY_TASK_DESCRIPTION = "task_description";
     public static final String KEY_TASK_DEADLINE = "task_deadline";
     public static final String KEY_TASK_RANK = "task_rank";
     public static final String KEY_TASK_DURATION = "task_duration";
+    public static final String KEY_TASK_SPEND = "task_spend";
     public static final String KEY_TASK_EFFORT = "task_effort";
-    public static final String KEY_TASK_IMAGE_PATH = "task_image_path";
-    public static final String KEY_TASK_CHECKLIST = "task_checklist";
 
     public static final String[] TASK_ALL_COLUMNS = {KEY_ID,KEY_CREATED_AT,
-            KEY_TASK_NAME,KEY_TASK_DESCRIPTION,KEY_TASK_DEADLINE,KEY_TASK_RANK,KEY_TASK_DURATION,
-            KEY_TASK_EFFORT,KEY_TASK_IMAGE_PATH,KEY_TASK_CHECKLIST};
+            KEY_NAME,KEY_DESCRIPTION,KEY_TASK_DEADLINE,KEY_TASK_RANK,KEY_TASK_DURATION,
+            KEY_TASK_EFFORT,KEY_IMAGE_PATH,KEY_BACKGROUNDCOLOR,KEY_CHECKLIST,KEY_TASK_SPEND};
 
 
     //notes table column names
-    public static final String KEY_NOTE_TEXT = "note_text";
-    public static final String KEY_NOTE_NAME = "note_name";
-    public static final String KEY_NOTE_CHECKLIST = "note_checklist";
+    //...
+
 
     public static final String[] NOTE_ALL_COLUMNS = {KEY_ID,KEY_CREATED_AT,
-            KEY_NOTE_TEXT,KEY_NOTE_NAME,KEY_NOTE_CHECKLIST};
+            KEY_DESCRIPTION,KEY_NAME,KEY_CHECKLIST,KEY_IMAGE_PATH,KEY_BACKGROUNDCOLOR};
 
 
     //tags table column names
@@ -67,25 +70,22 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public static final String KEY_TASKSTAGS_TASK_ID = "task_id";
     public static final String KEY_TASKSTAGS_TAG_ID = "tag_id";
 
-    //
-    public static String ARRAY_DIVIDER = "#a1r2ra5yd2iv1i9der";
-    public static String ARRAY_DIVIDER_SECOND = "#d2isdi9dcvra2r2ra5y";
-
     //create table statements
     //Tasks table
     private static final String CREATE_TABLE_TASKS = "CREATE TABLE "
             + TABLE_TASKS + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
-            + KEY_TASK_NAME + " TEXT," + KEY_TASK_DESCRIPTION + " TEXT,"
+            + KEY_NAME + " TEXT," + KEY_DESCRIPTION + " TEXT,"
             + KEY_TASK_DEADLINE + " INTEGER," + KEY_TASK_RANK + " INTEGER,"
             + KEY_TASK_DURATION + " INTEGER," + KEY_CREATED_AT
-            + " INTEGER," + KEY_TASK_EFFORT + " INTEGER," + KEY_TASK_IMAGE_PATH + " TEXT,"
-            + KEY_TASK_CHECKLIST + " TEXT" + ")";
+            + " INTEGER," + KEY_TASK_EFFORT + " INTEGER," + KEY_IMAGE_PATH + " TEXT,"
+            + KEY_CHECKLIST + " TEXT," + KEY_BACKGROUNDCOLOR + " INTEGER," + KEY_TASK_SPEND + " INTEGER" + ")";
 
     //Notes table
     private static final String CREATE_TABLE_NOTES = "CREATE TABLE "
             + TABLE_NOTES + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
-            + KEY_NOTE_NAME + " TEXT," + KEY_NOTE_TEXT + " TEXT,"
-            + KEY_CREATED_AT + " INTEGER," + KEY_NOTE_CHECKLIST + " TEXT" + ")";
+            + KEY_NAME + " TEXT," + KEY_DESCRIPTION + " TEXT,"
+            + KEY_CREATED_AT + " INTEGER," + KEY_CHECKLIST + " TEXT,"
+            + KEY_IMAGE_PATH + " TEXT," + KEY_BACKGROUNDCOLOR + " INTEGER" + ")";
 
     //Tags table
     private static final String CREATE_TABLE_TAGS = "CREATE TABLE "

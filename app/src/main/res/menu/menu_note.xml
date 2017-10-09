@@ -18,6 +18,13 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_change_color"
+        android:orderInCategory="99"
+        android:icon="@drawable/ic_palette_white_24dp"
+        android:title="Change background color"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_take_photo"
         android:title="Take Photo"
         android:icon="@drawable/ic_action_delete"

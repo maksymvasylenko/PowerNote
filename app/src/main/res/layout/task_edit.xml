@@ -65,8 +65,6 @@
                     android:id="@+id/sw_effort"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/et_task_edit_description"
-                    android:layout_toEndOf="@+id/sw_deadline"
                     android:layout_weight="1"
                     android:text="Prioirity"
                     android:textAlignment="center"
@@ -76,10 +74,8 @@
                     android:id="@+id/sw_deadline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/et_task_edit_description"
-                    android:layout_toEndOf="@+id/toggleButton2"
                     android:layout_weight="1"
-                    android:paddingRight="10dp"
+                    android:paddingEnd="10dp"
                     android:splitTrack="false"
                     android:text="Deadline"
                     android:textAlignment="center"
@@ -89,11 +85,20 @@
                     android:id="@+id/sw_checklist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/et_task_edit_description"
-                    android:layout_toEndOf="@+id/toggleButton2"
                     android:layout_weight="1"
                     android:splitTrack="false"
                     android:text="Checklist"
+                    android:textAlignment="center"
+                    android:textIsSelectable="false"
+                    android:textStyle="italic" />
+
+                <Switch
+                    android:id="@+id/sw_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:splitTrack="false"
+                    android:text="Duration"
                     android:textAlignment="center"
                     android:textIsSelectable="false"
                     android:textStyle="italic" />
@@ -112,8 +117,6 @@
                     android:id="@+id/layout_checklist"
                     android:layout_width="match_parent"
                     android:layout_height="210dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
                     android:layout_marginBottom="16dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
@@ -128,8 +131,6 @@
                         android:id="@+id/et_checklist_input"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:ems="10"
@@ -140,8 +141,6 @@
                         android:id="@+id/lv_checklist_edit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/layout_deadline"
                         android:layout_marginBottom="8dp"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
@@ -224,7 +223,7 @@
                     android:id="@+id/bt_edit_task_date"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
                     android:background="@drawable/ic_today_white_24px"
                     android:backgroundTint="@color/colorAccent" />
 
@@ -241,7 +240,7 @@
                     android:id="@+id/bt_edit_task_time"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginEnd="10dp"
                     android:background="@drawable/ic_schedule_white_24px"
                     android:backgroundTint="@color/colorAccent" />
 
@@ -257,11 +256,52 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layout_images"
+                android:id="@+id/layout_duration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_below="@id/layout_deadline"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/et_task_edit_duration_hours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="0"
+                    android:inputType="number"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="hour(s)"
+                    android:textAlignment="textStart"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/et_task_edit_duration_minutes"
+                    android:layout_width="wrap_content"
+                    android:hint="0"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="minute(s)"
+                    android:textAlignment="textStart"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_images"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/layout_duration"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
                 android:orientation="vertical"
@@ -269,8 +309,6 @@
 
                 <ImageView
                     android:id="@+id/image"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@+id/layout_deadline"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

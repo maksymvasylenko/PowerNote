@@ -4,10 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.powernote.project.powernote.PowerNoteProvider;
 import com.powernote.project.powernote.R;
-import com.powernote.project.powernote.fragment.TaskEditFragment;
+import com.powernote.project.powernote.fragment.FragmentTaskEdit;
 import com.powernote.project.powernote.fragment.TaskViewFragment;
 
 /**
@@ -21,7 +22,7 @@ public class TaskActivity extends AppCompatActivity {
 		setContentView( R.layout.activity_task );
 		
 		// Define task edit and view fragments
-		Fragment fragmentTaskEdit = new TaskEditFragment();
+		Fragment fragmentTaskEdit = new FragmentTaskEdit();
 		Fragment fragmentTaskView = new TaskViewFragment();
 		
 		// Get the fragment manager to allow for switching fragments
@@ -53,5 +54,14 @@ public class TaskActivity extends AppCompatActivity {
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
+	}
+
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+		Log.e("task activity ", "code:" + requestCode);
+
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 }

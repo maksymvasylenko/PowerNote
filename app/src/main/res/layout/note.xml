@@ -1,118 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:weightSum="1">
+    android:id="@+id/noteActivityRootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
-        android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/et_note_edit_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:ems="10"
-            android:hint="Title"
-            android:inputType="textPersonName"
-            android:textSize="24sp"/>
-
-        <EditText
-            android:id="@+id/et_note_edit_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/et_note_edit_title"
-            android:ems="10"
-            android:hint="Text"
-            android:inputType="textPersonName"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_checklist"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_weight="0.00"
-        android:background="@color/Note"
-        android:elevation="3dp"
-        android:nestedScrollingEnabled="true"
-        android:orientation="vertical"
-        android:visibility="visible"
-        android:weightSum="1">
+        android:layout_height="match_parent"
+        android:isScrollContainer="true"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/et_checklist_input"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="8dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="Enter checklist item"
-                android:inputType="textCapSentences"/>
-
-            <Button
-                android:id="@+id/bt_add_checklist_item"
-                android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_plus"
-                android:backgroundTint="@color/list_item_text"/>
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/et_note_edit_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Title"
+                    android:inputType="textPersonName"
+                    android:textSize="24sp" />
+
+                <EditText
+                    android:id="@+id/et_note_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Text"
+                    android:inputType="textPersonName" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_checklist"
+                android:layout_width="wrap_content"
+                android:layout_height="200dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_weight="0.00"
+                android:background="@color/Note"
+                android:elevation="3dp"
+                android:nestedScrollingEnabled="true"
+                android:orientation="vertical"
+                android:visibility="visible"
+                android:weightSum="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/et_checklist_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="8dp"
+                        android:layout_weight="1"
+                        android:ems="10"
+                        android:hint="Enter checklist item"
+                        android:inputType="textCapSentences" />
+
+                    <Button
+                        android:id="@+id/bt_add_checklist_item"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_plus"
+                        android:backgroundTint="@color/list_item_text" />
+                </LinearLayout>
+
+                <ListView
+                    android:id="@+id/lv_checklist_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/layout_deadline"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:divider="@null"
+                    android:fadeScrollbars="true"
+                    android:fastScrollAlwaysVisible="false"
+                    android:fastScrollEnabled="false"
+                    android:footerDividersEnabled="false"
+                    android:headerDividersEnabled="false"
+                    android:isScrollContainer="false"
+                    android:keepScreenOn="false"
+                    android:minHeight="178dp"
+                    android:nestedScrollingEnabled="true"
+                    android:overScrollMode="ifContentScrolls"
+                    android:scrollbarStyle="outsideOverlay"
+                    android:scrollbars="horizontal|vertical"
+                    android:smoothScrollbar="true"
+                    android:verticalScrollbarPosition="left" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_images"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/lv_checklist_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/layout_deadline"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:divider="@null"
-            android:fadeScrollbars="true"
-            android:fastScrollAlwaysVisible="false"
-            android:fastScrollEnabled="false"
-            android:footerDividersEnabled="false"
-            android:headerDividersEnabled="false"
-            android:isScrollContainer="false"
-            android:keepScreenOn="false"
-            android:minHeight="178dp"
-            android:nestedScrollingEnabled="true"
-            android:overScrollMode="ifContentScrolls"
-            android:scrollbarStyle="outsideOverlay"
-            android:scrollbars="horizontal|vertical"
-            android:smoothScrollbar="true"
-            android:verticalScrollbarPosition="left"/>
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/bt_note_edit_save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/et_note_edit_text"
-        android:layout_marginTop="19dp"
-        android:text="Save"/>
+    </ScrollView>
 
 </LinearLayout>

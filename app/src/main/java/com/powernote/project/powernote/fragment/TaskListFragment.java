@@ -1,26 +1,33 @@
 package com.powernote.project.powernote.fragment;
 
+import android.app.Dialog;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.powernote.project.powernote.activity.TaskActivity;
 import com.powernote.project.powernote.PowerNoteProvider;
@@ -44,9 +51,6 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
     private ListView list;
     private CursorAdapter cursorAdapter;
     private TaskAddedCallback addedCallback;
-
-    private MenuItem delete;
-    private boolean boolVisibility = false;
 
 
     @Override
@@ -85,57 +89,108 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
                 myIntent.putExtra(PowerNoteProvider.CONTENT_ITEM_TYPE, id);
                 startActivityForResult(myIntent, EDITOR_REQUEST_CODE);
 
-
-                /*if(cursorAdapter.getItemViewType(position) == 1){
-                    Intent myIntent = new Intent(getActivity(), ActivityEditNote.class);
-                    Note note = (Note) cursorAdapter.getItem(position);
-                    myIntent.putExtra("noteDatabaseID", note.getId());
-                    startActivity(myIntent);
-
-                }else{
-                    Intent myIntent = new Intent(getActivity(), ActivityDetailsTask.class);
-                    Task task = (Task) cursorAdapter.getItem(position);
-                    myIntent.putExtra("taskID", task.getId());
-                    startActivity(myIntent);
-                }*/
             }
         });
 
-        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        list.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-
-
-
-                Log.e("selectedItems", ":start");
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
                 if(!listOfSelectedId.contains(id)) {
                     listOfSelectedId.add(id);
-                    for (int i = 0; i < listOfSelectedId.size(); i++) {
-                        Log.e("selectedItems", ":" + listOfSelectedId.get(i));
-                    }
-                    view.setBackgroundColor(Color.LTGRAY);
                 }else{
                     listOfSelectedId.remove(listOfSelectedId.indexOf(id));
-                    view.setBackgroundColor(Color.WHITE);
                 }
+            }
 
-
-
-                if(listOfSelectedId.size() == 1) {
-                    boolVisibility = true;
-                    ActivityCompat.invalidateOptionsMenu(getActivity());
-                }else if(listOfSelectedId.size() == 0){
-                    boolVisibility = false;
-                    ActivityCompat.invalidateOptionsMenu(getActivity());
-                }
-
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                mode.getMenuInflater().inflate(R.menu.menu_extra_functions, menu);
                 return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(final ActionMode mode, MenuItem item) {
+
+                switch (item.getItemId()) {
+                    // Press delete
+                    case R.id.action_delete:
+                        actionDelete();
+                        mode.finish();
+                        return true;
+                    case R.id.action_change_color:
+
+                        final Dialog dialog = new Dialog(getContext());
+                        dialog.setContentView(R.layout.choose_color_dialog);
+                        dialog.setTitle("Choose Color");
+
+                        dialog.show();
+
+                        Button btnGreen = (Button) dialog.findViewById(R.id.colorGreenButton);
+                        Button btnRed = (Button) dialog.findViewById(R.id.colorRedrButton);
+                        Button btnPurple = (Button) dialog.findViewById(R.id.colorPurpleButton);
+
+                        Button btnBlue = (Button) dialog.findViewById(R.id.colorBlueButton);
+                        Button btnDarkBlue = (Button) dialog.findViewById(R.id.colorDarkBlueButton);
+                        Button btnOrange = (Button) dialog.findViewById(R.id.colorOrangeButton);
+
+                        Button btnYellow = (Button) dialog.findViewById(R.id.colorYellowButton);
+                        Button btnPink = (Button) dialog.findViewById(R.id.colorPinkButton);
+                        Button btnWhite = (Button) dialog.findViewById(R.id.colorWhiteButton);
+
+
+                        setColorButton(getResources().getColor(R.color.colorPurple), btnPurple, mode, dialog);
+                        setColorButton(getResources().getColor(R.color.colorRed), btnRed, mode, dialog);
+                        setColorButton(getResources().getColor(R.color.colorGreen), btnGreen, mode, dialog);
+
+                        setColorButton(getResources().getColor(R.color.colorBlue), btnBlue, mode, dialog);
+                        setColorButton(getResources().getColor(R.color.colorDarkBlue), btnDarkBlue, mode, dialog);
+                        setColorButton(getResources().getColor(R.color.colorOrange), btnOrange, mode, dialog);
+
+                        setColorButton(getResources().getColor(R.color.colorYellow), btnYellow, mode, dialog);
+                        setColorButton(getResources().getColor(R.color.colorPink), btnPink, mode, dialog);
+                        setColorButton(getResources().getColor(R.color.colorWhite), btnWhite, mode, dialog);
+
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                listOfSelectedId = new ArrayList<>();
             }
         });
         
         getActivity().getLoaderManager().initLoader(0, null, this);
 
         return view;
+    }
+
+    private void setColorButton(final int color, Button btn, final ActionMode mode, final Dialog dialog){
+        GradientDrawable gd = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{color,color});
+        gd.setCornerRadius(100f);
+
+        btn.setBackgroundDrawable(gd);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                actionChangeColor(color);
+                Log.e("color", "" + color);
+                mode.finish();
+                dialog.cancel();
+            }
+        });
+
     }
 
     @Override
@@ -177,42 +232,43 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
 
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu( menu, inflater );
-        inflater.inflate( R.menu.menu_overview, menu );
-        delete = menu.findItem(R.id.action_delete);
-        delete.setVisible(boolVisibility);
+    private void actionDelete(){
+        String [] stringList = new String[listOfSelectedId.size()];
 
+        for (int i = 0; i < listOfSelectedId.size(); i++) {
+            stringList[i] = listOfSelectedId.get(i).toString();
+        }
+
+
+        String noteFilter = DBOpenHelper.KEY_ID + " IN (" + new String(new char[stringList.length-1]).replace("\0", "?,") + "?)";
+
+        getActivity().getContentResolver().delete(PowerNoteProvider.CONTENT_URI_TASKS,
+                noteFilter, stringList);
+
+        listOfSelectedId = new ArrayList<>();
+        restartLoader();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Press delete
-            case R.id.action_delete:
 
-                String [] stringList = new String[listOfSelectedId.size()];
+    private void actionChangeColor(int color){
 
-                for (int i = 0; i < listOfSelectedId.size(); i++) {
-                    stringList[i] = listOfSelectedId.get(i).toString();
-                }
+        String [] stringList = new String[listOfSelectedId.size()];
 
-                String noteFilter = DBOpenHelper.KEY_ID + " IN (" + new String(new char[stringList.length-1]).replace("\0", "?,") + "?)";
-
-                getActivity().getContentResolver().delete(PowerNoteProvider.CONTENT_URI_TASKS,
-                        noteFilter, stringList);
-
-                listOfSelectedId = new ArrayList<>();
-
-                boolVisibility = false;
-                ActivityCompat.invalidateOptionsMenu(getActivity());
-
-                restartLoader();
-                break;
-            default:
-                return super.onOptionsItemSelected( item );
+        for (int i = 0; i < listOfSelectedId.size(); i++) {
+            stringList[i] = listOfSelectedId.get(i).toString();
         }
-        return super.onOptionsItemSelected( item );
+        Log.e("stringList", "" + (stringList.length-1) + ":" + stringList.length + ":" + listOfSelectedId.size());
+
+
+        String noteFilter = DBOpenHelper.KEY_ID + " IN (" + new String(new char[stringList.length-1]).replace("\0", "?,") + "?)";
+
+        ContentValues values = new ContentValues();
+        values.put(DBOpenHelper.KEY_BACKGROUNDCOLOR, color);
+
+        getActivity().getContentResolver().update(PowerNoteProvider.CONTENT_URI_TASKS, values,
+                noteFilter, stringList);
+
+        listOfSelectedId = new ArrayList<>();
+        restartLoader();
     }
 }

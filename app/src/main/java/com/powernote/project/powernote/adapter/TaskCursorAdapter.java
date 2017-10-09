@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.powernote.project.powernote.R;
@@ -27,8 +28,15 @@ public class TaskCursorAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        String noteText = cursor.getString( cursor.getColumnIndex(DBOpenHelper.KEY_TASK_NAME));
+
+
+        String noteText = cursor.getString( cursor.getColumnIndex(DBOpenHelper.KEY_NAME));
         TextView text = (TextView) view.findViewById(R.id.tv_task_item_title);
-        text.setText(cursor.getString(cursor.getColumnIndex(DBOpenHelper.KEY_TASK_NAME)));
+        text.setText(cursor.getString(cursor.getColumnIndex(DBOpenHelper.KEY_NAME)));
+
+
+        view.setBackgroundColor(cursor.getInt(cursor.getColumnIndex(DBOpenHelper.KEY_BACKGROUNDCOLOR)));
+
+
     }
 }

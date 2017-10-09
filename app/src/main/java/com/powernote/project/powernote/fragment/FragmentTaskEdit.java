@@ -2,12 +2,15 @@ package com.powernote.project.powernote.fragment;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +21,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -59,9 +63,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import static android.app.Activity.RESULT_OK;
-import static android.support.v4.content.FileProvider.getUriForFile;
 
 
 public class FragmentTaskEdit extends Fragment {
@@ -71,17 +75,20 @@ public class FragmentTaskEdit extends Fragment {
     private ChecklistEditAdapter adapter;
     private List items;
 
-    private Switch swDeadline, swChecklist, swEffort;
+    private Switch swDeadline, swChecklist, swEffort, swDuration;
 
-    private LinearLayout layoutChecklist, layoutDeadline, layoutEffort, layoutImages;
+    private LinearLayout layoutChecklist, layoutDeadline,
+            layoutEffort, layoutImages, layoutDuration;
 
     private ImageView imageView;
     private TextView tvTime, tvDate;
 
-    private EditText title, description;
+    private EditText title, description, durationHours, durationMinutes;
     private SeekBar effort, priority;
 
     private Button saveButton;
+
+    private View view;
 
     private TaskAddedCallback addedCallback;
 
@@ -91,8 +98,10 @@ public class FragmentTaskEdit extends Fragment {
     private SimpleDateFormat stf = new SimpleDateFormat("HH:mm", Locale.US);
 
     //variables for taking photo
-    static final int REQUEST_TAKE_PHOTO = 1;
-    Uri photoURI = null;
+    static final int REQUEST_TAKE_PHOTO = 12364, REQUEST_ADD_PHOTO = 26513;
+
+    private String imagePath = null;
+
 
 
     final Calendar calendar = Calendar.getInstance();
@@ -126,8 +135,10 @@ public class FragmentTaskEdit extends Fragment {
                 dispatchTakePictureIntent();
                 break;
             case R.id.action_add_image:
+                addImageFromGallery();
                 break;
-            case R.id.action_record:
+            case R.id.action_change_color:
+                changingColorDialog();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -138,7 +149,8 @@ public class FragmentTaskEdit extends Fragment {
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.edit_task, container, false);
+        view = inflater.inflate(R.layout.task_edit, container, false);
+
 
         lvChecklist = (ListView) view.findViewById(R.id.lv_checklist_edit);
 
@@ -148,6 +160,9 @@ public class FragmentTaskEdit extends Fragment {
         effort = (SeekBar) view.findViewById(R.id.sb_effort);
         priority = (SeekBar) view.findViewById(R.id.sb_priority);
         saveButton = (Button) view.findViewById(R.id.bt_task_edit_save);
+
+        durationHours = (EditText) view.findViewById(R.id.et_task_edit_duration_hours);
+        durationMinutes = (EditText) view.findViewById(R.id.et_task_edit_duration_minutes);
 
         imageView = (ImageView) view.findViewById(R.id.image);
         layoutImages = (LinearLayout) view.findViewById(R.id.layout_images);
@@ -161,11 +176,13 @@ public class FragmentTaskEdit extends Fragment {
         swChecklist = (Switch) view.findViewById(R.id.sw_checklist);
         swEffort = (Switch) view.findViewById(R.id.sw_effort);
         swDeadline = (Switch) view.findViewById(R.id.sw_deadline);
+        swDuration = (Switch) view.findViewById(R.id.sw_duration);
 
         // Layouts (containers for items that can be switched on or off)
         layoutChecklist = (LinearLayout) view.findViewById(R.id.layout_checklist);
         layoutEffort = (LinearLayout) view.findViewById(R.id.layout_effort);
         layoutDeadline = (LinearLayout) view.findViewById(R.id.layout_deadline);
+        layoutDuration = (LinearLayout) view.findViewById(R.id.layout_duration);
 
 
         updateDeadlineTimeText(calendar);
@@ -206,6 +223,17 @@ public class FragmentTaskEdit extends Fragment {
                     chooseDeadline();
                 } else {
                     layoutDeadline.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        swDuration.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    layoutDuration.setVisibility(View.VISIBLE);
+                } else {
+                    layoutDuration.setVisibility(View.GONE);
                 }
             }
         });
@@ -259,6 +287,8 @@ public class FragmentTaskEdit extends Fragment {
 
             currentTask = Methods.getNewTask(cursor);
 
+            view.setBackgroundColor(currentTask.getBackgroundColor());
+
             // Default items
             title.setText(currentTask.getTitle());
             description.setText(currentTask.getDescription());
@@ -282,6 +312,7 @@ public class FragmentTaskEdit extends Fragment {
                 updateDeadlineTimeText(calendar);
             }
 
+            //image
             if(currentTask.getImagePath() != null && !currentTask.getImagePath().isEmpty()){
 
                 layoutImages.setVisibility(View.VISIBLE);
@@ -289,11 +320,26 @@ public class FragmentTaskEdit extends Fragment {
                 imageView.setImageURI(imageUri);
             }
 
+            //duration
+            if (currentTask.getDuration() != -1) {
+                layoutDuration.setVisibility(View.VISIBLE);
+
+                long duration = currentTask.getDuration();
+
+                long hourConverted = TimeUnit.MILLISECONDS.toHours(duration);
+                long minConverted = TimeUnit.MILLISECONDS.toMinutes(duration) -
+                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(duration));
+
+                durationHours.setText(String.valueOf(hourConverted));
+                durationMinutes.setText(String.valueOf(minConverted));
+
+            }
+
+
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    //TODO fix updating
                     getActivity().getContentResolver().update(PowerNoteProvider.CONTENT_URI_TASKS,
                             Methods.getTaskValues(getTheCurrentSelectedData(currentTask)),noteFilter, null);
 
@@ -319,7 +365,6 @@ public class FragmentTaskEdit extends Fragment {
                             .setAction("Action", null).show();
 
 
-                    Log.e("before finish act", "fin in taskEditFrag");
                     getActivity().setResult(RESULT_OK);
                     getActivity().finish();
                 }
@@ -401,6 +446,9 @@ public class FragmentTaskEdit extends Fragment {
 
 
 
+
+
+
     private void dispatchTakePictureIntent() {
 
         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -417,9 +465,11 @@ public class FragmentTaskEdit extends Fragment {
             } catch (IOException ex) {
                 // Error occurred while creating the File
             }
+
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                photoURI = FileProvider.getUriForFile(getContext(),
+                Log.e("dispatch photo ", "" + photoFile.getAbsolutePath());
+                Uri photoURI = FileProvider.getUriForFile(getContext(),
                         "com.powernote.project.powernote.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
@@ -428,12 +478,38 @@ public class FragmentTaskEdit extends Fragment {
         }
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
-            imageView.setImageURI(photoURI);
+            Methods.setPic(imagePath, imageView, getActivity());
+
+
+
+            Log.e("setted picture", "");
+            layoutImages.setVisibility(View.VISIBLE);
+        }else if(requestCode == REQUEST_ADD_PHOTO && resultCode == RESULT_OK){
+            Log.e("add gallery picture", "");
+
+
+            Uri selectedImage = data.getData();
+
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+            Cursor cursor = getActivity().getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
+            cursor.moveToFirst();
+
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+
+            Methods.setPic(picturePath, imageView, getActivity());
+            imagePath = picturePath;
             layoutImages.setVisibility(View.VISIBLE);
         }
+        Log.e("fragment task edit ", "code:" + requestCode);
+
     }
 
     private File createImageFile() throws IOException {
@@ -446,10 +522,21 @@ public class FragmentTaskEdit extends Fragment {
                 storageDir      /* directory */
         );
 
-        // Save a file: path for use with ACTION_VIEW intents
+        // Save a file: imagePath for use with ACTION_VIEW intents
         currentTask.setImagePath(image.getAbsolutePath());
-        Log.e("test 22:", image.getAbsolutePath());
+
+        imagePath = image.getAbsolutePath();
+
+
         return image;
+    }
+
+    private void addImageFromGallery(){
+        startActivityForResult(
+                new Intent(
+                        Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI
+                ), REQUEST_ADD_PHOTO);
     }
 
 
@@ -470,10 +557,6 @@ public class FragmentTaskEdit extends Fragment {
             task.setEffort(effort.getProgress());
             task.setRank(priority.getProgress());
 
-
-            Log.e("edit Task", " effort:" + task.getEffort());
-            Log.e("edit Task", " progress:" + task.getRank());
-
         } else {
             task.setEffort(-1);
             task.setRank(-1);
@@ -483,13 +566,94 @@ public class FragmentTaskEdit extends Fragment {
         task.setTitle(title.getText().toString());
         task.setDescription(description.getText().toString());
 
-        task.setImagePath(photoURI.toString());
+        if(imagePath != null){
+            task.setImagePath(imagePath);
+        }
 
-        Log.e("imagePath",":" + photoURI.getPath());
-        Log.e("imagePath",":" + photoURI.toString());
 
-        // TODO: 21.09.2017 implement image and duration
+        if(swDuration.isChecked()){
+
+            int hours = 0;
+            if(!durationHours.getText().toString().isEmpty()){
+                hours = Integer.parseInt(durationHours.getText().toString());
+            }
+
+            int min = 0;
+            if(!durationMinutes.getText().toString().isEmpty()){
+                min = Integer.parseInt(durationMinutes.getText().toString());
+            }
+
+            long hoursInMillis = TimeUnit.MILLISECONDS.convert(hours, TimeUnit.HOURS);
+            long minInMillis = TimeUnit.MILLISECONDS.convert(min, TimeUnit.MINUTES);
+            long totalInMillis = hoursInMillis + minInMillis;
+
+            task.setDuration(totalInMillis);
+
+            if(task.getSpend() == -1){
+                task.setSpend(0);
+            }
+        }else{
+            task.setDuration(-1);
+            task.setSpend(-1);
+        }
+
 
         return task;
     }
+
+    private void changingColorDialog(){
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.choose_color_dialog);
+        dialog.setTitle("Choose Color");
+
+        dialog.show();
+
+        Button btnGreen = (Button) dialog.findViewById(R.id.colorGreenButton);
+        Button btnRed = (Button) dialog.findViewById(R.id.colorRedrButton);
+        Button btnPurple = (Button) dialog.findViewById(R.id.colorPurpleButton);
+
+        Button btnBlue = (Button) dialog.findViewById(R.id.colorBlueButton);
+        Button btnDarkBlue = (Button) dialog.findViewById(R.id.colorDarkBlueButton);
+        Button btnOrange = (Button) dialog.findViewById(R.id.colorOrangeButton);
+
+        Button btnYellow = (Button) dialog.findViewById(R.id.colorYellowButton);
+        Button btnPink = (Button) dialog.findViewById(R.id.colorPinkButton);
+        Button btnWhite = (Button) dialog.findViewById(R.id.colorWhiteButton);
+
+
+        setColorButton(getResources().getColor(R.color.colorPurple), btnPurple, dialog);
+        setColorButton(getResources().getColor(R.color.colorRed), btnRed, dialog);
+        setColorButton(getResources().getColor(R.color.colorGreen), btnGreen, dialog);
+
+        setColorButton(getResources().getColor(R.color.colorBlue), btnBlue, dialog);
+        setColorButton(getResources().getColor(R.color.colorDarkBlue), btnDarkBlue, dialog);
+        setColorButton(getResources().getColor(R.color.colorOrange), btnOrange, dialog);
+
+        setColorButton(getResources().getColor(R.color.colorYellow), btnYellow, dialog);
+        setColorButton(getResources().getColor(R.color.colorPink), btnPink, dialog);
+        setColorButton(getResources().getColor(R.color.colorWhite), btnWhite, dialog);
+
+
+    }
+
+    private void setColorButton(final int color, Button btn, final Dialog dialog){
+        GradientDrawable gd = new GradientDrawable(
+                GradientDrawable.Orientation.TOP_BOTTOM,
+                new int[]{color,color});
+        gd.setCornerRadius(100f);
+
+        btn.setBackgroundDrawable(gd);
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentTask.setBackgroundColor(color);
+                view.setBackgroundColor(currentTask.getBackgroundColor());
+                dialog.cancel();
+            }
+        });
+
+    }
+
 }
+
