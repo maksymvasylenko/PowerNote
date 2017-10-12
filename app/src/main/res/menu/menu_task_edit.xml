@@ -2,11 +2,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".activity.ActivityEditTask">
+
     <item
         android:id="@+id/action_delete"
         android:title="@string/action_delete"
         android:icon="@drawable/ic_action_delete"
         android:orderInCategory="100"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_save"
+        android:title="@string/action_save"
+        android:icon="@drawable/ic_content_save"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_change_color"
+        android:orderInCategory="98"
+        android:icon="@drawable/ic_palette_white_24dp"
+        android:title="Change background color"
         app:showAsAction="never" />
 
     <item
@@ -25,18 +40,6 @@
         android:id="@+id/action_record"
         android:title="Recording"
         android:orderInCategory="97"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_add_checklist"
-        android:title="Add checklist"
-        android:orderInCategory="96"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_add_deadline"
-        android:title="Add deadline"
-        android:orderInCategory="96"
         app:showAsAction="never" />
 
 </menu>

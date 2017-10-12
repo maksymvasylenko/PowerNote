@@ -1,137 +1,329 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:isScrollContainer="true"
+    android:orientation="vertical">
 
-    <SeekBar
-        android:id="@+id/sb_task_edit_priority"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/tv_task_view_title"
-        android:max="3"
-        android:progress="1" />
+        android:layout_height="match_parent"
+        android:isScrollContainer="true"
+        android:scrollbars="none">
 
-    <EditText
-        android:id="@+id/et_task_edit_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:ems="10"
-        android:hint="Title"
-        android:inputType="textPersonName" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="70dp">
 
-    <EditText
-        android:id="@+id/et_task_edit_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/et_task_edit_title"
-        android:ems="10"
-        android:hint="Description"
-        android:inputType="textPersonName" />
+            <EditText
+                android:id="@+id/et_task_edit_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@android:color/darker_gray"
+                android:ems="10"
+                android:hint="Title"
+                android:inputType="textCapSentences"
+                android:textSize="24sp" />
 
+            <EditText
+                android:id="@+id/et_task_edit_description"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/et_task_edit_title"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:backgroundTint="@color/colorAccent"
+                android:ems="10"
+                android:gravity="top"
+                android:hint="Description"
+                android:inputType="textCapSentences|textMultiLine"
+                android:isScrollContainer="false"
+                android:nestedScrollingEnabled="true"
+                android:scrollbarAlwaysDrawVerticalTrack="true"
+                android:textAlignment="viewStart" />
 
+            <LinearLayout
+                android:id="@+id/layout_switches"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/et_task_edit_description"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="horizontal"
+                android:paddingTop="8dp">
 
+                <Switch
+                    android:id="@+id/sw_effort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Prioirity"
+                    android:textAlignment="center"
+                    android:textStyle="italic" />
 
+                <Switch
+                    android:id="@+id/sw_deadline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingEnd="10dp"
+                    android:splitTrack="false"
+                    android:text="Deadline"
+                    android:textAlignment="center"
+                    android:textStyle="italic" />
 
+                <Switch
+                    android:id="@+id/sw_checklist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:splitTrack="false"
+                    android:text="Checklist"
+                    android:textAlignment="center"
+                    android:textIsSelectable="false"
+                    android:textStyle="italic" />
 
+                <Switch
+                    android:id="@+id/sw_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:splitTrack="false"
+                    android:text="Duration"
+                    android:textAlignment="center"
+                    android:textIsSelectable="false"
+                    android:textStyle="italic" />
 
+            </LinearLayout>
 
-    <TextView
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_task_edit_date"
-        android:layout_marginTop="82dp"
-        android:layout_below="@+id/et_task_edit_description"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+            <LinearLayout
+                android:id="@+id/layout_checklist_effort"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/layout_switches"
+                android:orientation="vertical">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SELECT DATE"
-        android:id="@+id/bt_task_edit_date"
-        android:layout_alignBottom="@+id/tv_task_edit_date"
-        android:layout_toRightOf="@+id/tv_task_edit_date"
-        android:layout_toEndOf="@+id/tv_task_edit_date" />
+                <LinearLayout
+                    android:id="@+id/layout_checklist"
+                    android:layout_width="match_parent"
+                    android:layout_height="210dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@color/Note"
+                    android:elevation="3dp"
+                    android:nestedScrollingEnabled="true"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:weightSum="1">
 
-    <TextView
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_task_edit_time"
-        android:layout_below="@+id/tv_task_edit_date"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+                    <EditText
+                        android:id="@+id/et_checklist_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:ems="10"
+                        android:hint="Enter checklist item"
+                        android:inputType="textCapSentences" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SELECT TIME"
-        android:id="@+id/bt_task_edit_time"
-        android:layout_below="@+id/bt_task_edit_date"
-        android:layout_alignLeft="@+id/bt_task_edit_date"
-        android:layout_alignStart="@+id/bt_task_edit_date" />
+                    <ListView
+                        android:id="@+id/lv_checklist_edit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:divider="@null"
+                        android:fastScrollEnabled="false"
+                        android:footerDividersEnabled="false"
+                        android:headerDividersEnabled="false"
+                        android:isScrollContainer="false"
+                        android:keepScreenOn="false"
+                        android:minHeight="179dp"
+                        android:nestedScrollingEnabled="true"
+                        android:overScrollMode="ifContentScrolls"
+                        android:scrollIndicators="top|bottom"
+                        android:scrollbars="none"
+                        android:smoothScrollbar="false" />
 
+                </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/layout_effort"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
+                    <TextView
+                        android:id="@+id/tv_priority"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Proirity"
+                        android:textAlignment="center"
+                        android:visibility="visible" />
 
+                    <SeekBar
+                        android:id="@+id/sb_priority"
+                        style="@style/Widget.AppCompat.SeekBar.Discrete"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="3"
+                        android:progress="1"
+                        android:visibility="visible" />
 
+                    <TextView
+                        android:id="@+id/tv_effort"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Effort"
+                        android:textAlignment="center"
+                        android:visibility="visible" />
 
+                    <SeekBar
+                        android:id="@+id/sb_effort"
+                        style="@style/Widget.AppCompat.SeekBar.Discrete"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="10"
+                        android:progress="1"
+                        android:visibility="visible" />
 
+                </LinearLayout>
 
+            </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/layout_deadline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/layout_checklist_effort"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:weightSum="3">
 
+                <Button
+                    android:id="@+id/bt_edit_task_date"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/ic_today_white_24px"
+                    android:backgroundTint="@color/colorAccent" />
 
-    <TextView
-        android:id="@+id/tv_task_view_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:text="Proirity"
-        android:layout_marginTop="22dp"
-        android:layout_below="@+id/sb_task_edit_effort"
-        android:layout_alignParentStart="true" />
+                <TextView
+                    android:id="@+id/tv_edit_task_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.87"
+                    android:text="Tue, Sep 12"
+                    android:textAlignment="textStart"
+                    android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/tv_task_view_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/tv_task_edit_time"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:text="Effort" />
+                <Button
+                    android:id="@+id/bt_edit_task_time"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="10dp"
+                    android:background="@drawable/ic_schedule_white_24px"
+                    android:backgroundTint="@color/colorAccent" />
 
-    <SeekBar
-        android:id="@+id/sb_task_edit_effort"
-        style="@style/Widget.AppCompat.SeekBar.Discrete"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="10"
-        android:progress="1"
-        android:layout_below="@+id/tv_task_view_description"
-        android:layout_alignParentStart="true" />
+                <TextView
+                    android:id="@+id/tv_edit_task_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.02"
+                    android:text="18:00"
+                    android:textAlignment="textStart"
+                    android:textSize="18sp" />
 
-    <Button
-        android:id="@+id/bt_task_edit_save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true" />
+            </LinearLayout>
 
-    <ImageView
-        android:id="@+id/image"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/bt_task_edit_save"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            <LinearLayout
+                android:id="@+id/layout_duration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/layout_deadline"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/et_task_edit_duration_hours"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="0"
+                    android:inputType="number"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="hour(s)"
+                    android:textAlignment="textStart"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/et_task_edit_duration_minutes"
+                    android:layout_width="wrap_content"
+                    android:hint="0"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="minute(s)"
+                    android:textAlignment="textStart"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_images"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/layout_duration"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/bt_task_edit_save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save"
+                android:layout_below="@+id/layout_images"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true" />
+
+        </RelativeLayout>
+    </ScrollView>
 
 </RelativeLayout>

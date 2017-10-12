@@ -5,24 +5,25 @@ import java.util.List;
 public class Task extends Note{
 
     private int rank, effort;
-    private long deadline;
-    private long duration;
+    private long deadline, duration, spend = -1;
     private boolean complete;
     private int priority;
     private List<Task> dependencies;
 
     public Task(long id, int rank, String title, String description, long deadline,
-                long createdAt, long duration, int effort, String imagePath, List<ChecklistItem> checklist){
-        super(id, description, createdAt, title, checklist);
+                long createdAt, long duration, int effort, String imagePath,
+                List<ChecklistItem> checklist, int backgroundColor, long spend){
+        super(id, description, createdAt, title, checklist, imagePath, backgroundColor);
         this.rank = rank;
         this.deadline = deadline;
         this.duration = duration;
         this.effort = effort;
+        this.spend = spend;
     }
 
     public Task(){}
 
-    public double getDuration() {
+    public long getDuration() {
         return duration;
     }
 
@@ -36,6 +37,10 @@ public class Task extends Note{
 
     public int getEffort() {
         return effort;
+    }
+
+    public long getSpend() {
+        return spend;
     }
 
     public void setDeadline(long taskDeadline) {
@@ -53,6 +58,12 @@ public class Task extends Note{
     public void setEffort(int effort) {
         this.effort = effort;
     }
+
+    public void setSpend(long spend) {
+        this.spend = spend;
+    }
+
+
 }
 
 

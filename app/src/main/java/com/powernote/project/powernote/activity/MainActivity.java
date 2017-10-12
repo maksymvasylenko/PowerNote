@@ -13,33 +13,29 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.support.design.widget.TabLayout;
 import android.view.MenuItem;
 import android.view.View;
 
-import android.support.design.widget.TabLayout;
-import android.widget.Toast;
-
-import com.powernote.project.powernote.ActivityDetailsTask;
-import com.powernote.project.powernote.fragment.FragmentTaskEdit;
-import com.powernote.project.powernote.fragment.FragmentTaskView;
-import com.powernote.project.powernote.fragment.OverviewFragment;
-import com.powernote.project.powernote.model.PowerNote;
+import com.powernote.project.powernote.fragment.NoteFragment;
+import com.powernote.project.powernote.fragment.TaskListFragment;
 import com.powernote.project.powernote.R;
 import com.powernote.project.powernote.model.TaskAddedCallback;
 
 public class MainActivity extends AppCompatActivity implements TaskAddedCallback{
+    
+    private static final int EDITOR_REQUEST_CODE = 1001;
+    private static final int NOTE_EDITOR_REQUEST_CODE = 1010;
 
-    private PowerNote powerNote = PowerNote.getInstance();
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
+
+    private Fragment taskListFragment, notesFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // Init DB
-        powerNote.initializeDB(getApplicationContext());
 
         // Init Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -53,41 +49,6 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        // Init Floating Action Button
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Create");
-                builder.setMessage("What do you want to create?");
-                builder.setNegativeButton("Note",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                Intent myIntent = new Intent(MainActivity.this, ActivityEditNote.class);
-                                startActivity(myIntent);
-                            }
-                        });
-                builder.setPositiveButton("Task",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                Intent myIntent = new Intent(MainActivity.this, ActivityDetailsTask.class);
-                                myIntent.putExtra("action", -1);
-                                startActivity(myIntent);
-                            }
-                        });
-                builder.setNeutralButton("CANCEL",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                Toast.makeText(getApplicationContext(),"Cancel is clicked",Toast.LENGTH_LONG).show();
-                            }
-                        });
-                builder.show();
-            }
-        });
     }
 
     @Override
@@ -95,13 +56,22 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
         getMenuInflater().inflate(R.menu.menu_overview, menu);
         return true;
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_add){
+            int pageNumber = mViewPager.getCurrentItem();
+            if (pageNumber == 0){
+                Intent myIntent = new Intent(MainActivity.this, TaskActivity.class);
+                taskListFragment.startActivityForResult(myIntent, EDITOR_REQUEST_CODE);
+            } else if (pageNumber == 1){
+                Intent myIntent = new Intent(MainActivity.this, NoteActivity.class);
+                notesFragment.startActivityForResult(myIntent, NOTE_EDITOR_REQUEST_CODE);
+            }
+        }
+        return super.onOptionsItemSelected( item );
     }
-
+    
     @Override
     public void taskAdded() {
         Log.d("asdf", "asdf");
@@ -115,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
 
         @Override
@@ -124,8 +94,6 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
                 case 0:
                     return "Tasks";
                 case 1:
-                    return "Overview";
-                case 2:
                     return "Notes";
             }
             return null;
@@ -135,20 +103,14 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
         public Fragment getItem(int position) {
             switch(position){
                 case 0:
-                    return new FragmentTaskEdit();
+                    taskListFragment = new TaskListFragment();
+                    return taskListFragment;
                 case 1:
-                    return new OverviewFragment();
-                case 2:
-                    return new FragmentTaskView();
+                    notesFragment = new NoteFragment();
+                    return notesFragment;
                 default:
                     return null;
             }
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        powerNote.closeDB();
-        super.onDestroy();
     }
 }
