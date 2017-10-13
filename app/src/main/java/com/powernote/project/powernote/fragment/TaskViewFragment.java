@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.powernote.project.powernote.Methods;
+import com.powernote.project.powernote.NonScrollListView;
 import com.powernote.project.powernote.PowerNoteProvider;
 import com.powernote.project.powernote.model.DBOpenHelper;
 import com.powernote.project.powernote.model.Task;
@@ -43,6 +45,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -261,6 +264,19 @@ public class TaskViewFragment extends Fragment {
 				});
 
 			}
+
+			//log
+			LinearLayout logLayout = (LinearLayout) view.findViewById(R.id.ll_task_view_log_layout);
+			logLayout.setVisibility(View.VISIBLE);
+			ArrayList<String> str = new ArrayList<>();
+			str.add("10.04.96 # task created");
+			str.add("12.04.96 # task edited");
+			str.add("12.04.96 # was working on task for 45 sec");
+			str.add("12.04.96 # was working on task for 45 sec");
+			ArrayAdapter<String> stringAdapter = new ArrayAdapter<>(getContext(), R.layout.log_list_item, str);
+			NonScrollListView listView = (NonScrollListView) view.findViewById(R.id.lv_task_view_log);
+
+			listView.setAdapter(stringAdapter);
 
 		}
 
