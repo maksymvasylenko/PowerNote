@@ -36,6 +36,12 @@
             android:screenOrientation="portrait">
         </activity>
 
+        <activity
+            android:name=".activity.SearchActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme">
+        </activity>
+
         <provider
             android:name=".PowerNoteProvider"
             android:authorities="com.powernote.project.powernote.powernoteprovider"

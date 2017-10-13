@@ -42,11 +42,18 @@ public class PowerNoteProvider extends ContentProvider {
 	private static final int NOTES_TAGS_ID = 8;
 	private static final int TASKS_TAGS = 9;
 	private static final int TASKS_TAGS_ID = 10;
+	private static final int NOTES_TAGS_TAG_ID = 11;
+	private static final int NOTES_TAGS_NOTE_ID = 12;
+	private static final int TASKS_TAGS_TAG_ID = 13;
+	private static final int TASKS_TAGS_TASK_ID = 14;
 
 
 	private static final UriMatcher uriMatcher = new UriMatcher( UriMatcher.NO_MATCH );
 	
 	public static final String CONTENT_ITEM_TYPE = "Task";
+
+	public static final String CONTENT_SELECTION = "selection";
+	public static final String CONTENT_SELECTION_ARGS = "selectionArgs";
 	
 	static {
 		uriMatcher.addURI( AUTHORITY, BASE_PATH_TASKS, TASK );
@@ -78,31 +85,35 @@ public class PowerNoteProvider extends ContentProvider {
 		
 		switch (uriMatcher.match( uri )) {
 			case TASKS_ID:
-				Log.e( "tasks_id", "tasks_id" );
+				Log.e( "query", "tasks_id" );
 				selection = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
 			case TASK:
-				Log.e( "tasks_id", "tasks_id" );
+				Log.e( "query", "tasks_id" );
 				return database.query( DBOpenHelper.TABLE_TASKS, DBOpenHelper.TASK_ALL_COLUMNS, selection, null, null, null, null );
 			case NOTES_ID:
-				Log.e( "notes_id", "notes_id" );
+				Log.e( "query", "notes_id" );
 				selection = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
 			case NOTE:
-				Log.e( "notes", "notes" );
+				Log.e( "query", "notes" );
 				return database.query( DBOpenHelper.TABLE_NOTES, DBOpenHelper.NOTE_ALL_COLUMNS, selection, null, null, null, null );
 
 			case TAGS_ID:
-				Log.e( "notes_id", "notes_id" );
+				Log.e( "query", "tags_id" );
 				selection = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
 			case TAG:
-				Log.e( "notes", "notes" );
+				Log.e( "query", "tags" );
 				return database.query( DBOpenHelper.TABLE_TAGS, DBOpenHelper.TAG_ALL_COLUMNS, selection, null, null, null, null );
 
-			case NOTES_TAGS_ID:
-				selection = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
+			case NOTES_TAGS_TAG_ID:
+				selection = DBOpenHelper.KEY_NOTES_TAGS_TAG_ID + "=" + uri.getLastPathSegment();
+			case NOTES_TAGS_NOTE_ID:
+				selection = DBOpenHelper.KEY_NOTES_TAGS_NOTE_ID + "=" + uri.getLastPathSegment();
 			case NOTES_TAGS:
 				return database.query( DBOpenHelper.TABLE_NOTES_TAGS, DBOpenHelper.NOTES_TAGS_ALL_COLUMNS, selection, null, null, null, null );
-			case TASKS_TAGS_ID:
-				selection = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
+			case TASKS_TAGS_TAG_ID:
+				selection = DBOpenHelper.KEY_TASKS_TAGS_TAG_ID + "=" + uri.getLastPathSegment();
+			case TASKS_TAGS_TASK_ID:
+				selection = DBOpenHelper.KEY_TASKS_TAGS_TASK_ID + "=" + uri.getLastPathSegment();
 			case TASKS_TAGS:
 				return database.query( DBOpenHelper.TABLE_TASKS_TAGS, DBOpenHelper.TASKS_TAGS_ALL_COLUMNS, selection, null, null, null, null );
 			default:
@@ -127,16 +138,16 @@ public class PowerNoteProvider extends ContentProvider {
 				return Uri.parse( BASE_PATH_NOTES + "/" + noteId );
 
 			case TAG:
-				Log.e( "note insert", "insertion" );
-				long tagId = database.insert( DBOpenHelper.TABLE_NOTES, null, values );
+				long tagId = database.insert( DBOpenHelper.TABLE_TAGS, null, values );
+				Log.e( "tag insert", "insertion id:" + tagId );
 				return Uri.parse( BASE_PATH_NOTES + "/" + tagId );
 			case NOTES_TAGS:
-				Log.e( "note insert", "insertion" );
-				long notesTagsId = database.insert( DBOpenHelper.TABLE_NOTES, null, values );
+				Log.e( "note tag insert", "insertion" );
+				long notesTagsId = database.insert( DBOpenHelper.TABLE_NOTES_TAGS, null, values );
 				return Uri.parse( BASE_PATH_NOTES + "/" + notesTagsId );
 			case TASKS_TAGS:
-				Log.e( "note insert", "insertion" );
-				long tasksTagsId = database.insert( DBOpenHelper.TABLE_NOTES, null, values );
+				Log.e( "task tag insert", "insertion" );
+				long tasksTagsId = database.insert( DBOpenHelper.TABLE_TASKS_TAGS, null, values );
 				return Uri.parse( BASE_PATH_NOTES + "/" + tasksTagsId );
 
 			default:

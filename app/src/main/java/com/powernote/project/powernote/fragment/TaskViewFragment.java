@@ -153,11 +153,8 @@ public class TaskViewFragment extends Fragment {
 			final Uri uri = Uri.parse(PowerNoteProvider.CONTENT_URI_TASKS + "/" + id);
 
 
-
-			noteFilter = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
-
 			Cursor cursor = getActivity().getContentResolver().query(uri,
-					DBOpenHelper.TASK_ALL_COLUMNS, noteFilter, null, null);
+					DBOpenHelper.TASK_ALL_COLUMNS, null, null, null);
 			cursor.moveToFirst();
 
 			task = Methods.getNewTask(cursor);

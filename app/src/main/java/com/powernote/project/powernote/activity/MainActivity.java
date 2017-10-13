@@ -68,6 +68,9 @@ public class MainActivity extends AppCompatActivity implements TaskAddedCallback
                 Intent myIntent = new Intent(MainActivity.this, NoteActivity.class);
                 notesFragment.startActivityForResult(myIntent, NOTE_EDITOR_REQUEST_CODE);
             }
+        } else if(item.getItemId() == R.id.action_search){
+            Intent myIntent = new Intent(MainActivity.this, SearchActivity.class);
+            startActivityForResult(myIntent, EDITOR_REQUEST_CODE);
         }
         return super.onOptionsItemSelected( item );
     }

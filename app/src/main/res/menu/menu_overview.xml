@@ -10,11 +10,10 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_delete"
+        android:id="@+id/action_search"
         android:orderInCategory="99"
-        android:icon="@drawable/ic_action_delete"
+        android:icon="@drawable/ic_search_white_24dp"
         android:title="@string/action_add"
-        android:visible="false"
         app:showAsAction="always" />
 
     <item

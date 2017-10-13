@@ -30,6 +30,12 @@ public class Methods {
 
 
 
+    //callback for pre sort in search activity and TagListFragment/ColorListFragment
+    public interface OnPresortSelectedListener {
+        void onColorSelected(int color);
+        void onTagSelected(long tagId);
+    }
+
 
     public static void setPic(String imagePath, ImageView imageView, Activity activity) {
 

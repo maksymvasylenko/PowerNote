@@ -51,6 +51,8 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
     private ListView list;
     private CursorAdapter cursorAdapter;
     private TaskAddedCallback addedCallback;
+    private String selection = null;
+    private String [] selectionArgs = null;
 
 
     @Override
@@ -74,6 +76,13 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_overview, container, false);
+
+
+        if(getArguments() != null) {
+            selection = getArguments().getString(PowerNoteProvider.CONTENT_SELECTION);
+            selectionArgs = getArguments().getStringArray(PowerNoteProvider.CONTENT_SELECTION_ARGS);
+        }
+
 
         cursorAdapter = new TaskCursorAdapter(getContext(), null, 0);
         
@@ -167,8 +176,11 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
                 listOfSelectedId = new ArrayList<>();
             }
         });
+
+
         
         getActivity().getLoaderManager().initLoader(0, null, this);
+
 
         return view;
     }
@@ -202,11 +214,12 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getContext(), PowerNoteProvider.CONTENT_URI_TASKS,
-                null, null, null, null);
+                null, selection, selectionArgs, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.e("taskListFragment"," count items:" + data.getCount() );
         cursorAdapter.swapCursor(data);
     }
 
