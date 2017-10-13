@@ -1,16 +1,8 @@
 package com.powernote.project.powernote.model;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.text.TextUtils;
-import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class DBOpenHelper extends SQLiteOpenHelper {
 
@@ -26,13 +18,15 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public static final String TABLE_NOTES = "notes";
     public static final String TABLE_TAGS = "tags";
     public static final String TABLE_TASKS_TAGS = "tasks_tags";
-    public static final String TABLE_NOTES_TAGS = "notes_tas";
+    public static final String TABLE_NOTES_TAGS = "notes_tags";
 
-    //Column names
+    //Common column names
     public static final String KEY_ID = "_id";
     public static final String KEY_CREATED_AT = "created_at";
 
 
+
+    //Commomn column names for tasks and notes column
     public static final String KEY_NAME = "name";
     public static final String KEY_DESCRIPTION = "description";
     public static final String KEY_CHECKLIST = "checklist";
@@ -54,7 +48,6 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     //notes table column names
     //...
 
-
     public static final String[] NOTE_ALL_COLUMNS = {KEY_ID,KEY_CREATED_AT,
             KEY_DESCRIPTION,KEY_NAME,KEY_CHECKLIST,KEY_IMAGE_PATH,KEY_BACKGROUNDCOLOR};
 
@@ -62,13 +55,22 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     //tags table column names
     public static final String KEY_TAG_NAME = "tag_name";
 
+    public static final String[] TAG_ALL_COLUMNS = {KEY_ID,KEY_CREATED_AT,KEY_TAG_NAME};
+
+
     //notes_tag table column names
-    public static final String KEY_NOTESTAGS_NOTE_ID = "note_id";
-    public static final String KEY_NOTESTAGS_TAG_ID = "tag_id";
+    public static final String KEY_NOTES_TAGS_NOTE_ID = "note_id";
+    public static final String KEY_NOTES_TAGS_TAG_ID = "tag_id";
+
+    public static final String[] NOTES_TAGS_ALL_COLUMNS = {KEY_ID,KEY_NOTES_TAGS_NOTE_ID,KEY_NOTES_TAGS_TAG_ID};
+
 
     //tasks_tag table column names
-    public static final String KEY_TASKSTAGS_TASK_ID = "task_id";
-    public static final String KEY_TASKSTAGS_TAG_ID = "tag_id";
+    public static final String KEY_TASKS_TAGS_TASK_ID = "task_id";
+    public static final String KEY_TASKS_TAGS_TAG_ID = "tag_id";
+
+    public static final String[] TASKS_TAGS_ALL_COLUMNS = {KEY_ID, KEY_TASKS_TAGS_TASK_ID, KEY_TASKS_TAGS_TAG_ID};
+
 
     //create table statements
     //Tasks table
@@ -96,13 +98,13 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     //Tasks_tags table
     private static final String CREATE_TABLE_TASKS_TAGS = "CREATE TABLE "
             + TABLE_TASKS_TAGS + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
-            + KEY_TASKSTAGS_TASK_ID + " INTEGER," + KEY_TASKSTAGS_TAG_ID + " INTEGER"
+            + KEY_TASKS_TAGS_TASK_ID + " INTEGER," + KEY_TASKS_TAGS_TAG_ID + " INTEGER"
             + ")";
 
     //Notes_tags table
     private static final String CREATE_TABLE_NOTES_TAGS = "CREATE TABLE "
             + TABLE_NOTES_TAGS + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
-            + KEY_NOTESTAGS_NOTE_ID + " INTEGER," + KEY_NOTESTAGS_TAG_ID + " INTEGER"
+            + KEY_NOTES_TAGS_NOTE_ID + " INTEGER," + KEY_NOTES_TAGS_TAG_ID + " INTEGER"
             + ")";
 
     public DBOpenHelper(Context context) {

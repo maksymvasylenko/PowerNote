@@ -21,15 +21,29 @@ public class PowerNoteProvider extends ContentProvider {
 	private static final String AUTHORITY = "com.powernote.project.powernote.powernoteprovider";
 	private static final String BASE_PATH_TASKS = "tasks";
 	private static final String BASE_PATH_NOTES = "notes";
+	private static final String BASE_PATH_TAGS = "tags";
+	private static final String BASE_PATH_TASKS_TAGS = "tasks_tags";
+	private static final String BASE_PATH_NOTES_TAGS = "notes_tags";
 	public static final Uri CONTENT_URI_TASKS = Uri.parse( "content://" + AUTHORITY + "/" + BASE_PATH_TASKS );
 	public static final Uri CONTENT_URI_NOTES = Uri.parse( "content://" + AUTHORITY + "/" + BASE_PATH_NOTES );
+	public static final Uri CONTENT_URI_TAGS = Uri.parse( "content://" + AUTHORITY + "/" + BASE_PATH_TAGS );
+	public static final Uri CONTENT_URI_TASKS_TAGS = Uri.parse( "content://" + AUTHORITY + "/" + BASE_PATH_TASKS_TAGS );
+	public static final Uri CONTENT_URI_NOTES_TAGS = Uri.parse( "content://" + AUTHORITY + "/" + BASE_PATH_NOTES_TAGS );
 	
 	// Constant to identify the requested operation
 	private static final int TASK = 1;
 	private static final int TASKS_ID = 2;
 	private static final int NOTE = 3;
 	private static final int NOTES_ID = 4;
-	
+
+	private static final int TAG = 5;
+	private static final int TAGS_ID = 6;
+	private static final int NOTES_TAGS = 7;
+	private static final int NOTES_TAGS_ID = 8;
+	private static final int TASKS_TAGS = 9;
+	private static final int TASKS_TAGS_ID = 10;
+
+
 	private static final UriMatcher uriMatcher = new UriMatcher( UriMatcher.NO_MATCH );
 	
 	public static final String CONTENT_ITEM_TYPE = "Task";
@@ -39,6 +53,13 @@ public class PowerNoteProvider extends ContentProvider {
 		uriMatcher.addURI( AUTHORITY, BASE_PATH_TASKS + "/#", TASKS_ID );
 		uriMatcher.addURI( AUTHORITY, BASE_PATH_NOTES, NOTE );
 		uriMatcher.addURI( AUTHORITY, BASE_PATH_NOTES + "/#", NOTES_ID );
+
+		uriMatcher.addURI( AUTHORITY, BASE_PATH_TAGS, TAG );
+		uriMatcher.addURI( AUTHORITY, BASE_PATH_TAGS + "/#", TAGS_ID );
+		uriMatcher.addURI( AUTHORITY, BASE_PATH_NOTES_TAGS, NOTES_TAGS );
+		uriMatcher.addURI( AUTHORITY, BASE_PATH_NOTES_TAGS + "/#", NOTES_TAGS_ID );
+		uriMatcher.addURI( AUTHORITY, BASE_PATH_TASKS_TAGS, TASKS_TAGS );
+		uriMatcher.addURI( AUTHORITY, BASE_PATH_TASKS_TAGS + "/#", TASKS_TAGS_ID );
 	}
 	
 	
@@ -68,6 +89,22 @@ public class PowerNoteProvider extends ContentProvider {
 			case NOTE:
 				Log.e( "notes", "notes" );
 				return database.query( DBOpenHelper.TABLE_NOTES, DBOpenHelper.NOTE_ALL_COLUMNS, selection, null, null, null, null );
+
+			case TAGS_ID:
+				Log.e( "notes_id", "notes_id" );
+				selection = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
+			case TAG:
+				Log.e( "notes", "notes" );
+				return database.query( DBOpenHelper.TABLE_TAGS, DBOpenHelper.TAG_ALL_COLUMNS, selection, null, null, null, null );
+
+			case NOTES_TAGS_ID:
+				selection = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
+			case NOTES_TAGS:
+				return database.query( DBOpenHelper.TABLE_NOTES_TAGS, DBOpenHelper.NOTES_TAGS_ALL_COLUMNS, selection, null, null, null, null );
+			case TASKS_TAGS_ID:
+				selection = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
+			case TASKS_TAGS:
+				return database.query( DBOpenHelper.TABLE_TASKS_TAGS, DBOpenHelper.TASKS_TAGS_ALL_COLUMNS, selection, null, null, null, null );
 			default:
 				throw new SQLException( "Failed to insert row into " + uri );
 		}
@@ -88,6 +125,20 @@ public class PowerNoteProvider extends ContentProvider {
 				Log.e( "note insert", "insertion" );
 				long noteId = database.insert( DBOpenHelper.TABLE_NOTES, null, values );
 				return Uri.parse( BASE_PATH_NOTES + "/" + noteId );
+
+			case TAG:
+				Log.e( "note insert", "insertion" );
+				long tagId = database.insert( DBOpenHelper.TABLE_NOTES, null, values );
+				return Uri.parse( BASE_PATH_NOTES + "/" + tagId );
+			case NOTES_TAGS:
+				Log.e( "note insert", "insertion" );
+				long notesTagsId = database.insert( DBOpenHelper.TABLE_NOTES, null, values );
+				return Uri.parse( BASE_PATH_NOTES + "/" + notesTagsId );
+			case TASKS_TAGS:
+				Log.e( "note insert", "insertion" );
+				long tasksTagsId = database.insert( DBOpenHelper.TABLE_NOTES, null, values );
+				return Uri.parse( BASE_PATH_NOTES + "/" + tasksTagsId );
+
 			default:
 				throw new SQLException( "Failed to insert row into " + uri );
 		}
@@ -103,6 +154,14 @@ public class PowerNoteProvider extends ContentProvider {
 				return database.delete( DBOpenHelper.TABLE_TASKS, selection, selectionArgs );
 			case NOTE:
 				return database.delete( DBOpenHelper.TABLE_NOTES, selection, selectionArgs );
+
+			case TAG:
+				return database.delete( DBOpenHelper.TABLE_TAGS, selection, selectionArgs );
+			case NOTES_TAGS:
+				return database.delete( DBOpenHelper.TABLE_NOTES_TAGS, selection, selectionArgs );
+			case TASKS_TAGS:
+				return database.delete( DBOpenHelper.TABLE_TASKS_TAGS, selection, selectionArgs );
+
 			default:
 				throw new SQLException( "Failed to delete row " + uri );
 		}
@@ -121,6 +180,17 @@ public class PowerNoteProvider extends ContentProvider {
 			case NOTE:
 				Log.e( "powerNoteProvider", "note update" );
 				return database.update( DBOpenHelper.TABLE_NOTES, values, selection, selectionArgs );
+
+			case TAG:
+				Log.e( "powerNoteProvider", "tag update" );
+				return database.update( DBOpenHelper.TABLE_TAGS, values, selection, selectionArgs );
+			case NOTES_TAGS:
+				Log.e( "powerNoteProvider", "note_tag update" );
+				return database.update( DBOpenHelper.TABLE_NOTES_TAGS, values, selection, selectionArgs );
+			case TASKS_TAGS:
+				Log.e( "powerNoteProvider", "task_tag update" );
+				return database.update( DBOpenHelper.TABLE_TASKS_TAGS, values, selection, selectionArgs );
+
 			default:
 				throw new SQLException( "Failed to update row " + uri );
 		}
