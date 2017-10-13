@@ -2,6 +2,7 @@ package com.powernote.project.powernote.fragment;
 
 import android.app.Activity;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -19,6 +20,7 @@ import com.powernote.project.powernote.NonScrollListView;
 import com.powernote.project.powernote.PowerNoteProvider;
 import com.powernote.project.powernote.R;
 import com.powernote.project.powernote.adapter.TagCursorAdapter;
+import com.powernote.project.powernote.model.DBOpenHelper;
 
 /**
  * Created by Maks on 13.10.2017.
@@ -38,11 +40,12 @@ public class TagListFragment extends Fragment implements LoaderManager.LoaderCal
         View view = inflater.inflate(R.layout.fragment_nonscrolllistview, container, false);
 
 
-        /*for (int i = 0; i < 4; i++) {
-            ContentValues values = new ContentValues();
-            values.put(DBOpenHelper.KEY_TAG_NAME, "bbb" + i);
-            getActivity().getContentResolver().insert(PowerNoteProvider.CONTENT_URI_TAGS, values);
-        }*/
+        /*ContentValues values = new ContentValues();
+        values.put(DBOpenHelper.KEY_TAG_NAME, "test1");
+        getActivity().getContentResolver().insert(PowerNoteProvider.CONTENT_URI_TAGS, values);
+        ContentValues values2 = new ContentValues();
+        values2.put(DBOpenHelper.KEY_TAG_NAME, "test2");
+        getActivity().getContentResolver().insert(PowerNoteProvider.CONTENT_URI_TAGS, values2);*/
 
         /*ContentValues values = new ContentValues();
         values.put(DBOpenHelper.KEY_TAG_NAME, "ccc");
@@ -73,7 +76,12 @@ public class TagListFragment extends Fragment implements LoaderManager.LoaderCal
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mCallback.onTagSelected(id);
+                // TODO: 13.10.2017 id might not be not correct!!!
+
+                Cursor cursor = (Cursor) cursorAdapter.getItem(position);
+                long tagId = cursor.getLong(cursor.getColumnIndex(DBOpenHelper.KEY_ID));
+
+                mCallback.onTagSelected(tagId);
             }
         });
 

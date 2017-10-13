@@ -12,7 +12,9 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ActionMode;
@@ -29,6 +31,7 @@ import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.powernote.project.powernote.ChooseTagDialogFragment;
 import com.powernote.project.powernote.activity.TaskActivity;
 import com.powernote.project.powernote.PowerNoteProvider;
 import com.powernote.project.powernote.adapter.TaskCursorAdapter;
@@ -79,6 +82,7 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
 
 
         if(getArguments() != null) {
+            Log.e("TaskListFragment", "getArguments() != null");
             selection = getArguments().getString(PowerNoteProvider.CONTENT_SELECTION);
             selectionArgs = getArguments().getStringArray(PowerNoteProvider.CONTENT_SELECTION_ARGS);
         }
@@ -95,6 +99,7 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent myIntent = new Intent(getActivity(), TaskActivity.class);
+                // TODO: 13.10.2017 id might not be not correct!!!
                 myIntent.putExtra(PowerNoteProvider.CONTENT_ITEM_TYPE, id);
                 startActivityForResult(myIntent, EDITOR_REQUEST_CODE);
 
@@ -166,6 +171,9 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
                         setColorButton(getResources().getColor(R.color.colorWhite), btnWhite, mode, dialog);
 
                         return true;
+                    case R.id.action_add_label:
+                        showDialog();
+                        return true;
                     default:
                         return false;
                 }
@@ -184,6 +192,32 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
 
         return view;
     }
+
+    void showDialog() {
+
+        // DialogFragment.show() will take care of adding the fragment
+        // in a transaction.  We also want to remove any currently showing
+        // dialog, so make our own transaction and take care of that here.
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        String [] stringList = new String[listOfSelectedId.size()];
+
+        for (int i = 0; i < listOfSelectedId.size(); i++) {
+            stringList[i] = listOfSelectedId.get(i).toString();
+        }
+
+        // Create and show the dialog.
+        DialogFragment newFragment = ChooseTagDialogFragment.newInstance(stringList);
+        newFragment.show(ft, "dialog");
+    }
+
+
+
 
     private void setColorButton(final int color, Button btn, final ActionMode mode, final Dialog dialog){
         GradientDrawable gd = new GradientDrawable(

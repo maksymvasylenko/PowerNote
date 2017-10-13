@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
@@ -78,24 +79,35 @@ public class SearchActivity extends AppCompatActivity implements Methods.OnPreso
 
         String[] stringListOfIds = null;
         String noteFilter = null;
-        Uri uri = Uri.parse(PowerNoteProvider.CONTENT_URI_TASKS + "/" + tagId);
 
-        Cursor cursor = getContentResolver().query(uri,
-                DBOpenHelper.TASKS_TAGS_ALL_COLUMNS, null, null, null);
+        String selection = DBOpenHelper.KEY_TASKS_TAGS_TAG_ID + "=" + tagId;
+
+        Cursor cursor = getContentResolver().query(PowerNoteProvider.CONTENT_URI_TASKS_TAGS,
+                DBOpenHelper.TASKS_TAGS_ALL_COLUMNS, selection, null, null);
+
         if(cursor.moveToFirst()){
 
             stringListOfIds = new String[cursor.getCount()];
 
             stringListOfIds[0] = String.valueOf(cursor.getInt(cursor.getColumnIndex(DBOpenHelper.KEY_TASKS_TAGS_TASK_ID)));
-
+            Log.e("test0", "" + stringListOfIds[0]);
             for (int i = 1;cursor.moveToNext(); i++) {
+                Log.e("test" + i, "" + DBOpenHelper.KEY_TASKS_TAGS_TASK_ID);
                 stringListOfIds[i] = String.valueOf(cursor.getInt(cursor.getColumnIndex(DBOpenHelper.KEY_TASKS_TAGS_TASK_ID)));
             }
 
             noteFilter = DBOpenHelper.KEY_ID + " IN (" + new String(new char[stringListOfIds.length-1]).replace("\0", "?,") + "?)";
         }
 
+        if(stringListOfIds == null){
+            Log.e("test", "stringListOfIds == null");
+        }
+        if(noteFilter == null){
+            Log.e("test", "noteFilter == null");
+        }
 
+
+        // TODO: 13.10.2017 fix this: if both null all tasks are shown
         showTasks(stringListOfIds, noteFilter);
     }
 
@@ -107,6 +119,7 @@ public class SearchActivity extends AppCompatActivity implements Methods.OnPreso
         Bundle bundle = new Bundle();
         bundle.putString(PowerNoteProvider.CONTENT_SELECTION, noteFilter );
         if(stringListOfIds != null){
+            Log.e("stringListOfIds", "stringListOfIds != null");
             bundle.putStringArray(PowerNoteProvider.CONTENT_SELECTION_ARGS, stringListOfIds );
         }
 

@@ -6,7 +6,7 @@
 
     <item
         android:id="@+id/action_delete"
-        android:orderInCategory="99"
+        android:orderInCategory="98"
         android:icon="@drawable/ic_action_delete"
         android:title="@string/action_add"
         app:showAsAction="ifRoom" />
@@ -15,6 +15,13 @@
         android:id="@+id/action_change_color"
         android:orderInCategory="99"
         android:icon="@drawable/ic_palette_white_24dp"
+        android:title="@string/action_add"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_add_label"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_label_white_24dp"
         android:title="@string/action_add"
         app:showAsAction="ifRoom" />
 

@@ -36,7 +36,7 @@ public class TaskCursorAdapter extends CursorAdapter {
 
 
         view.setBackgroundColor(cursor.getInt(cursor.getColumnIndex(DBOpenHelper.KEY_BACKGROUNDCOLOR)));
-
-
     }
+
+
 }

@@ -68,7 +68,7 @@ public class PowerNoteProvider extends ContentProvider {
 		uriMatcher.addURI( AUTHORITY, BASE_PATH_TASKS_TAGS, TASKS_TAGS );
 		uriMatcher.addURI( AUTHORITY, BASE_PATH_TASKS_TAGS + "/#", TASKS_TAGS_ID );
 	}
-	
+
 	
 	private SQLiteDatabase database;
 	
@@ -88,8 +88,8 @@ public class PowerNoteProvider extends ContentProvider {
 				Log.e( "query", "tasks_id" );
 				selection = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
 			case TASK:
-				Log.e( "query", "tasks_id" );
-				return database.query( DBOpenHelper.TABLE_TASKS, DBOpenHelper.TASK_ALL_COLUMNS, selection, null, null, null, null );
+				Log.e( "query", "tasks" );
+				return database.query( DBOpenHelper.TABLE_TASKS, DBOpenHelper.TASK_ALL_COLUMNS, selection, selectionArgs, null, null, null );
 			case NOTES_ID:
 				Log.e( "query", "notes_id" );
 				selection = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
@@ -104,18 +104,23 @@ public class PowerNoteProvider extends ContentProvider {
 				Log.e( "query", "tags" );
 				return database.query( DBOpenHelper.TABLE_TAGS, DBOpenHelper.TAG_ALL_COLUMNS, selection, null, null, null, null );
 
-			case NOTES_TAGS_TAG_ID:
+			/*case NOTES_TAGS_TAG_ID:
+				// TODO: 13.10.2017 fix this!!! it doesnt work
 				selection = DBOpenHelper.KEY_NOTES_TAGS_TAG_ID + "=" + uri.getLastPathSegment();
 			case NOTES_TAGS_NOTE_ID:
-				selection = DBOpenHelper.KEY_NOTES_TAGS_NOTE_ID + "=" + uri.getLastPathSegment();
+				// TODO: 13.10.2017 fix this!!! it doesnt work
+				selection = DBOpenHelper.KEY_NOTES_TAGS_NOTE_ID + "=" + uri.getLastPathSegment();*/
 			case NOTES_TAGS:
 				return database.query( DBOpenHelper.TABLE_NOTES_TAGS, DBOpenHelper.NOTES_TAGS_ALL_COLUMNS, selection, null, null, null, null );
-			case TASKS_TAGS_TAG_ID:
+			/*case TASKS_TAGS_TAG_ID:
+				// TODO: 13.10.2017 fix this!!! it doesnt work
 				selection = DBOpenHelper.KEY_TASKS_TAGS_TAG_ID + "=" + uri.getLastPathSegment();
 			case TASKS_TAGS_TASK_ID:
-				selection = DBOpenHelper.KEY_TASKS_TAGS_TASK_ID + "=" + uri.getLastPathSegment();
+				// TODO: 13.10.2017 fix this!!! it doesnt work
+				selection = DBOpenHelper.KEY_TASKS_TAGS_TASK_ID + "=" + uri.getLastPathSegment();*/
 			case TASKS_TAGS:
-				return database.query( DBOpenHelper.TABLE_TASKS_TAGS, DBOpenHelper.TASKS_TAGS_ALL_COLUMNS, selection, null, null, null, null );
+
+				return database.query( DBOpenHelper.TABLE_TASKS_TAGS, DBOpenHelper.TASKS_TAGS_ALL_COLUMNS, selection, selectionArgs, null, null, null );
 			default:
 				throw new SQLException( "Failed to insert row into " + uri );
 		}
