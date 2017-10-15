@@ -276,6 +276,7 @@ public class FragmentTaskEdit extends Fragment {
 
             long id = getArguments().getLong(PowerNoteProvider.CONTENT_ITEM_TYPE);
             Uri uri = Uri.parse(PowerNoteProvider.CONTENT_URI_TASKS + "/" + id);
+            noteFilter = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
 
             Cursor cursor = getActivity().getContentResolver().query(uri,
                     DBOpenHelper.TASK_ALL_COLUMNS, null, null, null);
@@ -538,6 +539,16 @@ public class FragmentTaskEdit extends Fragment {
 
 
     private Task getTheCurrentSelectedData(Task task) {
+
+
+        if(task.getLogs() != null){
+            task.addLogItem("task edited");
+        }else{
+            task.addLogItem("task created");
+        }
+
+        Log.e("ragmentTaskEdit", "" + sdf.format(System.currentTimeMillis()));
+
 
         if (swChecklist.isChecked()) {
             task.setCheckList(items);

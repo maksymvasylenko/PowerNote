@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.powernote.project.powernote.Methods;
+import com.powernote.project.powernote.NonScrollListView;
 import com.powernote.project.powernote.PowerNoteProvider;
 import com.powernote.project.powernote.model.DBOpenHelper;
 import com.powernote.project.powernote.model.Task;
@@ -43,6 +45,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -54,12 +57,14 @@ public class TaskViewFragment extends Fragment {
 	private ListView lvCheckist;
 	
 	private LinearLayout layoutChecklist,layoutDeadline,
-			layoutEffort, layoutImage, layoutDuration;
+			layoutEffort, layoutImage, layoutDuration, logLayout;
 	
 	private TextView tvTime, tvDate, tvDurationHours, tvDurationMinutes;
 
 	private Button btnStartWorking;
 	private ProgressBar pbDurationComplet;
+
+	private ArrayAdapter<String> stringAdapter;
 
 	private View view;
 
@@ -135,11 +140,13 @@ public class TaskViewFragment extends Fragment {
 		layoutDuration = (LinearLayout) view.findViewById( R.id.ll_task_view_duration );
 		pbDurationComplet = (ProgressBar) view.findViewById(R.id.pb_duration_completed);
 
-		
+
+
 		layoutEffort = (LinearLayout) view.findViewById( R.id.ll_task_view_effort_priority );
 		layoutDeadline = (LinearLayout) view.findViewById( R.id.ll_task_view_deadline );
 		layoutChecklist = (LinearLayout) view.findViewById( R.id.layout_checklist );
         layoutImage = (LinearLayout) view.findViewById( R.id.layout_images );
+		logLayout = (LinearLayout) view.findViewById(R.id.ll_task_view_log_layout);
 
 
 
@@ -152,6 +159,7 @@ public class TaskViewFragment extends Fragment {
 			long id = getArguments().getLong(PowerNoteProvider.CONTENT_ITEM_TYPE);
 			final Uri uri = Uri.parse(PowerNoteProvider.CONTENT_URI_TASKS + "/" + id);
 
+			noteFilter = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
 
 			Cursor cursor = getActivity().getContentResolver().query(uri,
 					DBOpenHelper.TASK_ALL_COLUMNS, null, null, null);
@@ -262,6 +270,18 @@ public class TaskViewFragment extends Fragment {
 
 			}
 
+			//log
+
+			if(task.getLogs() != null){
+				logLayout.setVisibility(View.VISIBLE);
+				stringAdapter = new ArrayAdapter<>(getContext(), R.layout.log_list_item, task.getLogs());
+				NonScrollListView listView = (NonScrollListView) view.findViewById(R.id.lv_task_view_log);
+
+				listView.setAdapter(stringAdapter);
+			}
+
+
+
 		}
 
 		return view;
@@ -272,7 +292,6 @@ public class TaskViewFragment extends Fragment {
 		private long millisUntilFinished, millisInFuture, duration, spendBefore;
 		private ProgressBar progressBar;
 		private TextView seconds;
-
 
 
 		public MyCountDownTimer(long millisInFuture, long countDownInterval, long duration, ProgressBar progressBar, TextView seconds) {
@@ -379,6 +398,8 @@ public class TaskViewFragment extends Fragment {
 	private void saveSpendTime(long millisSpend){
 
 		task.setSpend(millisSpend);
+		task.addLogItem("was working on the task for " + millisSpend/1000 + " seconds");
+		stringAdapter.notifyDataSetChanged();
 
 		long spendInPercentages= (task.getSpend()*100)/(task.getDuration());
 		int spendInPercentagesInt = ((Number)spendInPercentages).intValue();
@@ -386,6 +407,7 @@ public class TaskViewFragment extends Fragment {
 
 		ContentValues values = new ContentValues();
 		values.put(DBOpenHelper.KEY_TASK_SPEND, millisSpend);
+		values.put(DBOpenHelper.KEY_TASK_LOG, Methods.serializeLog(task.getLogs()));
 
 		getActivity().getContentResolver().update(PowerNoteProvider.CONTENT_URI_TASKS, values,
 				noteFilter, null);

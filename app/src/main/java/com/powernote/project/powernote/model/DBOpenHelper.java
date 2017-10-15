@@ -39,10 +39,11 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     public static final String KEY_TASK_DURATION = "task_duration";
     public static final String KEY_TASK_SPEND = "task_spend";
     public static final String KEY_TASK_EFFORT = "task_effort";
+    public static final String KEY_TASK_LOG = "task_log";
 
     public static final String[] TASK_ALL_COLUMNS = {KEY_ID,KEY_CREATED_AT,
             KEY_NAME,KEY_DESCRIPTION,KEY_TASK_DEADLINE,KEY_TASK_RANK,KEY_TASK_DURATION,
-            KEY_TASK_EFFORT,KEY_IMAGE_PATH,KEY_BACKGROUNDCOLOR,KEY_CHECKLIST,KEY_TASK_SPEND};
+            KEY_TASK_EFFORT,KEY_IMAGE_PATH,KEY_BACKGROUNDCOLOR,KEY_CHECKLIST,KEY_TASK_SPEND, KEY_TASK_LOG};
 
 
     //notes table column names
@@ -80,7 +81,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
             + KEY_TASK_DEADLINE + " INTEGER," + KEY_TASK_RANK + " INTEGER,"
             + KEY_TASK_DURATION + " INTEGER," + KEY_CREATED_AT
             + " INTEGER," + KEY_TASK_EFFORT + " INTEGER," + KEY_IMAGE_PATH + " TEXT,"
-            + KEY_CHECKLIST + " TEXT," + KEY_BACKGROUNDCOLOR + " INTEGER," + KEY_TASK_SPEND + " INTEGER" + ")";
+            + KEY_CHECKLIST + " TEXT," + KEY_BACKGROUNDCOLOR + " INTEGER," + KEY_TASK_SPEND + " INTEGER," + KEY_TASK_LOG + " TEXT" + ")";
 
     //Notes table
     private static final String CREATE_TABLE_NOTES = "CREATE TABLE "
