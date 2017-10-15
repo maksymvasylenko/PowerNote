@@ -1,24 +1,31 @@
 package com.powernote.project.powernote.model;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class Task extends Note{
+
+    private SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d", Locale.US);
 
     private int rank, effort;
     private long deadline, duration, spend = -1;
     private boolean complete;
     private int priority;
-    private List<Task> dependencies;
+    private List<Long> dependencies;//changed from Task to long(wil contain task ids)
+    private List<String> logs;
 
     public Task(long id, int rank, String title, String description, long deadline,
                 long createdAt, long duration, int effort, String imagePath,
-                List<ChecklistItem> checklist, int backgroundColor, long spend){
+                List<ChecklistItem> checklist, int backgroundColor, long spend, List<String> logs){
         super(id, description, createdAt, title, checklist, imagePath, backgroundColor);
         this.rank = rank;
         this.deadline = deadline;
         this.duration = duration;
         this.effort = effort;
         this.spend = spend;
+        this.logs = logs;
     }
 
     public Task(){}
@@ -41,6 +48,17 @@ public class Task extends Note{
 
     public long getSpend() {
         return spend;
+    }
+
+    public List<String> getLogs() {
+        return logs;
+    }
+
+    public void addLogItem(String log){
+        if(logs == null){
+            logs = new ArrayList<>();
+        }
+        logs.add(sdf.format(System.currentTimeMillis()) + " # " + log);
     }
 
     public void setDeadline(long taskDeadline) {

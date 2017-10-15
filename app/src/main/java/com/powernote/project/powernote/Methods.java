@@ -79,6 +79,7 @@ public class Methods {
         values.put(DBOpenHelper.KEY_CHECKLIST, serializeChecklist(task.getCheckList()));
         values.put(DBOpenHelper.KEY_BACKGROUNDCOLOR, task.getBackgroundColor());
         values.put(DBOpenHelper.KEY_TASK_SPEND, task.getSpend());
+        values.put(DBOpenHelper.KEY_TASK_LOG, serializeLog(task.getLogs()));
 
         return values;
     }
@@ -106,7 +107,8 @@ public class Methods {
                 c.getString(c.getColumnIndex(DBOpenHelper.KEY_IMAGE_PATH)),
                 deserializeChecklist(c.getString(c.getColumnIndex(DBOpenHelper.KEY_CHECKLIST))),
                 c.getInt(c.getColumnIndex(DBOpenHelper.KEY_BACKGROUNDCOLOR)),
-                c.getLong(c.getColumnIndex(DBOpenHelper.KEY_TASK_SPEND)));
+                c.getLong(c.getColumnIndex(DBOpenHelper.KEY_TASK_SPEND)),
+                deserializeLog(c.getString(c.getColumnIndex(DBOpenHelper.KEY_TASK_LOG))));
         return task;
     }
 
@@ -124,6 +126,39 @@ public class Methods {
 
     static private long getDateTime() {
         return System.currentTimeMillis();
+    }
+
+    /**
+     * Serialize a log to allow for storage in the database
+     * @param logs list of logs
+     * @return Serialized string of log items
+     */
+    public static String serializeLog(List<String> logs){
+        if(logs != null) {
+            List<String> content = new ArrayList<>();
+            for (int i = 0; i < logs.size(); i++) {
+                content.add(logs.get(i));
+            }
+            return TextUtils.join(ARRAY_DIVIDER, content);
+        }
+        return "";
+    }
+
+    /**
+     * Deserialize a log for retrieval from the database
+     * @param content Serialized string of a logItem list
+     * @return List of deserialized logs
+     */
+    static private List<String> deserializeLog(String content){
+        if (content != null && !content.isEmpty()) {
+            String[] c = content.split(ARRAY_DIVIDER);
+            List<String> logs = new ArrayList<>();
+            for (String aC : c) {
+                logs.add(aC);
+            }
+            return logs;
+        }
+        return null;
     }
 
     /**
