@@ -32,20 +32,11 @@ public class PowerNoteProvider extends ContentProvider {
 	
 	// Constant to identify the requested operation
 	private static final int TASK = 1;
-	private static final int TASKS_ID = 2;
-	private static final int NOTE = 3;
-	private static final int NOTES_ID = 4;
+	private static final int NOTE = 2;
 
-	private static final int TAG = 5;
-	private static final int TAGS_ID = 6;
-	private static final int NOTES_TAGS = 7;
-	private static final int NOTES_TAGS_ID = 8;
-	private static final int TASKS_TAGS = 9;
-	private static final int TASKS_TAGS_ID = 10;
-	private static final int NOTES_TAGS_TAG_ID = 11;
-	private static final int NOTES_TAGS_NOTE_ID = 12;
-	private static final int TASKS_TAGS_TAG_ID = 13;
-	private static final int TASKS_TAGS_TASK_ID = 14;
+	private static final int TAG = 3;
+	private static final int NOTES_TAGS = 4;
+	private static final int TASKS_TAGS = 5;
 
 
 	private static final UriMatcher uriMatcher = new UriMatcher( UriMatcher.NO_MATCH );
@@ -57,16 +48,11 @@ public class PowerNoteProvider extends ContentProvider {
 	
 	static {
 		uriMatcher.addURI( AUTHORITY, BASE_PATH_TASKS, TASK );
-		uriMatcher.addURI( AUTHORITY, BASE_PATH_TASKS + "/#", TASKS_ID );
 		uriMatcher.addURI( AUTHORITY, BASE_PATH_NOTES, NOTE );
-		uriMatcher.addURI( AUTHORITY, BASE_PATH_NOTES + "/#", NOTES_ID );
 
 		uriMatcher.addURI( AUTHORITY, BASE_PATH_TAGS, TAG );
-		uriMatcher.addURI( AUTHORITY, BASE_PATH_TAGS + "/#", TAGS_ID );
 		uriMatcher.addURI( AUTHORITY, BASE_PATH_NOTES_TAGS, NOTES_TAGS );
-		uriMatcher.addURI( AUTHORITY, BASE_PATH_NOTES_TAGS + "/#", NOTES_TAGS_ID );
 		uriMatcher.addURI( AUTHORITY, BASE_PATH_TASKS_TAGS, TASKS_TAGS );
-		uriMatcher.addURI( AUTHORITY, BASE_PATH_TASKS_TAGS + "/#", TASKS_TAGS_ID );
 	}
 
 	
@@ -84,42 +70,20 @@ public class PowerNoteProvider extends ContentProvider {
 	public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 		
 		switch (uriMatcher.match( uri )) {
-			case TASKS_ID:
-				Log.e( "query", "tasks_id" );
-				selection = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
 			case TASK:
-				Log.e( "query", "tasks" );
+				Log.e( "query", "tasks:" + selection );
 				return database.query( DBOpenHelper.TABLE_TASKS, DBOpenHelper.TASK_ALL_COLUMNS, selection, selectionArgs, null, null, null );
-			case NOTES_ID:
-				Log.e( "query", "notes_id" );
-				selection = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
 			case NOTE:
-				Log.e( "query", "notes" );
-				return database.query( DBOpenHelper.TABLE_NOTES, DBOpenHelper.NOTE_ALL_COLUMNS, selection, null, null, null, null );
+				Log.e( "query", "notes" + selection );
+				return database.query( DBOpenHelper.TABLE_NOTES, DBOpenHelper.NOTE_ALL_COLUMNS, selection, selectionArgs, null, null, null );
 
-			case TAGS_ID:
-				Log.e( "query", "tags_id" );
-				selection = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
 			case TAG:
 				Log.e( "query", "tags" );
-				return database.query( DBOpenHelper.TABLE_TAGS, DBOpenHelper.TAG_ALL_COLUMNS, selection, null, null, null, null );
+				return database.query( DBOpenHelper.TABLE_TAGS, DBOpenHelper.TAG_ALL_COLUMNS, selection, selectionArgs, null, null, null );
 
-			/*case NOTES_TAGS_TAG_ID:
-				// TODO: 13.10.2017 fix this!!! it doesnt work
-				selection = DBOpenHelper.KEY_NOTES_TAGS_TAG_ID + "=" + uri.getLastPathSegment();
-			case NOTES_TAGS_NOTE_ID:
-				// TODO: 13.10.2017 fix this!!! it doesnt work
-				selection = DBOpenHelper.KEY_NOTES_TAGS_NOTE_ID + "=" + uri.getLastPathSegment();*/
 			case NOTES_TAGS:
-				return database.query( DBOpenHelper.TABLE_NOTES_TAGS, DBOpenHelper.NOTES_TAGS_ALL_COLUMNS, selection, null, null, null, null );
-			/*case TASKS_TAGS_TAG_ID:
-				// TODO: 13.10.2017 fix this!!! it doesnt work
-				selection = DBOpenHelper.KEY_TASKS_TAGS_TAG_ID + "=" + uri.getLastPathSegment();
-			case TASKS_TAGS_TASK_ID:
-				// TODO: 13.10.2017 fix this!!! it doesnt work
-				selection = DBOpenHelper.KEY_TASKS_TAGS_TASK_ID + "=" + uri.getLastPathSegment();*/
+				return database.query( DBOpenHelper.TABLE_NOTES_TAGS, DBOpenHelper.NOTES_TAGS_ALL_COLUMNS, selection, selectionArgs, null, null, null );
 			case TASKS_TAGS:
-
 				return database.query( DBOpenHelper.TABLE_TASKS_TAGS, DBOpenHelper.TASKS_TAGS_ALL_COLUMNS, selection, selectionArgs, null, null, null );
 			default:
 				throw new SQLException( "Failed to insert row into " + uri );
@@ -145,23 +109,21 @@ public class PowerNoteProvider extends ContentProvider {
 			case TAG:
 				long tagId = database.insert( DBOpenHelper.TABLE_TAGS, null, values );
 				Log.e( "tag insert", "insertion id:" + tagId );
-				return Uri.parse( BASE_PATH_NOTES + "/" + tagId );
+				return Uri.parse( BASE_PATH_TAGS + "/" + tagId );
 			case NOTES_TAGS:
 				Log.e( "note tag insert", "insertion" );
 				long notesTagsId = database.insert( DBOpenHelper.TABLE_NOTES_TAGS, null, values );
-				return Uri.parse( BASE_PATH_NOTES + "/" + notesTagsId );
+				return Uri.parse( BASE_PATH_NOTES_TAGS + "/" + notesTagsId );
 			case TASKS_TAGS:
 				Log.e( "task tag insert", "insertion" );
 				long tasksTagsId = database.insert( DBOpenHelper.TABLE_TASKS_TAGS, null, values );
-				return Uri.parse( BASE_PATH_NOTES + "/" + tasksTagsId );
+				return Uri.parse( BASE_PATH_TASKS_TAGS + "/" + tasksTagsId );
 
 			default:
 				throw new SQLException( "Failed to insert row into " + uri );
 		}
 	}
-	
-	
-	//can be redone with selection inside the method(like query method)
+
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
 		
@@ -182,8 +144,6 @@ public class PowerNoteProvider extends ContentProvider {
 				throw new SQLException( "Failed to delete row " + uri );
 		}
 
-        /*database.delete(TABLE_TASKS, KEY_ID + " = ?",
-                new String[] { String.valueOf(taskId) });*/
 	}
 	
 	@Override
@@ -211,7 +171,5 @@ public class PowerNoteProvider extends ContentProvider {
 				throw new SQLException( "Failed to update row " + uri );
 		}
 
-        /*return database.update(TABLE_TASKS, values, KEY_ID + " = ?",
-                new String[] { String.valueOf(updatedTask.getId()) });*/
 	}
 }

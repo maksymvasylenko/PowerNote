@@ -87,7 +87,7 @@ public class NoteActivity extends AppCompatActivity {
 			note = new Note();
 		} else {
 			Uri uri = Uri.parse( PowerNoteProvider.CONTENT_URI_NOTES + "/" + contentType );
-			noteFilter = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
+			noteFilter = DBOpenHelper.KEY_ID + "=" + contentType;
 			Cursor cursor = getContentResolver().query( uri, DBOpenHelper.NOTE_ALL_COLUMNS, noteFilter, null, null );
 			cursor.moveToFirst();
 			note = Methods.getNewNote( cursor );

@@ -106,7 +106,7 @@ public class FragmentTaskEdit extends Fragment {
 
     final Calendar calendar = Calendar.getInstance();
 
-    private String noteFilter;
+    private String noteFilter = null;
 
 
     @Override
@@ -125,8 +125,10 @@ public class FragmentTaskEdit extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_delete:
-                getActivity().getContentResolver().delete(PowerNoteProvider.CONTENT_URI_NOTES,
-                        noteFilter, null);
+                if(noteFilter != null ){
+                    getActivity().getContentResolver().delete(PowerNoteProvider.CONTENT_URI_NOTES,
+                            noteFilter, null);
+                }
 
                 getActivity().setResult(RESULT_OK);
                 getActivity().finish();
@@ -275,10 +277,11 @@ public class FragmentTaskEdit extends Fragment {
 
 
             long id = getArguments().getLong(PowerNoteProvider.CONTENT_ITEM_TYPE);
-            Uri uri = Uri.parse(PowerNoteProvider.CONTENT_URI_TASKS + "/" + id);
-            noteFilter = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
 
-            Cursor cursor = getActivity().getContentResolver().query(uri,
+
+            noteFilter = DBOpenHelper.KEY_ID + "=" + id;
+
+            Cursor cursor = getActivity().getContentResolver().query(PowerNoteProvider.CONTENT_URI_TASKS,
                     DBOpenHelper.TASK_ALL_COLUMNS, null, null, null);
             cursor.moveToFirst();
 

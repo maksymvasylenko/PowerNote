@@ -153,16 +153,14 @@ public class TaskViewFragment extends Fragment {
         ImageView imageView = (ImageView) view.findViewById( R.id.image );
 		
 		if(getArguments() != null) {
+
 			// Get the taskId that was passed in via the bundle and set the current task
-
-
 			long id = getArguments().getLong(PowerNoteProvider.CONTENT_ITEM_TYPE);
-			final Uri uri = Uri.parse(PowerNoteProvider.CONTENT_URI_TASKS + "/" + id);
 
-			noteFilter = DBOpenHelper.KEY_ID + "=" + uri.getLastPathSegment();
+			noteFilter = DBOpenHelper.KEY_ID + "=" + id;
 
-			Cursor cursor = getActivity().getContentResolver().query(uri,
-					DBOpenHelper.TASK_ALL_COLUMNS, null, null, null);
+			Cursor cursor = getActivity().getContentResolver().query(PowerNoteProvider.CONTENT_URI_TASKS,
+					DBOpenHelper.TASK_ALL_COLUMNS, noteFilter, null, null);
 			cursor.moveToFirst();
 
 			task = Methods.getNewTask(cursor);

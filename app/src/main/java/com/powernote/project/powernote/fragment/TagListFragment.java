@@ -76,7 +76,7 @@ public class TagListFragment extends Fragment implements LoaderManager.LoaderCal
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO: 13.10.2017 id might not be not correct!!!
+                // TODO: 13.10.2017 id might not be not correct!!! need testing !!!!
 
                 Cursor cursor = (Cursor) cursorAdapter.getItem(position);
                 long tagId = cursor.getLong(cursor.getColumnIndex(DBOpenHelper.KEY_ID));
