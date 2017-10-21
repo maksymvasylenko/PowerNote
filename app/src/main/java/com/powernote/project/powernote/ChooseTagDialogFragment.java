@@ -2,6 +2,7 @@ package com.powernote.project.powernote;
 
 import android.app.Dialog;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -74,19 +76,36 @@ public class ChooseTagDialogFragment extends DialogFragment implements LoaderMan
 
         final EditText searchBox = (EditText) view.findViewById(R.id.et_choose_tag_fragment_dialog_search);
 
-        /*Button buttonAddTag = (Button) view.findViewById( R.id.bt_add_tag );
-
-        buttonAddTag.setOnClickListener( new View.OnClickListener() {
+        TextView.OnEditorActionListener listener = new TextView.OnEditorActionListener() {
             @Override
-            public void onClick(View view) {
-                String inputText = searchBox.getText().toString();
-                if(inputText.isEmpty()) {
-                    inputText = "Empty";
+            public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
+                if (event == null) {
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        String inputText = searchBox.getText().toString();
+
+                        //inserting tag to DB
+                        ContentValues values = new ContentValues();
+                        values.put(DBOpenHelper.KEY_TAG_NAME, inputText);
+
+                        getActivity().getContentResolver().insert(PowerNoteProvider.CONTENT_URI_TAGS, values);
+                        restartLoader();
+                        searchBox.setText("");
+
+                        Log.e("chooseTagDialogFragment", ": entered text:" + inputText);
+                        return false;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    Log.e("chooseTagDialogFragment", ": event not null");
+                    return false;
                 }
-                searchBox.setText( "" );
-                Log.e("etered",inputText );
             }
-        } );*/
+        };
+
+        // Set keyEvent listener on editText
+        searchBox.setOnEditorActionListener(listener);
+
 
 
 

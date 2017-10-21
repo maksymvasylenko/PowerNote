@@ -6,18 +6,20 @@
 
     <EditText
         android:id="@+id/et_choose_tag_fragment_dialog_search"
-        android:hint="Search"
+        android:hint="Add Tag"
         android:textSize="20sp"
         android:layout_gravity="center_vertical"
         android:layout_width="match_parent"
         android:backgroundTint="@android:color/transparent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:maxLines="1"
+        android:imeOptions="actionDone"
         android:inputType="textCapSentences" />
 
     <ListView
         android:id="@+id/lv_choose_tag_fragment_dialog_tags"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"/>
 
 </LinearLayout>

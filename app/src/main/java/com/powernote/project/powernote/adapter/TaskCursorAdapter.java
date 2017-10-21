@@ -2,6 +2,7 @@ package com.powernote.project.powernote.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +30,6 @@ public class TaskCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
 
-
-        String noteText = cursor.getString( cursor.getColumnIndex(DBOpenHelper.KEY_NAME));
         TextView text = (TextView) view.findViewById(R.id.tv_task_item_title);
         text.setText(cursor.getString(cursor.getColumnIndex(DBOpenHelper.KEY_NAME)));
 
