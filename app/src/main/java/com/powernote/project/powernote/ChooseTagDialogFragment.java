@@ -107,6 +107,14 @@ public class ChooseTagDialogFragment extends DialogFragment implements LoaderMan
         searchBox.setOnEditorActionListener(listener);
 
 
+        Button btnDone = (Button) view.findViewById(R.id.bt_choose_tag_fragment_dialog_done);
+
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
 
 
         cursorAdapter = new TagWithCheckBoxCursorAdapter(getContext(), null, 3, this.listOfSelectedId, getActivity());
