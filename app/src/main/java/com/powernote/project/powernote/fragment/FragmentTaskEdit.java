@@ -279,7 +279,7 @@ public class FragmentTaskEdit extends Fragment {
             noteFilter = DBOpenHelper.KEY_ID + "=" + id;
 
             Cursor cursor = getActivity().getContentResolver().query(PowerNoteProvider.CONTENT_URI_TASKS,
-                    DBOpenHelper.TASK_ALL_COLUMNS, null, null, null);
+                    DBOpenHelper.TASK_ALL_COLUMNS, noteFilter, null, null);
             cursor.moveToFirst();
 
             currentTask = Methods.getNewTask(cursor);
@@ -340,6 +340,7 @@ public class FragmentTaskEdit extends Fragment {
                     getActivity().getContentResolver().update(PowerNoteProvider.CONTENT_URI_TASKS,
                             Methods.getTaskValues(getTheCurrentSelectedData(currentTask)),noteFilter, null);
 
+                    Log.e("Edit Task Update", noteFilter);
 
                     Snackbar.make(v, "Task updated", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
@@ -357,6 +358,7 @@ public class FragmentTaskEdit extends Fragment {
                 public void onClick(View v) {
                     getActivity().getContentResolver().insert(PowerNoteProvider.CONTENT_URI_TASKS,
                             Methods.getTaskValues(getTheCurrentSelectedData(currentTask)));
+
 
                     Snackbar.make(v, "Task created", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
